@@ -25,7 +25,7 @@ export async function GET() {
       samples: [
         {
           presetKey: "compliant",
-          title: "BLI Compliant Utility Token (BLIC) 공시 정합성 점검",
+          title: "BLI Compliant Utility Token (BLIC) Disclosure Compliance Audit",
           projectName: "BLI LegalTech Foundation",
           tokenSymbol: "BLIC",
           whitepaperFileName: "samples/compliant-whitepaper.md",
@@ -38,7 +38,7 @@ export async function GET() {
         },
         {
           presetKey: "mismatched",
-          title: "BLI Alpha Protocol Token (BLIX) 상장심사 불일치 점검",
+          title: "BLI Alpha Protocol Token (BLIX) Listing Discrepancy Examination",
           projectName: "BLI Alpha Labs Ltd.",
           tokenSymbol: "BLIX",
           whitepaperFileName: "samples/mismatched-whitepaper.md",
@@ -53,7 +53,7 @@ export async function GET() {
     });
   } catch (error: any) {
     return NextResponse.json(
-      { error: error?.message || "샘플 백서를 불러오지 못했습니다." },
+      { error: error?.message || "Failed to load sample whitepapers." },
       { status: 500 }
     );
   }

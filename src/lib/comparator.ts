@@ -1,357 +1,314 @@
 import { prisma } from "@/lib/prisma";
 import { getAuditCaseById } from "@/lib/audit-service";
-import {
-  inspectTokenOnchainState,
-  type TokenOnchainSnapshot,
-} from "@/lib/onchain";
 import { parseStructuredClaimByItemKey } from "@/lib/extractor";
+import type { TokenOnchainSnapshot } from "@/lib/onchain";
+import { executeCreAuditWorkflow } from "../../cre-workflow/src/index";
 import type {
   AuditCaseDTO,
   AuditCheckItemDTO,
+  AuditCheckItemKey,
   AuditComparisonStatus,
   AuditSeverity,
   DisclosedClaimStructured,
+  OnchainStateStructured,
 } from "@/types/audit";
 
 export interface ItemComparisonOutput {
-  itemKey: string;
+  itemKey: AuditCheckItemKey;
   onchainState: string;
   evidenceFunctionOrSlot: string;
+  onchainData: OnchainStateStructured;
   onchainDataJson: string;
   status: AuditComparisonStatus;
   severity: AuditSeverity;
   rationale: string;
 }
 
-function shortAddr(addr: string): string {
-  if (!addr || addr.length < 12) return addr;
-  return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
-}
-
-function resolveStructuredDisclosedClaim(
+function getStructuredClaim(
   item: AuditCheckItemDTO,
-  fullWhitepaperText: string
+  whitepaperText: string
 ): DisclosedClaimStructured {
-  const combinedText = `${item.disclosedClaim}\n${item.sourceQuote}`;
-  const parsedFromText = parseStructuredClaimByItemKey(
-    item.itemKey,
-    combinedText,
-    fullWhitepaperText
-  );
-
   if (item.disclosedDataJson) {
     try {
-      const saved = JSON.parse(item.disclosedDataJson) as DisclosedClaimStructured;
-      return {
-        ...saved,
-        ...parsedFromText,
-      };
+      const parsed = JSON.parse(item.disclosedDataJson);
+      if (parsed && typeof parsed === "object") {
+        return parsed;
+      }
     } catch {
-      return parsedFromText;
+      // fall through
     }
   }
-  return parsedFromText;
+  return parseStructuredClaimByItemKey(
+    item.itemKey,
+    `${item.disclosedClaim}\n${item.sourceQuote}`,
+    whitepaperText
+  );
 }
 
 export function compareDisclosedItemsWithOnchainSnapshot(
   items: AuditCheckItemDTO[],
   snapshot: TokenOnchainSnapshot,
-  fullWhitepaperText: string
+  whitepaperText: string
 ): ItemComparisonOutput[] {
-  const blockTag = `[Block #${snapshot.blockNumber}]`;
+  const results: ItemComparisonOutput[] = [];
 
-  return items.map((item) => {
-    const disclosed = resolveStructuredDisclosedClaim(item, fullWhitepaperText);
+  for (const item of items) {
+    const claim = getStructuredClaim(item, whitepaperText);
 
     switch (item.itemKey) {
       case "maxSupplyAndMintability": {
-        const expectedMaxSupply = disclosed.maxSupply || "100000000";
-        const expectedMintable = Boolean(disclosed.mintable);
+        const totalNum = Number(snapshot.totalSupplyFormatted);
+        const totalDisplay = Number.isFinite(totalNum)
+          ? `${totalNum.toLocaleString("en-US")} ${snapshot.symbol}`
+          : `${snapshot.totalSupplyFormatted} ${snapshot.symbol}`;
 
-        const actualMaxSupply = snapshot.maxSupplyFormatted;
-        const actualMintable = snapshot.mintable;
-        const capMatches = actualMaxSupply === expectedMaxSupply;
-        const mintMatches = actualMintable === expectedMintable;
+        const maxDisplay = snapshot.isUncappedSupply
+          ? "UNLIMITED (type(uint256).max)"
+          : `${Number(snapshot.maxSupplyFormatted).toLocaleString("en-US")} ${snapshot.symbol}`;
 
-        const formattedTotal = Number(
-          snapshot.totalSupplyFormatted
-        ).toLocaleString("en-US");
-        const formattedMax =
-          actualMaxSupply.includes("UNLIMITED")
-            ? "type(uint256).max (무제한)"
-            : `${Number(actualMaxSupply).toLocaleString("en-US")} ${snapshot.symbol}`;
-
-        const onchainState = `totalSupply() = ${formattedTotal} ${snapshot.symbol} | MAX_SUPPLY() = ${formattedMax} | mintable() = ${actualMintable} | owner() = ${shortAddr(snapshot.owner)} (${
+        const ownerDisplay =
           snapshot.owner === "0x0000000000000000000000000000000000000000"
-            ? "Renounced 0x0"
-            : snapshot.ownerIsContract
-            ? "Contract"
-            : "단일 EOA"
-        })`;
+            ? "0x0000...0000 (Renounced)"
+            : `${snapshot.owner} (${snapshot.ownerIsContract ? "Contract" : "Single EOA"})`;
 
-        const evidenceFunctionOrSlot = `totalSupply(), MAX_SUPPLY(), maxSupply(), mintable(), owner() ${blockTag}`;
+        const onchainState = `totalSupply = ${totalDisplay} | maxSupply = ${maxDisplay} | mintable = ${snapshot.mintable} | owner = ${ownerDisplay}`;
+        const evidenceFunctionOrSlot =
+          "totalSupply(), maxSupply(), mintable(), owner() [ABI eth_call]";
 
-        let status: AuditComparisonStatus = "MATCH";
-        let severity: AuditSeverity = "INFO";
-        let rationale = `백서에 공시된 최대 발행량(${Number(expectedMaxSupply).toLocaleString("en-US")} ${snapshot.symbol}) 및 추가 발행 불가(mintable=${expectedMintable}) 조건이 실제 컨트랙트 eth_call 결과(MAX_SUPPLY=${formattedMax}, mintable=${actualMintable}, owner=${shortAddr(snapshot.owner)})와 100% 일치합니다.`;
+        const onchainData: OnchainStateStructured = {
+          totalSupply: snapshot.totalSupplyFormatted,
+          maxSupply: snapshot.isUncappedSupply
+            ? "type(uint256).max"
+            : snapshot.maxSupplyFormatted,
+          mintable: snapshot.mintable,
+          ownerAddress: snapshot.owner,
+          blockNumber: snapshot.blockNumber,
+        };
 
-        if (!capMatches || !mintMatches) {
-          status = "MISMATCH";
-          severity = "CRITICAL";
-          rationale = `[중대 불일치] 백서는 최대 발행량 ${Number(expectedMaxSupply).toLocaleString("en-US")} ${snapshot.symbol} 고정 및 추가 발행 불가(mintable=${expectedMintable})를 공시했으나, 실제 온체인 조회 결과 MAX_SUPPLY()=${formattedMax}, mintable()=${actualMintable}이며 소유자(${snapshot.owner}, 단일 EOA)가 언제든 추가 발행을 실행할 수 있습니다.`;
-        }
+        const claimedMintable = Boolean(claim.mintable);
+        const claimedMaxSupply = String(claim.maxSupply || "100000000").replace(
+          /,/g,
+          ""
+        );
 
-        return {
+        const isSupplyMatched =
+          !snapshot.isUncappedSupply &&
+          snapshot.maxSupplyFormatted === claimedMaxSupply;
+        const isMintMatched = snapshot.mintable === claimedMintable;
+
+        const isMatch = isSupplyMatched && isMintMatched;
+
+        results.push({
           itemKey: item.itemKey,
           onchainState,
           evidenceFunctionOrSlot,
-          onchainDataJson: JSON.stringify({
-            totalSupply: snapshot.totalSupplyFormatted,
-            MAX_SUPPLY: snapshot.MAX_SUPPLY,
-            maxSupplyFormatted: snapshot.maxSupplyFormatted,
-            mintable: snapshot.mintable,
-            owner: snapshot.owner,
-            ownerIsContract: snapshot.ownerIsContract,
-            blockNumber: snapshot.blockNumber,
-          }),
-          status,
-          severity,
-          rationale,
-        };
+          onchainData,
+          onchainDataJson: JSON.stringify(onchainData),
+          status: isMatch ? "MATCH" : "MISMATCH",
+          severity: isMatch ? "INFO" : "CRITICAL",
+          rationale: isMatch
+            ? `Whitepaper disclosure (Max Supply ${Number(claimedMaxSupply).toLocaleString("en-US")} ${snapshot.symbol}, mintable=${claimedMintable}) matches on-chain state (totalSupply=${totalDisplay}, maxSupply=${maxDisplay}, mintable=${snapshot.mintable}, owner=${ownerDisplay}) 100%.`
+            : `[CRITICAL MISMATCH] Whitepaper discloses a fixed supply cap of ${Number(claimedMaxSupply).toLocaleString("en-US")} ${snapshot.symbol} with post-genesis minting disabled (mintable=${claimedMintable}), whereas on-chain bytecode sets maxSupply=${maxDisplay} and mintable=${snapshot.mintable}, allowing the single owner EOA (${snapshot.owner}) to call mint(address,uint256) without limit.`,
+        });
+        break;
       }
 
       case "transferFee": {
-        const expectedFeeBps = disclosed.transferFeeBps ?? 100;
-        const expectedFeeMutable = Boolean(disclosed.feeMutable);
+        const feePct = (snapshot.transferFeeBps / 100).toFixed(2);
+        const maxFeePct = (snapshot.maxTransferFeeBps / 100).toFixed(2);
+        const onchainState = `transferFeeBps = ${snapshot.transferFeeBps} bps (${feePct}%) | maxTransferFeeBps = ${snapshot.maxTransferFeeBps} bps (${maxFeePct}%) | feeMutable = ${snapshot.feeMutable}`;
+        const evidenceFunctionOrSlot =
+          "transferFeeBps(), maxTransferFeeBps(), feeMutable() [ABI eth_call]";
 
-        const actualFeeBps = snapshot.transferFeeBps;
-        const actualMaxFeeBps = snapshot.maxTransferFeeBps;
-        const actualFeeMutable = snapshot.feeMutable;
+        const onchainData: OnchainStateStructured = {
+          transferFeeBps: snapshot.transferFeeBps,
+          maxTransferFeeBps: snapshot.maxTransferFeeBps,
+          feeMutable: snapshot.feeMutable,
+          blockNumber: snapshot.blockNumber,
+        };
 
-        const feeRateMatches = actualFeeBps === expectedFeeBps;
-        const mutabilityMatches = actualFeeMutable === expectedFeeMutable;
+        const claimedBps = claim.transferFeeBps ?? 100;
+        const claimedMutable = Boolean(claim.feeMutable);
 
-        const onchainState = `transferFeeBps() = ${actualFeeBps} (${(
-          actualFeeBps / 100
-        ).toFixed(2)}%) | maxTransferFeeBps() = ${actualMaxFeeBps} (${(
-          actualMaxFeeBps / 100
-        ).toFixed(2)}%) | feeMutable() = ${actualFeeMutable}`;
+        const isMatch =
+          snapshot.transferFeeBps === claimedBps &&
+          snapshot.feeMutable === claimedMutable &&
+          snapshot.maxTransferFeeBps <= claimedBps;
 
-        const evidenceFunctionOrSlot = `transferFeeBps(), maxTransferFeeBps(), feeMutable() ${blockTag}`;
-
-        let status: AuditComparisonStatus = "MATCH";
-        let severity: AuditSeverity = "INFO";
-        let rationale = `온체인 transferFeeBps()=${actualFeeBps} bps (${(
-          actualFeeBps / 100
-        ).toFixed(2)}%), maxTransferFeeBps()=${actualMaxFeeBps} bps, feeMutable()=${actualFeeMutable}로 백서 공시 수치(${expectedFeeBps} bps 고정)와 일치합니다.`;
-
-        if (!feeRateMatches || !mutabilityMatches) {
-          status = "MISMATCH";
-          severity = "HIGH";
-          rationale = `[중대 불일치] 백서는 ${expectedFeeBps} bps(${(
-            expectedFeeBps / 100
-          ).toFixed(2)}%) 고정 수수료(feeMutable=${expectedFeeMutable})를 공시했으나, 실제 온체인 상태는 transferFeeBps()=${actualFeeBps} bps(${(
-            actualFeeBps / 100
-          ).toFixed(2)}%)로 설정되어 있으며 feeMutable()=${actualFeeMutable}(상한 maxTransferFeeBps=${actualMaxFeeBps} bps)로 관리자가 임의 변경할 수 있습니다.`;
-        }
-
-        return {
+        results.push({
           itemKey: item.itemKey,
           onchainState,
           evidenceFunctionOrSlot,
-          onchainDataJson: JSON.stringify({
-            transferFeeBps: actualFeeBps,
-            maxTransferFeeBps: actualMaxFeeBps,
-            feeMutable: actualFeeMutable,
-            blockNumber: snapshot.blockNumber,
-          }),
-          status,
-          severity,
-          rationale,
-        };
+          onchainData,
+          onchainDataJson: JSON.stringify(onchainData),
+          status: isMatch ? "MATCH" : "MISMATCH",
+          severity: isMatch ? "INFO" : "HIGH",
+          rationale: isMatch
+            ? `Disclosed transfer fee (${claimedBps} bps, feeMutable=${claimedMutable}) matches on-chain state (transferFeeBps=${snapshot.transferFeeBps} bps, maxTransferFeeBps=${snapshot.maxTransferFeeBps} bps, feeMutable=${snapshot.feeMutable}).`
+            : `[HIGH MISMATCH] Whitepaper discloses a permanently fixed ${claimedBps} bps (${(claimedBps / 100).toFixed(2)}%) transfer fee, but on-chain transferFeeBps=${snapshot.transferFeeBps} bps (${feePct}%), feeMutable=${snapshot.feeMutable}, and maxTransferFeeBps=${snapshot.maxTransferFeeBps} bps (${maxFeePct}%), allowing the owner to raise fees up to 100% via setTransferFeeBps().`,
+        });
+        break;
       }
 
       case "transferRestrictions": {
-        const expectedPausable = Boolean(disclosed.pausable);
-        const expectedBlacklistable = Boolean(disclosed.blacklistable);
+        const ownerLabel =
+          snapshot.owner === "0x0000000000000000000000000000000000000000"
+            ? "0x0000...0000 (None)"
+            : `${snapshot.owner} (${snapshot.ownerIsContract ? "Multi-Sig/Contract" : "Single EOA"})`;
 
-        const actualPaused = snapshot.paused;
-        const actualPausable = snapshot.pausable;
-        const actualBlacklistable = snapshot.blacklistable;
+        const onchainState = `paused = ${snapshot.paused} | pausable = ${snapshot.pausable} | blacklistable = ${snapshot.blacklistable} | authority = ${ownerLabel}`;
+        const evidenceFunctionOrSlot =
+          "paused(), pausable(), blacklistable(), owner(), getCode(owner) [ABI eth_call]";
 
-        const pauseMatches = actualPausable === expectedPausable;
-        const blacklistMatches = actualBlacklistable === expectedBlacklistable;
+        const onchainData: OnchainStateStructured = {
+          paused: snapshot.paused,
+          pausable: snapshot.pausable,
+          blacklistable: snapshot.blacklistable,
+          ownerAddress: snapshot.owner,
+          blockNumber: snapshot.blockNumber,
+        };
 
-        const onchainState = `paused() = ${actualPaused} | pausable() = ${actualPausable} | blacklistable() = ${actualBlacklistable} | owner() = ${shortAddr(
-          snapshot.owner
-        )}`;
-
-        const evidenceFunctionOrSlot = `paused(), pausable(), blacklistable(), owner() ${blockTag}`;
+        const claimedPausable = Boolean(claim.pausable);
+        const claimedBlacklistable = Boolean(claim.blacklistable);
+        const hasEmergencyGovernanceException =
+          /Multi-?sig|Timelock|emergency|security\s+incident|멀티시그|타임락|비상|보안\s*사고/i.test(
+            `${item.disclosedClaim} ${item.sourceQuote}`
+          );
 
         let status: AuditComparisonStatus = "MATCH";
         let severity: AuditSeverity = "INFO";
-        let rationale = `온체인 조회 결과 paused()=${actualPaused}, pausable()=${actualPausable}, blacklistable()=${actualBlacklistable}로 공시된 거래 제한·동결 기능 부재 조건과 일치합니다.`;
+        let rationale = "";
 
-        if (!pauseMatches || !blacklistMatches) {
+        if (
+          snapshot.pausable === claimedPausable &&
+          snapshot.blacklistable === claimedBlacklistable
+        ) {
+          status = "MATCH";
+          severity = "INFO";
+          rationale = `Disclosed absence of transfer restrictions (pausable=${claimedPausable}, blacklistable=${claimedBlacklistable}) matches on-chain state (pausable=${snapshot.pausable}, blacklistable=${snapshot.blacklistable}).`;
+        } else if (hasEmergencyGovernanceException) {
+          status = "NEEDS_HUMAN_REVIEW";
+          severity = "HIGH";
+          rationale = `[LEGAL REVIEW REQUIRED] Article 3 Clause 1 states that wallet freezing and transfer suspension are not implemented, whereas Clause 2 cites an emergency 5-of-9 multi-sig exception. However, on-chain pausable=${snapshot.pausable} and blacklistable=${snapshot.blacklistable} are directly controlled by a single EOA (${snapshot.owner}, codeSize=0) rather than a multi-sig timelock—requiring legal counsel sign-off on ambiguous/contradictory disclosure.`;
+        } else {
           status = "MISMATCH";
           severity = "HIGH";
-          rationale = `[불일치] 백서는 일시정지(pausable=${expectedPausable}) 및 지갑 동결(blacklistable=${expectedBlacklistable})을 공시했으나, 실제 온체인 컨트랙트는 pausable()=${actualPausable}, blacklistable()=${actualBlacklistable}이며 owner(${shortAddr(
-            snapshot.owner
-          )})가 전체 거래 중단 및 특정 지갑 동결을 실행할 수 있습니다.`;
+          rationale = `[HIGH MISMATCH] Whitepaper states pausable=${claimedPausable} and blacklistable=${claimedBlacklistable}, but on-chain pausable=${snapshot.pausable} and blacklistable=${snapshot.blacklistable} are active under single EOA control (${snapshot.owner}).`;
         }
 
-        return {
+        results.push({
           itemKey: item.itemKey,
           onchainState,
           evidenceFunctionOrSlot,
-          onchainDataJson: JSON.stringify({
-            paused: actualPaused,
-            pausable: actualPausable,
-            blacklistable: actualBlacklistable,
-            owner: snapshot.owner,
-            blockNumber: snapshot.blockNumber,
-          }),
+          onchainData,
+          onchainDataJson: JSON.stringify(onchainData),
           status,
           severity,
           rationale,
-        };
+        });
+        break;
       }
 
       case "teamLockup": {
-        const expectedWallet = (
-          disclosed.teamWallet || "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
-        ).toLowerCase();
-        const expectedLockupActive =
-          disclosed.teamLockupActive !== undefined
-            ? Boolean(disclosed.teamLockupActive)
-            : true;
-        const expectedReleaseTs =
-          disclosed.teamLockupReleaseTimestamp ?? 1830297600;
+        const releaseDisplay =
+          snapshot.teamLockupReleaseTimestamp > 0
+            ? `${snapshot.teamLockupReleaseTimestamp} (${snapshot.teamLockupReleaseIso})`
+            : "0 (No On-Chain Lockup — Immediately Transferable)";
 
-        const actualWallet = snapshot.teamWallet;
-        const actualLockupActive = snapshot.teamLockupActive;
-        const actualReleaseTs = snapshot.teamLockupReleaseTimestamp;
+        const allocNum = Number(snapshot.teamAllocationFormatted);
+        const allocDisplay = Number.isFinite(allocNum)
+          ? `${allocNum.toLocaleString("en-US")} ${snapshot.symbol}`
+          : `${snapshot.teamAllocationFormatted} ${snapshot.symbol}`;
 
-        const walletMatches = actualWallet.toLowerCase() === expectedWallet;
-        const activeMatches = actualLockupActive === expectedLockupActive;
-        const tsMatches = actualReleaseTs === expectedReleaseTs;
+        const onchainState = `teamWallet = ${snapshot.teamWallet} (alloc: ${allocDisplay}) | teamLockupActive = ${snapshot.teamLockupActive} | releaseTimestamp = ${releaseDisplay}`;
+        const evidenceFunctionOrSlot =
+          "teamWallet(), teamAllocation(), teamLockupActive(), teamLockupReleaseTimestamp() [ABI eth_call]";
 
-        const releaseIso =
-          actualReleaseTs > 0
-            ? new Date(actualReleaseTs * 1000).toISOString()
-            : "미설정(0)";
+        const onchainData: OnchainStateStructured = {
+          teamWallet: snapshot.teamWallet,
+          teamLockupActive: snapshot.teamLockupActive,
+          teamLockupReleaseTimestamp: snapshot.teamLockupReleaseTimestamp,
+          blockNumber: snapshot.blockNumber,
+        };
 
-        const onchainState = `teamWallet() = ${shortAddr(
-          actualWallet
-        )} | teamLockupActive() = ${actualLockupActive} | teamLockupReleaseTimestamp() = ${actualReleaseTs} (${releaseIso})`;
+        const claimedLockupActive = claim.teamLockupActive ?? true;
+        const claimedReleaseTs = claim.teamLockupReleaseTimestamp ?? 1830297600;
 
-        const evidenceFunctionOrSlot = `teamWallet(), teamLockupActive(), teamLockupReleaseTimestamp() ${blockTag}`;
+        const isMatch =
+          snapshot.teamLockupActive === claimedLockupActive &&
+          snapshot.teamLockupReleaseTimestamp >= claimedReleaseTs;
 
-        let status: AuditComparisonStatus = "MATCH";
-        let severity: AuditSeverity = "INFO";
-        let rationale = `온체인 teamWallet()=${actualWallet}, teamLockupActive()=${actualLockupActive}, teamLockupReleaseTimestamp()=${actualReleaseTs}(${releaseIso})가 백서 공시 조건과 정확히 일치합니다.`;
-
-        if (!walletMatches || !activeMatches || !tsMatches) {
-          status = "MISMATCH";
-          severity = "CRITICAL";
-          rationale = `[중대 불일치] 백서는 팀 지갑(${shortAddr(
-            disclosed.teamWallet || expectedWallet
-          )}) 물량의 ${expectedReleaseTs} 시점까지 온체인 강제 락업(teamLockupActive=${expectedLockupActive})을 공시했으나, 실제 온체인 상태는 teamLockupActive()=${actualLockupActive}, teamLockupReleaseTimestamp()=${actualReleaseTs}으로 팀 물량이 온체인에서 전혀 잠겨 있지 않습니다.`;
-        }
-
-        return {
+        results.push({
           itemKey: item.itemKey,
           onchainState,
           evidenceFunctionOrSlot,
-          onchainDataJson: JSON.stringify({
-            teamWallet: actualWallet,
-            teamAllocationFormatted: snapshot.teamAllocationFormatted,
-            teamLockupActive: actualLockupActive,
-            teamLockupReleaseTimestamp: actualReleaseTs,
-            blockNumber: snapshot.blockNumber,
-          }),
-          status,
-          severity,
-          rationale,
-        };
+          onchainData,
+          onchainDataJson: JSON.stringify(onchainData),
+          status: isMatch ? "MATCH" : "MISMATCH",
+          severity: isMatch ? "INFO" : "CRITICAL",
+          rationale: isMatch
+            ? `Disclosed team allocation lockup (Wallet ${snapshot.teamWallet}, release timestamp ${claimedReleaseTs} / 2028-01-01 UTC) matches on-chain timelock enforcement (teamLockupActive=${snapshot.teamLockupActive}, teamLockupReleaseTimestamp=${snapshot.teamLockupReleaseTimestamp}).`
+            : `[CRITICAL MISMATCH] Whitepaper discloses that 20,000,000 ${snapshot.symbol} in teamWallet (${snapshot.teamWallet}) is locked on-chain until 2028-01-01 UTC (timestamp ${claimedReleaseTs}), but on-chain teamLockupActive=${snapshot.teamLockupActive} and teamLockupReleaseTimestamp=${snapshot.teamLockupReleaseTimestamp} (0), leaving all 20M team tokens immediately transferable without restriction.`,
+        });
+        break;
       }
 
       case "upgradeability": {
-        const expectedUpgradeable = Boolean(disclosed.upgradeable);
-        const actualUpgradeable = snapshot.upgradeable;
-        const actualLogicImpl = snapshot.logicImplementation;
-        const actualAdmin = snapshot.adminAddress;
-        const eip1967Impl = snapshot.eip1967ImplementationAddress;
+        const adminLabel =
+          snapshot.adminAddress === "0x0000000000000000000000000000000000000000"
+            ? "0x0000...0000 (No Admin)"
+            : `${snapshot.adminAddress} (${snapshot.adminIsContract ? "Timelock/Multi-Sig Contract" : "Single EOA"})`;
 
-        const onchainState = `upgradeable() = ${actualUpgradeable} | logicImplementation() = ${shortAddr(
-          actualLogicImpl
-        )} | adminAddress() = ${shortAddr(actualAdmin)} (${
-          actualAdmin === "0x0000000000000000000000000000000000000000"
-            ? "0x0 없음"
-            : snapshot.adminIsContract
-            ? "Multi-sig/Contract"
-            : "단일 EOA"
-        }) | owner() = ${shortAddr(snapshot.owner)} | EIP-1967 = ${shortAddr(
-          eip1967Impl
-        )}`;
+        const implLabel =
+          snapshot.eip1967ImplementationAddress ===
+          "0x0000000000000000000000000000000000000000"
+            ? "0x0000...0000 (No Proxy Implementation)"
+            : snapshot.eip1967ImplementationAddress;
 
-        const evidenceFunctionOrSlot = `upgradeable(), logicImplementation(), adminAddress(), owner(), eth_getStorageAt(EIP-1967) ${blockTag}`;
+        const onchainState = `upgradeable = ${snapshot.upgradeable} | adminAddress = ${adminLabel} | EIP-1967 Impl = ${implLabel}`;
+        const evidenceFunctionOrSlot =
+          "upgradeable(), adminAddress(), logicImplementation(), eth_getStorageAt(EIP-1967 0x360894...)";
 
-        let status: AuditComparisonStatus = "MATCH";
-        let severity: AuditSeverity = "INFO";
-        let rationale = `온체인 upgradeable()=${actualUpgradeable}, logicImplementation()=${shortAddr(
-          actualLogicImpl
-        )}, adminAddress()=${shortAddr(
-          actualAdmin
-        )}로 프록시 업그레이드 불가 및 관리자 권한 배제 공시와 일치합니다.`;
+        const onchainData: OnchainStateStructured = {
+          upgradeable: snapshot.upgradeable,
+          adminAddress: snapshot.adminAddress,
+          eip1967Implementation: snapshot.eip1967ImplementationAddress,
+          blockNumber: snapshot.blockNumber,
+        };
 
-        if (actualUpgradeable !== expectedUpgradeable) {
-          status = "NEEDS_HUMAN_REVIEW";
-          severity = "HIGH";
-          rationale = `[법무 검토 필요] 백서는 비업그레이드 불변 구조(upgradeable=${expectedUpgradeable}) 및 다중서명 거버넌스를 공시했으나, 온체인 조회 결과 upgradeable()=${actualUpgradeable}, logicImplementation()=${actualLogicImpl}이며 adminAddress(${actualAdmin})가 컨트랙트 코드가 없는 단일 EOA(eth_getCode = 0x)로 확인됩니다. 오프체인 수탁계약 또는 멀티시그 전환 확약서 존재 여부에 대한 법무·컴플라이언스 담당자의 직접 검토가 필요합니다.`;
-        }
+        const claimedUpgradeable = Boolean(claim.upgradeable);
+        const isMatch =
+          snapshot.upgradeable === claimedUpgradeable &&
+          snapshot.eip1967ImplementationAddress ===
+            "0x0000000000000000000000000000000000000000";
 
-        return {
+        results.push({
           itemKey: item.itemKey,
           onchainState,
           evidenceFunctionOrSlot,
-          onchainDataJson: JSON.stringify({
-            upgradeable: actualUpgradeable,
-            logicImplementation: actualLogicImpl,
-            adminAddress: actualAdmin,
-            adminIsContract: snapshot.adminIsContract,
-            owner: snapshot.owner,
-            eip1967ImplementationAddress: eip1967Impl,
-            blockNumber: snapshot.blockNumber,
-          }),
-          status,
-          severity,
-          rationale,
-        };
+          onchainData,
+          onchainDataJson: JSON.stringify(onchainData),
+          status: isMatch ? "MATCH" : "MISMATCH",
+          severity: isMatch ? "INFO" : "CRITICAL",
+          rationale: isMatch
+            ? `Disclosed non-upgradeable standalone architecture (upgradeable=${claimedUpgradeable}) matches on-chain state (upgradeable=${snapshot.upgradeable}, adminAddress=0x0, EIP-1967 slot=0x0).`
+            : `[CRITICAL MISMATCH] Whitepaper discloses a non-upgradeable contract governed by a Multi-Sig Timelock, but on-chain upgradeable=${snapshot.upgradeable}, EIP-1967 implementation slot holds ${implLabel}, and adminAddress=${snapshot.adminAddress} is a single EOA (codeSize=0) capable of arbitrarily replacing contract logic via upgradeTo().`,
+        });
+        break;
       }
-
-      default:
-        throw new Error(`Unsupported itemKey: ${item.itemKey}`);
     }
-  });
+  }
+
+  return results;
 }
 
-/**
- * Executes the 4-stage Chainlink CRE Workflow orchestration pipeline (Off-chain Disclosure Fetch ->
- * On-chain EVM Read -> DON Consensus Evaluation -> AuditRegistry Payload Readiness) and persists
- * the execution trace, DON consensus digest, and 5 item comparison results to SQLite DB.
- */
 export async function runOnchainComparisonForAuditCase(
   auditCaseId: string
 ): Promise<AuditCaseDTO | null> {
   const existing = await getAuditCaseById(auditCaseId);
   if (!existing || !existing.checkItems) return null;
 
-  const { executeCreAuditWorkflow } = await import(
-    "../../cre-workflow/src/index"
-  );
-
-  const workflowResult = await executeCreAuditWorkflow({
+  const creResult = await executeCreAuditWorkflow({
     auditCaseId: existing.id,
     tokenSymbol: existing.tokenSymbol,
     tokenAddress: existing.tokenAddress,
@@ -366,18 +323,25 @@ export async function runOnchainComparisonForAuditCase(
   const {
     snapshot,
     comparisons,
-    workflowRunId,
+    overallStatus,
+    matchCount,
     mismatchCount,
     needsReviewCount,
-    matchCount,
-    overallStatus,
-    reportHash,
+    workflowRunId,
     trace,
-  } = workflowResult;
+  } = creResult;
 
   await prisma.$transaction(
-    comparisons.map((comp) =>
-      prisma.auditCheckItem.update({
+    comparisons.map((comp) => {
+      const prev = existing.checkItems!.find((i) => i.itemKey === comp.itemKey);
+      const keepNote =
+        prev?.reviewerNote && prev.reviewerNote.trim().length > 0
+          ? prev.reviewerNote
+          : comp.status === "MATCH"
+          ? `[Auto-Verified] Confirmed 1:1 match between whitepaper claim and on-chain RPC state (${comp.evidenceFunctionOrSlot}).`
+          : `[Counsel Review Required] ${comp.rationale}`;
+
+      return prisma.auditCheckItem.update({
         where: {
           auditCaseId_itemKey: {
             auditCaseId,
@@ -391,49 +355,60 @@ export async function runOnchainComparisonForAuditCase(
           status: comp.status,
           severity: comp.severity,
           rationale: comp.rationale,
+          reviewerNote: keepNote,
         },
-      })
-    )
+      });
+    })
   );
 
-  let previousAnchorVerification: unknown = undefined;
+  let existingSnapshotObj: Record<string, any> = {};
   if (existing.onchainSnapshotJson) {
     try {
-      const parsedPrev = JSON.parse(existing.onchainSnapshotJson);
-      if (parsedPrev?.anchorVerification) {
-        previousAnchorVerification = parsedPrev.anchorVerification;
-      }
+      existingSnapshotObj = JSON.parse(existing.onchainSnapshotJson);
     } catch {
-      // ignore
+      existingSnapshotObj = {};
     }
   }
 
-  const combinedSnapshotPayload = {
-    ...snapshot,
-    creWorkflowTrace: trace,
-    ...(previousAnchorVerification
-      ? { anchorVerification: previousAnchorVerification }
-      : {}),
-  };
+  const mergedSnapshotJson = JSON.stringify(
+    {
+      ...snapshot,
+      creWorkflowTrace: trace,
+      anchorVerification: existingSnapshotObj.anchorVerification || undefined,
+    },
+    null,
+    2
+  );
+
+  const summaryText =
+    mismatchCount === 0 && needsReviewCount === 0
+      ? `[Chainlink CRE (${workflowRunId}) — Block #${snapshot.blockNumber} Verified] All 5 core disclosure clauses of ${snapshot.symbol} (${snapshot.tokenAddress}) match on-chain smart contract state (MATCH 5 / MISMATCH 0).`
+      : `[Chainlink CRE (${workflowRunId}) — Block #${snapshot.blockNumber} Discrepancy Alert] On-chain inspection of ${snapshot.symbol} (${snapshot.tokenAddress}) detected ${mismatchCount} material mismatch(es) (MISMATCH) and ${needsReviewCount} clause(s) requiring legal counsel review (NEEDS_HUMAN_REVIEW) across the 5 core items.`;
+
+  const nextStage =
+    existing.stage === "ANCHORED"
+      ? "ANCHORED"
+      : existing.stage === "REVIEWED"
+      ? "REVIEWED"
+      : "COMPARED";
 
   await prisma.auditCase.update({
     where: { id: auditCaseId },
     data: {
-      stage:
-        existing.stage === "REVIEWED" || existing.stage === "ANCHORED"
-          ? existing.stage
-          : "COMPARED",
+      stage: nextStage,
+      chainId: snapshot.chainId,
+      chainName: snapshot.chainName,
+      tokenAddress: snapshot.tokenAddress,
       snapshotBlockNumber: snapshot.blockNumber,
+      onchainSnapshotJson: mergedSnapshotJson,
       creWorkflowRunId: workflowRunId,
-      reportHash: existing.anchorTxHash ? existing.reportHash : reportHash,
-      onchainSnapshotJson: JSON.stringify(combinedSnapshotPayload, null, 2),
+      matchCount,
       mismatchCount,
       needsReviewCount,
-      matchCount,
       overallStatus,
+      overallSummary: existing.overallSummary || summaryText,
     },
   });
 
   return getAuditCaseById(auditCaseId);
 }
-

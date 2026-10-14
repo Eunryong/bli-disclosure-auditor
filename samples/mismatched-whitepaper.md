@@ -1,29 +1,29 @@
-# BLI Alpha Protocol Token (BLIX) — 가상자산 공시 백서 (v1.4)
+# BLI Alpha Protocol Token (BLIX) — Investor Disclosure Whitepaper (v2.1)
 
-**발행 주체**: BLI Alpha Labs Ltd.  
-**토큰 명칭 / 심볼**: BLI Alpha Protocol Token (`BLIX`)  
-**배포 네트워크**: Ethereum Sepolia Testnet (`chainId: 11155111`)  
-**컨트랙트 주소**: `0xbbE3c849D90c63645F917Be84a5b454FE858186F`  
-**공시 기준일**: 2026년 10월 14일  
+- **Issuing Entity**: BLI Alpha Labs Ltd.
+- **Token Symbol**: `BLIX`
+- **Target Network**: Ethereum Sepolia (Chain ID: `11155111`)
+- **Contract Address**: `0xbbE3c849D90c63645F917Be84a5b454FE858186F`
+- **Filing Date**: October 15, 2025
 
 ---
 
-## 제1조 (총발행량 고정 및 추가 발행 제한)
-1. `BLIX` 토큰의 총발행량은 **100,000,000 BLIX (1억 개)**로 엄격히 고정(Fixed Supply Cap)되어 있다.
-2. 최초 발행 이후 추가적인 토큰 발행(`mint`)은 불가능하도록 설계되어 있으며, 재단이나 개발팀이 임의로 유통량을 늘릴 수 없다.
+## Article 1 (Total Supply Cap & Mintability Authority)
+1. The total supply of `BLIX` is strictly capped at **100,000,000 BLIX** (100 million tokens, 18 decimals).
+2. Following the initial genesis mint of 100,000,000 BLIX, **additional token minting is permanently disabled (`mintable = false`)**, and no administrator or issuer can inflate the token supply under any circumstances.
 
-## 제2조 (전송 수수료 정책)
-1. 네트워크 유동성 풀 기여를 위해 토큰 전송 시 **1.00% (100 bps)**의 고정 프로토콜 수수료가 적용된다.
-2. 해당 수수료율은 스마트계약에 의해 100 bps로 고정되어 있으며, 발행사 또는 관리자가 임의로 수수료율을 인상할 수 없다.
+## Article 2 (Transfer Fee Rate & Mutability Cap)
+1. To support protocol sustainability, `BLIX` applies a low, fixed transfer fee of **1.00% (100 bps)** on token transfers.
+2. This 1.00% (100 bps) fee rate is **permanently fixed (`feeMutable = false`, `maxTransferFeeBps = 100`)** and cannot be arbitrarily raised by the issuer after launch.
 
-## 제3조 (자유로운 거래 보장 및 거래 제한 없음)
-1. 모든 `BLIX` 보유자는 제3자의 개입 없이 언제든지 자유롭게 토큰을 이전할 수 있다.
-2. 스마트계약에는 거래 일시정지(`pause`) 권한이나 특정 지갑 주소를 동결(`blacklist`)하는 중앙화된 통제 기능이 존재하지 않는다.
+## Article 3 (Transfer Pause & Address Blacklist Controls)
+1. `BLIX` is designed as a fully decentralized utility token; therefore, **arbitrary wallet freezing (`blacklistable = false`) and unilateral transfer suspension (`pausable = false`) are not implemented** in the token contract.
+2. In the event of an extreme security incident, any temporary protective measure may only be triggered through a decentralized 5-of-9 multi-sig governance timelock rather than a single EOA administrator.
 
-## 제4조 (창업팀 물량 락업 및 보호 조항)
-1. 총발행량의 20%인 **20,000,000 BLIX**는 창업팀 지갑(`0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC`)에 배정된다.
-2. 투자자 보호를 위해 창업팀 물량은 **2028년 1월 1일 00:00:00 UTC (`releaseTimestamp: 1830297600`)**까지 온체인 스마트계약에 의해 강제 락업되어 매도 및 외부 전송이 원천 차단된다.
+## Article 4 (Team Allocation Wallet & On-Chain Lockup Schedule)
+1. The Core Team allocation of **20,000,000 BLIX (20% of total supply)** is deposited into the public Team Allocation Wallet (`0x2222222222222222222222222222222222222222`).
+2. The entire 20,000,000 BLIX team allocation is **enforced by an on-chain smart contract timelock (`teamLockupActive = true`) until January 1, 2028 at 00:00:00 UTC (Unix Timestamp `1830297600`)**, preventing any premature token sales before 2028.
 
-## 제5조 (스마트계약 불변성 및 거버넌스 구조)
-1. `BLIX` 스마트계약은 임의 업그레이드가 불가능한 불변(Non-upgradeable) 구조로 배포되며, 단일 개인 지갑(EOA)이 단독으로 컨트랙트 로직을 변경할 수 없다.
-2. 프로토콜의 주요 보안 설정은 다중서명(Multi-sig) 및 타임락 거버넌스를 통해서만 관리된다.
+## Article 5 (Proxy Upgradeability & Administrative Governance Structure)
+1. To ensure complete code immutability, `BLIX` is deployed as a **non-upgradeable fixed smart contract (`upgradeable = false`)** without any proxy implementation slot.
+2. All administrative privileges are governed exclusively by a **Community Multi-Sig & 48-Hour Timelock (`Multi-sig + Timelock`)**, and no single Externally Owned Account (EOA) holds unilateral control over contract parameters.

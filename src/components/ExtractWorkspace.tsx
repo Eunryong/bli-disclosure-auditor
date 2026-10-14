@@ -4,9 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { AuditCaseDTO, AuditCheckItemDTO } from "@/types/audit";
+import { useLanguage } from "@/lib/i18n";
 
 export function ExtractWorkspace({ initialAudit }: { initialAudit: AuditCaseDTO }) {
   const router = useRouter();
+  const { lang, t } = useLanguage();
   const [audit, setAudit] = useState<AuditCaseDTO>(initialAudit);
   const [items, setItems] = useState<AuditCheckItemDTO[]>(
     initialAudit.checkItems || []
@@ -38,16 +40,28 @@ export function ExtractWorkspace({ initialAudit }: { initialAudit: AuditCaseDTO 
       });
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || "자동 추출에 실패했습니다.");
+        throw new Error(
+          data.error ||
+            t("Automatic extraction failed.", "자동 추출에 실패했습니다.")
+        );
       }
       setAudit(data.audit);
       setItems(data.audit.checkItems || []);
       setFeedback(
-        "백서 원문에서 5대 핵심 항목(공시 주장·근거 문구·조항 위치)을 추출하여 SQLite DB에 저장했습니다."
+        t(
+          "Extracted all 5 core disclosure items (disclosedClaim, sourceQuote, sectionRef) from the whitepaper and saved to SQLite.",
+          "백서 원문에서 5대 핵심 항목(공시 주장·근거 문구·조항 위치)을 추출하여 SQLite DB에 저장했습니다."
+        )
       );
       router.refresh();
     } catch (err: any) {
-      setFeedback(err?.message || "추출 중 오류가 발생했습니다.");
+      setFeedback(
+        err?.message ||
+          t(
+            "An error occurred during extraction.",
+            "추출 중 오류가 발생했습니다."
+          )
+      );
     } finally {
       setExtracting(false);
     }
@@ -71,18 +85,28 @@ export function ExtractWorkspace({ initialAudit }: { initialAudit: AuditCaseDTO 
       });
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || "저장에 실패했습니다.");
+        throw new Error(
+          data.error || t("Failed to save extraction.", "저장에 실패했습니다.")
+        );
       }
       setAudit(data.audit);
       setItems(data.audit.checkItems || []);
       if (navigateToCompare) {
         router.push(`/audits/${audit.id}/compare`);
       } else {
-        setFeedback("5대 핵심 항목 추출/보정 내용이 SQLite DB에 영구 저장되었습니다.");
+        setFeedback(
+          t(
+            "All 5 extracted disclosure claims and citations have been saved to SQLite.",
+            "5대 핵심 항목 추출/보정 내용이 SQLite DB에 영구 저장되었습니다."
+          )
+        );
         router.refresh();
       }
     } catch (err: any) {
-      setFeedback(err?.message || "저장 중 오류가 발생했습니다.");
+      setFeedback(
+        err?.message ||
+          t("An error occurred while saving.", "저장 중 오류가 발생했습니다.")
+      );
     } finally {
       setSaving(false);
     }
@@ -98,10 +122,40 @@ export function ExtractWorkspace({ initialAudit }: { initialAudit: AuditCaseDTO 
               DESK 01 // CLAUSE EXTRACTION &amp; CITATION INDEXING
             </div>
             <p className="text-xs text-[#111315]">
-              좌측 등록 공시 백서 원문(Exhibit A)과 대조하며 5대 핵심 조항의{" "}
-              <strong className="font-semibold">공시 주장(disclosedClaim)</strong>,{" "}
-              <strong className="font-semibold">원문 인용구(sourceQuote)</strong>,{" "}
-              <strong className="font-semibold">조항 위치(sectionRef)</strong>를 검증·확정하십시오.
+              {lang === "en" ? (
+                <>
+                  Verify and confirm the{" "}
+                  <strong className="font-semibold">
+                    Disclosed Claim (disclosedClaim)
+                  </strong>
+                  ,{" "}
+                  <strong className="font-semibold">
+                    Verbatim Quote (sourceQuote)
+                  </strong>
+                  , and{" "}
+                  <strong className="font-semibold">
+                    Article Citation (sectionRef)
+                  </strong>{" "}
+                  for each of the 5 mandatory audit articles against Exhibit A on
+                  the left.
+                </>
+              ) : (
+                <>
+                  좌측 등록 공시 백서 원문(Exhibit A)과 대조하며 5대 핵심 조항의{" "}
+                  <strong className="font-semibold">
+                    공시 주장(disclosedClaim)
+                  </strong>
+                  ,{" "}
+                  <strong className="font-semibold">
+                    원문 인용구(sourceQuote)
+                  </strong>
+                  ,{" "}
+                  <strong className="font-semibold">
+                    조항 위치(sectionRef)
+                  </strong>
+                  를 검증·확정하십시오.
+                </>
+              )}
             </p>
           </div>
 
@@ -112,7 +166,12 @@ export function ExtractWorkspace({ initialAudit }: { initialAudit: AuditCaseDTO 
               onClick={handleAutoExtract}
               className="rounded-[2px] border border-[#111315] bg-[#EFECE6] px-3.5 py-2 font-mono text-xs font-semibold text-[#111315] transition-colors hover:bg-[#111315] hover:text-white disabled:opacity-50"
             >
-              {extracting ? "AI/규칙 추출 중..." : "백서 5대 핵심 항목 AI 자동 추출"}
+              {extracting
+                ? t("Extracting Claims...", "AI/규칙 추출 중...")
+                : t(
+                    "Auto-Extract 5 Core Claims (AI/Rule)",
+                    "백서 5대 핵심 항목 AI 자동 추출"
+                  )}
             </button>
             <button
               type="button"
@@ -120,7 +179,7 @@ export function ExtractWorkspace({ initialAudit }: { initialAudit: AuditCaseDTO 
               onClick={() => handleSave(false)}
               className="rounded-[2px] border border-[#D8D4CC] bg-white px-3.5 py-2 font-mono text-xs font-semibold text-[#111315] transition-colors hover:border-[#111315] hover:bg-[#F7F6F2] disabled:opacity-50"
             >
-              추출 결과 DB 임시저장
+              {t("Save Draft to DB", "추출 결과 DB 임시저장")}
             </button>
             <button
               type="button"
@@ -128,7 +187,10 @@ export function ExtractWorkspace({ initialAudit }: { initialAudit: AuditCaseDTO 
               onClick={() => handleSave(true)}
               className="rounded-[2px] border border-[#0F172A] bg-[#0F172A] px-4 py-2 font-mono text-xs font-semibold text-white transition-colors hover:bg-[#1E293B] disabled:opacity-50"
             >
-              저장 후 Step 2 (CRE 대조) 이동 &rarr;
+              {t(
+                "Save & Proceed to Step 2 (CRE Compare) →",
+                "저장 후 Step 2 (CRE 대조) 이동 →"
+              )}
             </button>
           </div>
         </div>
@@ -151,7 +213,10 @@ export function ExtractWorkspace({ initialAudit }: { initialAudit: AuditCaseDTO 
                   EXHIBIT A // SOURCE DISCLOSURE DOCUMENT
                 </div>
                 <h2 className="font-editorial mt-0.5 text-base font-bold text-[#111315]">
-                  등록된 공시 백서 원문
+                  {t(
+                    "Registered Disclosure Whitepaper Manuscript",
+                    "등록된 공시 백서 원문"
+                  )}
                 </h2>
               </div>
               <span className="rounded-[2px] border border-[#111315] bg-white px-2 py-0.5 font-mono text-[0.6875rem] font-semibold text-[#111315]">
@@ -201,15 +266,17 @@ export function ExtractWorkspace({ initialAudit }: { initialAudit: AuditCaseDTO 
                         [{item.itemKey}]
                       </div>
                       <h3 className="font-editorial mt-2 text-base font-bold leading-snug text-[#111315]">
-                        {item.titleKo}
+                        {lang === "en"
+                          ? `${idx + 1}. ${item.titleEn}`
+                          : item.titleKo}
                       </h3>
                       <p className="mt-0.5 text-[0.7rem] text-[#5A6065]">
-                        {item.titleEn}
+                        {lang === "en" ? item.titleKo : item.titleEn}
                       </p>
 
                       <div className="mt-3 border-t border-[#D8D4CC] pt-2.5">
                         <div className="font-mono text-[0.625rem] font-semibold uppercase tracking-[0.08em] text-[#5A6065]">
-                          온체인 대조 함수
+                          {t("On-Chain Target Functions", "온체인 대조 함수")}
                         </div>
                         <div className="mt-0.5 break-words font-mono text-[0.6875rem] font-medium text-[#111315]">
                           {item.evidenceFunctionOrSlot}
@@ -224,7 +291,10 @@ export function ExtractWorkspace({ initialAudit }: { initialAudit: AuditCaseDTO 
                           htmlFor={`claim-${item.itemKey}`}
                           className="block font-mono text-[0.6875rem] font-semibold uppercase tracking-[0.08em] text-[#111315]"
                         >
-                          공시 주장 요약 (disclosedClaim)
+                          {t(
+                            "Disclosed Claim Summary (disclosedClaim)",
+                            "공시 주장 요약 (disclosedClaim)"
+                          )}
                         </label>
                         <input
                           id={`claim-${item.itemKey}`}
@@ -237,7 +307,10 @@ export function ExtractWorkspace({ initialAudit }: { initialAudit: AuditCaseDTO 
                               e.target.value
                             )
                           }
-                          placeholder="백서에서 주장하는 핵심 설정 요약"
+                          placeholder={t(
+                            "Summary of the whitepaper's commitment",
+                            "백서에서 주장하는 핵심 설정 요약"
+                          )}
                           className="mt-1 w-full rounded-[2px] border border-[#111315] bg-[#FAF9F5] px-3 py-2 text-xs font-medium text-[#111315] focus:bg-white focus:outline-none"
                         />
                       </div>
@@ -248,7 +321,10 @@ export function ExtractWorkspace({ initialAudit }: { initialAudit: AuditCaseDTO 
                             htmlFor={`quote-${item.itemKey}`}
                             className="block font-mono text-[0.6875rem] font-semibold uppercase tracking-[0.08em] text-[#5A6065]"
                           >
-                            백서 원문 근거 인용구 (sourceQuote)
+                            {t(
+                              "Verbatim Whitepaper Quote (sourceQuote)",
+                              "백서 원문 근거 인용구 (sourceQuote)"
+                            )}
                           </label>
                           <textarea
                             id={`quote-${item.itemKey}`}
@@ -261,7 +337,10 @@ export function ExtractWorkspace({ initialAudit }: { initialAudit: AuditCaseDTO 
                                 e.target.value
                               )
                             }
-                            placeholder="백서 원문에서 발췌한 문장"
+                            placeholder={t(
+                              "Exact sentence excerpted from the whitepaper",
+                              "백서 원문에서 발췌한 문장"
+                            )}
                             className="mt-1 w-full rounded-[2px] border border-[#D8D4CC] bg-white px-3 py-2 text-xs leading-relaxed text-[#111315] focus:border-[#111315] focus:outline-none"
                           />
                         </div>
@@ -271,7 +350,10 @@ export function ExtractWorkspace({ initialAudit }: { initialAudit: AuditCaseDTO 
                             htmlFor={`section-${item.itemKey}`}
                             className="block font-mono text-[0.6875rem] font-semibold uppercase tracking-[0.08em] text-[#5A6065]"
                           >
-                            근거 조항 위치 (sectionRef)
+                            {t(
+                              "Article Citation (sectionRef)",
+                              "근거 조항 위치 (sectionRef)"
+                            )}
                           </label>
                           <input
                             id={`section-${item.itemKey}`}
@@ -284,7 +366,10 @@ export function ExtractWorkspace({ initialAudit }: { initialAudit: AuditCaseDTO 
                                 e.target.value
                               )
                             }
-                            placeholder="예: 제1조 제1항~제3항"
+                            placeholder={t(
+                              "e.g., Article 1, Clauses 1–3",
+                              "예: 제1조 제1항~제3항"
+                            )}
                             className="mt-1 w-full rounded-[2px] border border-[#D8D4CC] bg-white px-3 py-2 font-mono text-xs text-[#111315] focus:border-[#111315] focus:outline-none"
                           />
                         </div>
@@ -301,7 +386,7 @@ export function ExtractWorkspace({ initialAudit }: { initialAudit: AuditCaseDTO 
                 href="/audits"
                 className="rounded-[2px] border border-[#111315] bg-white px-4 py-2 font-mono text-xs font-semibold text-[#111315] transition-colors hover:bg-[#F7F6F2]"
               >
-                &larr; 목록으로 (/audits)
+                {t("← Back to Ledger (/audits)", "← 목록으로 (/audits)")}
               </Link>
               <button
                 type="button"
@@ -309,7 +394,10 @@ export function ExtractWorkspace({ initialAudit }: { initialAudit: AuditCaseDTO 
                 onClick={() => handleSave(true)}
                 className="rounded-[2px] border border-[#0F172A] bg-[#0F172A] px-5 py-2.5 font-mono text-xs font-semibold text-white transition-colors hover:bg-[#1E293B] disabled:opacity-50"
               >
-                추출 결과 확정 및 Chainlink CRE 대조 페이지로 이동 &rarr;
+                {t(
+                  "Confirm Claims & Proceed to Chainlink CRE Compare →",
+                  "추출 결과 확정 및 Chainlink CRE 대조 페이지로 이동 →"
+                )}
               </button>
             </div>
           </div>

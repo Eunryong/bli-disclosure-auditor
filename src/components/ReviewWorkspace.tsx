@@ -16,6 +16,7 @@ import {
   LEGAL_STATUTE_MAP,
   generateLegalCureNotice,
 } from "@/lib/legal-knowledge";
+import { useLanguage } from "@/lib/i18n";
 
 export function ReviewWorkspace({
   initialAudit,
@@ -23,9 +24,11 @@ export function ReviewWorkspace({
   initialAudit: AuditCaseDTO;
 }) {
   const router = useRouter();
+  const { lang, t } = useLanguage();
   const [audit, setAudit] = useState<AuditCaseDTO>(initialAudit);
   const [reviewerName, setReviewerName] = useState(
-    initialAudit.reviewerName || "김법무 선임변호사 (디지털자산 컴플라이언스팀)"
+    initialAudit.reviewerName ||
+      "Senior Legal Counsel, Digital Asset Compliance Desk"
   );
   const [overallSummary, setOverallSummary] = useState(
     initialAudit.overallSummary || ""
@@ -130,21 +133,42 @@ export function ReviewWorkspace({
 
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || "검토 결과 저장에 실패했습니다.");
+        throw new Error(
+          data.error ||
+            t(
+              "Failed to save legal review determination.",
+              "검토 결과 저장에 실패했습니다."
+            )
+        );
       }
 
       setAudit(data.audit);
       setItems(data.audit.checkItems || []);
       setFeedback(
         anchorAction
-          ? `AuditRegistry.sol recordAudit() 실행 및 verifyAnchor() 무결성 검증(${
-              data.audit.anchorVerification?.verified ? "VERIFIED=true" : "DONE"
-            }) 완료! (Tx: ${data.audit.anchorTxHash})`
-          : "담당자 검토 메모 및 최종 판정 상태가 SQLite DB에 저장되었습니다."
+          ? t(
+              `AuditRegistry.sol recordAudit() executed and verifyAnchor() integrity verified (${
+                data.audit.anchorVerification?.verified
+                  ? "VERIFIED=true"
+                  : "DONE"
+              })! (Tx: ${data.audit.anchorTxHash})`,
+              `AuditRegistry.sol recordAudit() 실행 및 verifyAnchor() 무결성 검증(${
+                data.audit.anchorVerification?.verified
+                  ? "VERIFIED=true"
+                  : "DONE"
+              }) 완료! (Tx: ${data.audit.anchorTxHash})`
+            )
+          : t(
+              "Reviewer sign-off notes and final clause verdicts saved to SQLite DB.",
+              "담당자 검토 메모 및 최종 판정 상태가 SQLite DB에 저장되었습니다."
+            )
       );
       router.refresh();
     } catch (err: any) {
-      setFeedback(err?.message || "저장 중 오류가 발생했습니다.");
+      setFeedback(
+        err?.message ||
+          t("An error occurred while saving.", "저장 중 오류가 발생했습니다.")
+      );
     } finally {
       setSaving(false);
       setAnchoring(false);
@@ -155,7 +179,7 @@ export function ReviewWorkspace({
     const payload = {
       exportedAt: new Date().toISOString(),
       disclaimer:
-        "본 리포트는 법률 자문이나 위법성 자동 판정이 아니며, 공시 백서와 온체인 스마트계약 설정 간의 사실 대조 증빙 자료입니다.",
+        "This report is not legal advice or an automated determination of illegality; it serves as factual compliance evidence comparing whitepaper disclosures against on-chain smart contract configurations.",
       auditCase: {
         id: audit.id,
         title: audit.title,
@@ -219,14 +243,16 @@ export function ReviewWorkspace({
               DESK 03 // FORMAL LEGAL OPINION &amp; CURE NOTICE BUREAU
             </div>
             <h2 className="font-editorial text-2xl font-bold tracking-tight text-[#111315]">
-              법무·컴플라이언스 담당자 최종 검토 및 AuditRegistry 온체인 해시 앵커링
+              {t(
+                "Final Legal Sign-Off, Cure Notice & AuditRegistry On-Chain Hash Anchoring",
+                "법무·컴플라이언스 담당자 최종 검토 및 AuditRegistry 온체인 해시 앵커링"
+              )}
             </h2>
             <p className="text-xs leading-relaxed text-[#5A6065]">
-              각 조항의 최종 판정(<code className="font-mono text-[#111315]">MATCH</code> /{" "}
-              <code className="font-mono text-[#111315]">MISMATCH</code> /{" "}
-              <code className="font-mono text-[#111315]">NEEDS_HUMAN_REVIEW</code>)과 법무 검토 의견을 확정하고, 개인정보·원문 노출 없이 무결성 다이제스트만{" "}
-              <code className="font-mono text-[#111315]">AuditRegistry.sol</code>의{" "}
-              <code className="font-mono text-[#111315]">recordAudit()</code>로 온체인에 영구 공증(Notarize)합니다.
+              {t(
+                "Finalize each clause's verdict (MATCH / MISMATCH / NEEDS_HUMAN_REVIEW) and legal opinion, then permanently notarize the integrity digests on-chain via AuditRegistry.sol recordAudit() without exposing confidential raw documents.",
+                "각 조항의 최종 판정(MATCH / MISMATCH / NEEDS_HUMAN_REVIEW)과 법무 검토 의견을 확정하고, 개인정보·원문 노출 없이 무결성 다이제스트만 AuditRegistry.sol의 recordAudit()로 온체인에 영구 공증(Notarize)합니다."
+              )}
             </p>
           </div>
 
@@ -237,7 +263,9 @@ export function ReviewWorkspace({
               onClick={() => handleSaveReview(false)}
               className="rounded-[2px] border border-[#111315] bg-white px-3.5 py-2 font-mono text-xs font-semibold text-[#111315] transition-colors hover:bg-[#F7F6F2] disabled:opacity-50"
             >
-              {saving ? "저장 중..." : "검토 의견 DB 저장"}
+              {saving
+                ? t("Saving...", "저장 중...")
+                : t("Save Legal Review to DB", "검토 의견 DB 저장")}
             </button>
             <button
               type="button"
@@ -246,29 +274,34 @@ export function ReviewWorkspace({
               className="rounded-[2px] border border-[#166534] bg-[#166534] px-4 py-2 font-mono text-xs font-semibold text-white transition-colors hover:bg-[#14532D] disabled:opacity-50"
             >
               {anchoring
-                ? "온체인 앵커링 중..."
-                : "온체인 앵커링 실행 (recordAudit & verifyAnchor)"}
+                ? t("Anchoring On-Chain...", "온체인 앵커링 중...")
+                : t(
+                    "Anchor on AuditRegistry (recordAudit & verifyAnchor)",
+                    "온체인 앵커링 실행 (recordAudit & verifyAnchor)"
+                  )}
             </button>
             <button
               type="button"
               onClick={handleExportJsonReport}
               className="rounded-[2px] border border-[#0F172A] bg-[#0F172A] px-3.5 py-2 font-mono text-xs font-semibold text-white transition-colors hover:bg-[#1E293B]"
             >
-              증빙 패키지(JSON) 다운로드
+              {t("Download Evidence Package (JSON)", "증빙 패키지(JSON) 다운로드")}
             </button>
             <button
               type="button"
               onClick={() => setShowPrintReport((prev) => !prev)}
               className="rounded-[2px] border border-[#111315] bg-[#FAF9F5] px-3.5 py-2 font-mono text-xs font-semibold text-[#111315] transition-colors hover:bg-[#EFECE6]"
             >
-              {showPrintReport ? "인쇄용 리포트 뷰 닫기" : "인쇄/PDF용 리포트 뷰"}
+              {showPrintReport
+                ? t("Close Printable Report View", "인쇄용 리포트 뷰 닫기")
+                : t("Printable / PDF Report View", "인쇄/PDF용 리포트 뷰")}
             </button>
             <button
               type="button"
               onClick={handlePrintReport}
               className="rounded-[2px] border border-[#D8D4CC] bg-white px-3.5 py-2 font-mono text-xs font-semibold text-[#111315] transition-colors hover:border-[#111315]"
             >
-              PDF / 인쇄
+              {t("Print / Save PDF", "PDF / 인쇄")}
             </button>
           </div>
         </div>
@@ -286,7 +319,10 @@ export function ReviewWorkspace({
                   htmlFor="reviewer-name"
                   className="block font-mono text-[0.6875rem] font-semibold uppercase tracking-[0.08em] text-[#111315]"
                 >
-                  검토 담당자 성명 / 소속 (reviewedBy)
+                  {t(
+                    "Lead Reviewer / Counsel (reviewedBy)",
+                    "검토 담당자 성명 / 소속 (reviewedBy)"
+                  )}
                 </label>
                 <input
                   id="reviewer-name"
@@ -302,14 +338,20 @@ export function ReviewWorkspace({
                   htmlFor="overall-summary"
                   className="block font-mono text-[0.6875rem] font-semibold uppercase tracking-[0.08em] text-[#111315]"
                 >
-                  법무·컴플라이언스 종합 검토 의견 (overallSummary)
+                  {t(
+                    "Executive Legal & Compliance Opinion (overallSummary)",
+                    "법무·컴플라이언스 종합 검토 의견 (overallSummary)"
+                  )}
                 </label>
                 <textarea
                   id="overall-summary"
                   rows={3}
                   value={overallSummary}
                   onChange={(e) => setOverallSummary(e.target.value)}
-                  placeholder="상장적격성 심사 또는 정기 공시 점검에 관한 종합 검토 의견을 입력하세요."
+                  placeholder={t(
+                    "Enter executive legal review opinion regarding exchange listing eligibility or periodic disclosure audit.",
+                    "상장적격성 심사 또는 정기 공시 점검에 관한 종합 검토 의견을 입력하세요."
+                  )}
                   className="mt-1.5 w-full rounded-[2px] border border-[#111315] bg-[#FAF9F5] px-3 py-2 text-xs leading-relaxed text-[#111315] focus:bg-white focus:outline-none"
                 />
               </div>
@@ -342,7 +384,10 @@ export function ReviewWorkspace({
             </div>
 
             <div className="mt-3 font-mono text-[0.65rem] leading-relaxed text-[#5A6065]">
-              * 본 서명란은 사실적 불일치 대조 결과에 대한 담당자 확인 기록이며 법률 자문이 아닙니다.
+              {t(
+                "* This attestation block records human reviewer sign-off on factual comparison findings and does not constitute formal legal advice.",
+                "* 본 서명란은 사실적 불일치 대조 결과에 대한 담당자 확인 기록이며 법률 자문이 아닙니다."
+              )}
             </div>
           </div>
         </div>
@@ -364,17 +409,26 @@ export function ReviewWorkspace({
                   SECTION II // BLOCKCHAIN CRYPTOGRAPHIC NOTARY STAMP (AuditRegistry.sol)
                 </div>
                 <h3 className="font-editorial mt-0.5 text-lg font-bold text-[#111315]">
-                  AuditRegistry.sol 온체인 앵커링 &amp; verifyAnchor() 무결성 검증 결과
+                  {t(
+                    "AuditRegistry.sol On-Chain Anchoring & verifyAnchor() Cryptographic Proof",
+                    "AuditRegistry.sol 온체인 앵커링 & verifyAnchor() 무결성 검증 결과"
+                  )}
                 </h3>
               </div>
 
               {verification?.verified ? (
                 <span className="rounded-[2px] border border-[#166534] bg-[#EAF3EC] px-3 py-1 font-mono text-xs font-bold text-[#166534]">
-                  verifyAnchor() === true (온체인 검증 완료)
+                  {t(
+                    "verifyAnchor() === true (On-Chain Verified)",
+                    "verifyAnchor() === true (온체인 검증 완료)"
+                  )}
                 </span>
               ) : (
                 <span className="rounded-[2px] border border-[#92400E] bg-[#FEF3C7] px-3 py-1 font-mono text-xs font-bold text-[#92400E]">
-                  미앵커링 (우측 상단 &apos;온체인 앵커링 실행&apos; 버튼을 클릭하세요)
+                  {t(
+                    "Not Yet Anchored (Click 'Anchor on AuditRegistry' above)",
+                    "미앵커링 (우측 상단 '온체인 앵커링 실행' 버튼을 클릭하세요)"
+                  )}
                 </span>
               )}
             </div>
@@ -385,7 +439,10 @@ export function ReviewWorkspace({
                   auditRegistryAddress
                 </div>
                 <div className="mt-1 flex flex-wrap items-center gap-2 break-all font-bold">
-                  <span>{audit.auditRegistryAddress || "미배포"}</span>
+                  <span>
+                    {audit.auditRegistryAddress ||
+                      t("Not deployed", "미배포")}
+                  </span>
                   {registryExplorerUrl && (
                     <a
                       href={registryExplorerUrl}
@@ -404,7 +461,9 @@ export function ReviewWorkspace({
                   anchorTxHash
                 </div>
                 <div className="mt-1 flex flex-wrap items-center gap-2 break-all font-bold">
-                  <span>{audit.anchorTxHash || "미생성"}</span>
+                  <span>
+                    {audit.anchorTxHash || t("Not yet generated", "미생성")}
+                  </span>
                   {txExplorerUrl && (
                     <a
                       href={txExplorerUrl}
@@ -412,7 +471,7 @@ export function ReviewWorkspace({
                       rel="noopener noreferrer"
                       className="rounded-[2px] border border-[#166534] bg-[#EAF3EC] px-1.5 py-0.5 text-[0.65rem] font-semibold text-[#166534] hover:bg-[#166534] hover:text-white"
                     >
-                      Sepolia Tx 보기 &#8599;
+                      {t("View Sepolia Tx", "Sepolia Tx 보기")} &#8599;
                     </a>
                   )}
                 </div>
@@ -431,7 +490,10 @@ export function ReviewWorkspace({
                 </div>
                 <div className="mt-1 break-all">
                   {audit.reportHash ||
-                    "검토 저장 시 SHA-256 reportHash가 자동 생성됩니다."}
+                    t(
+                      "SHA-256 reportHash will be computed upon saving review.",
+                      "검토 저장 시 SHA-256 reportHash가 자동 생성됩니다."
+                    )}
                 </div>
               </div>
 
@@ -460,7 +522,7 @@ export function ReviewWorkspace({
                 </div>
                 <div className="mt-1 font-bold">
                   {audit.chainId} / #{audit.snapshotBlockNumber ?? 1} /{" "}
-                  {audit.mismatchCount}건
+                  {audit.mismatchCount} {t("mismatches", "건")}
                 </div>
               </div>
 
@@ -508,10 +570,16 @@ export function ReviewWorkspace({
                 BLI LegalTech &amp; RegTech Compliance Audit Evidence Report
               </div>
               <h2 className="font-editorial mt-1 text-2xl font-bold text-[#111315]">
-                스마트계약·공시자료(백서) 정합성 점검 증빙 리포트
+                {t(
+                  "Smart Contract & Whitepaper Disclosure Consistency Evidence Report",
+                  "스마트계약·공시자료(백서) 정합성 점검 증빙 리포트"
+                )}
               </h2>
               <p className="mt-1 text-xs text-[#5A6065]">
-                본 문서는 위법 여부의 자동 판정이나 법률 자문이 아니며, 공시 백서 원문(Claim)과 온체인 스마트계약 설정(Fact) 간의 1:1 사실 대조 및 법무 검토 증빙서입니다.
+                {t(
+                  "This document does not constitute formal legal advice or an automated finding of illegality; it records 1:1 factual comparison and legal review between whitepaper disclosures (Claims) and on-chain smart contract parameters (Facts).",
+                  "본 문서는 위법 여부의 자동 판정이나 법률 자문이 아니며, 공시 백서 원문(Claim)과 온체인 스마트계약 설정(Fact) 간의 1:1 사실 대조 및 법무 검토 증빙서입니다."
+                )}
               </p>
             </div>
             <div className="text-right font-mono text-xs text-[#111315]">
@@ -524,13 +592,16 @@ export function ReviewWorkspace({
 
           <div className="mt-4 grid grid-cols-1 gap-3 border border-[#111315] bg-[#FAF9F5] p-4 text-xs sm:grid-cols-2">
             <div>
-              <strong>점검 건명:</strong> {audit.title}
+              <strong>{t("Audit Docket Title:", "점검 건명:")}</strong>{" "}
+              {audit.title}
             </div>
             <div>
-              <strong>발행 프로젝트:</strong> {audit.projectName} ({audit.tokenSymbol})
+              <strong>{t("Issuer Project:", "발행 프로젝트:")}</strong>{" "}
+              {audit.projectName} ({audit.tokenSymbol})
             </div>
             <div className="font-mono">
-              <strong>대상 컨트랙트:</strong> {audit.tokenAddress}{" "}
+              <strong>{t("Target Contract:", "대상 컨트랙트:")}</strong>{" "}
+              {audit.tokenAddress}{" "}
               {tokenExplorerUrl && (
                 <a
                   href={tokenExplorerUrl}
@@ -543,10 +614,13 @@ export function ReviewWorkspace({
               )}
             </div>
             <div className="font-mono">
-              <strong>공시 문서 SHA-256:</strong> {audit.documentHash}
+              <strong>{t("Whitepaper SHA-256:", "공시 문서 SHA-256:")}</strong>{" "}
+              {audit.documentHash}
             </div>
             <div className="font-mono">
-              <strong>AuditRegistry 주소:</strong>{" "}
+              <strong>
+                {t("AuditRegistry Address:", "AuditRegistry 주소:")}
+              </strong>{" "}
               {audit.auditRegistryAddress || "-"}{" "}
               {registryExplorerUrl && (
                 <a
@@ -560,7 +634,8 @@ export function ReviewWorkspace({
               )}
             </div>
             <div className="font-mono">
-              <strong>앵커링 Tx Hash:</strong> {audit.anchorTxHash || "-"}{" "}
+              <strong>{t("Anchor Tx Hash:", "앵커링 Tx Hash:")}</strong>{" "}
+              {audit.anchorTxHash || "-"}{" "}
               {txExplorerUrl && (
                 <a
                   href={txExplorerUrl}
@@ -573,39 +648,61 @@ export function ReviewWorkspace({
               )}
             </div>
             <div className="font-mono sm:col-span-2">
-              <strong>리포트 무결성 해시(reportHash):</strong>{" "}
+              <strong>
+                {t(
+                  "Report Integrity Hash (reportHash):",
+                  "리포트 무결성 해시(reportHash):"
+                )}
+              </strong>{" "}
               {audit.reportHash || "-"} (verifyAnchor:{" "}
-              {verification?.verified ? "TRUE - 검증됨" : "PENDING"})
+              {verification?.verified
+                ? t("TRUE - VERIFIED", "TRUE - 검증됨")
+                : "PENDING"}
+              )
             </div>
           </div>
 
           <div className="mt-5">
             <h3 className="font-editorial text-base font-bold text-[#111315]">
-              1. 법무·컴플라이언스 종합 검토 의견 ({reviewerName})
+              {t(
+                `1. Executive Legal & Compliance Opinion (${reviewerName})`,
+                `1. 법무·컴플라이언스 종합 검토 의견 (${reviewerName})`
+              )}
             </h3>
             <p className="mt-1.5 border border-[#D8D4CC] bg-[#FAF9F5] p-3 text-xs leading-relaxed text-[#111315]">
-              {overallSummary || "등록된 종합 검토 의견이 없습니다."}
+              {overallSummary ||
+                t(
+                  "No executive legal review opinion recorded.",
+                  "등록된 종합 검토 의견이 없습니다."
+                )}
             </p>
           </div>
 
           <div className="mt-5">
             <h3 className="font-editorial text-base font-bold text-[#111315]">
-              2. 5대 핵심 공시 항목 vs 온체인 실제 상태 1:1 대조 결과표
+              {t(
+                "2. 5 Mandatory Disclosure Clauses vs. On-Chain Reality 1:1 Comparison Ledger",
+                "2. 5대 핵심 공시 항목 vs 온체인 실제 상태 1:1 대조 결과표"
+              )}
             </h3>
             <div className="mt-2 overflow-x-auto">
               <table className="w-full border-collapse border border-[#111315] text-left text-xs">
                 <thead className="bg-[#EFECE6] text-[#111315]">
                   <tr>
-                    <th className="border border-[#111315] p-2">점검 항목</th>
                     <th className="border border-[#111315] p-2">
-                      백서 공시 주장 (Claim)
+                      {t("Audit Clause", "점검 항목")}
                     </th>
                     <th className="border border-[#111315] p-2">
-                      온체인 실제 값 (On-Chain Fact)
+                      {t("Disclosed Claim", "백서 공시 주장 (Claim)")}
                     </th>
-                    <th className="border border-[#111315] p-2">최종 판정</th>
                     <th className="border border-[#111315] p-2">
-                      법무 검토 메모 (Reviewer Note)
+                      {t("On-Chain Reality (Fact)", "온체인 실제 값 (On-Chain Fact)")}
+                    </th>
+                    <th className="border border-[#111315] p-2">
+                      {t("Verdict", "최종 판정")}
+                    </th>
+                    <th className="border border-[#111315] p-2">
+                      {t("Counsel Reviewer Note", "법무 검토 메모 (Reviewer Note)")}
                     </th>
                   </tr>
                 </thead>
@@ -613,7 +710,7 @@ export function ReviewWorkspace({
                   {items.map((item) => (
                     <tr key={item.itemKey} className="align-top">
                       <td className="border border-[#111315] p-2 font-semibold">
-                        {item.titleKo}
+                        {lang === "en" ? item.titleEn : item.titleKo}
                         <div className="mt-0.5 font-mono text-[0.65rem] text-[#5A6065]">
                           {item.sectionRef}
                         </div>
@@ -624,7 +721,7 @@ export function ReviewWorkspace({
                       <td className="border border-[#111315] p-2 font-mono text-[0.6875rem]">
                         {item.onchainState}
                         <div className="mt-1 text-[0.65rem] text-[#5A6065]">
-                          근거: {item.evidenceFunctionOrSlot}
+                          {t("Evidence:", "근거:")} {item.evidenceFunctionOrSlot}
                         </div>
                       </td>
                       <td className="border border-[#111315] p-2 font-mono font-bold">
@@ -642,7 +739,10 @@ export function ReviewWorkspace({
 
           <div className="mt-5">
             <h3 className="font-editorial text-base font-bold text-[#111315]">
-              3. 법무 시정요구서(Legal Cure Notice) 및 Solidity 방어 패치 명세
+              {t(
+                "3. Formal Legal Cure Notice & Solidity Remediation Specification",
+                "3. 법무 시정요구서(Legal Cure Notice) 및 Solidity 방어 패치 명세"
+              )}
             </h3>
             <pre className="mt-2 whitespace-pre-wrap border border-[#111315] bg-[#FAF9F5] p-3 font-sans text-[0.7rem] leading-relaxed text-[#111315]">
               {legalCureNotice.fullNoticeTextKo}
@@ -661,10 +761,16 @@ export function ReviewWorkspace({
               SECTION III // OFFICIAL LEGAL CURE NOTICE &amp; REDLINE REMEDIATION SCHEDULE
             </div>
             <h3 className="font-editorial text-xl font-bold text-[#111315]">
-              법무 시정요구서(Legal Cure Notice) &amp; Solidity 방어 패치(Code Remediation Diff)
+              {t(
+                "Formal Legal Cure Notice & Solidity Defense Patch (Code Remediation Diff)",
+                "법무 시정요구서(Legal Cure Notice) & Solidity 방어 패치(Code Remediation Diff)"
+              )}
             </h3>
             <p className="text-xs text-[#5A6065]">
-              검출된 불일치(<code>MISMATCH</code>) 및 행위 재현 시뮬레이션(<code>BREACH_SUCCEEDED</code>) 증거와 한·EU·미 3대 관할권 법조문을 인용해 발행사 앞 발송할 공식 소명·시정요구서 초안과 Solidity 스마트계약 Redline 패치 대조표를 생성합니다.
+              {t(
+                "Generates an official Legal Cure Notice citing detected mismatches (MISMATCH), counterfactual breach execution proofs (BREACH_SUCCEEDED), and KR/EU/US regulatory statutes, paired with a side-by-side Solidity Redline Remediation Table.",
+                "검출된 불일치(MISMATCH) 및 행위 재현 시뮬레이션(BREACH_SUCCEEDED) 증거와 한·EU·미 3대 관할권 법조문을 인용해 발행사 앞 발송할 공식 소명·시정요구서 초안과 Solidity 스마트계약 Redline 패치 대조표를 생성합니다."
+              )}
             </p>
           </div>
 
@@ -674,8 +780,11 @@ export function ReviewWorkspace({
             className="rounded-[2px] border border-[#0F172A] bg-[#0F172A] px-4 py-2 font-mono text-xs font-semibold text-white transition-colors hover:bg-[#1E293B]"
           >
             {copiedCureNotice
-              ? "시정요구서 전문 복사됨!"
-              : "법무 시정요구서(Markdown) 전문 복사"}
+              ? t("Legal Cure Notice Copied!", "시정요구서 전문 복사됨!")
+              : t(
+                  "Copy Legal Cure Notice (Markdown)",
+                  "법무 시정요구서(Markdown) 전문 복사"
+                )}
           </button>
         </div>
 
@@ -710,16 +819,28 @@ export function ReviewWorkspace({
               <thead>
                 <tr className="border-b border-[#111315] bg-[#EFECE6] font-mono text-[0.6875rem] font-bold uppercase tracking-[0.08em] text-[#111315]">
                   <th className="border-r border-[#D8D4CC] px-4 py-3">
-                    조항 및 취약점 진단 (Clause &amp; Diagnosis)
+                    {t(
+                      "Clause & Vulnerability Diagnosis",
+                      "조항 및 취약점 진단 (Clause & Diagnosis)"
+                    )}
                   </th>
                   <th className="border-r border-[#D8D4CC] px-4 py-3 text-[#991B1B]">
-                    - 취약 코드 (Vulnerable Solidity)
+                    {t(
+                      "- Vulnerable Solidity (BLIX)",
+                      "- 취약 코드 (Vulnerable Solidity)"
+                    )}
                   </th>
                   <th className="border-r border-[#D8D4CC] px-4 py-3 text-[#166534]">
-                    + 공시 준수 방어 패치 (Remediated Solidity)
+                    {t(
+                      "+ Remediated Defense Patch (BLIC)",
+                      "+ 공시 준수 방어 패치 (Remediated Solidity)"
+                    )}
                   </th>
                   <th className="px-4 py-3">
-                    양방향 시정 권고안 (Option A: 코드 패치 / Option B: 백서 정정)
+                    {t(
+                      "Dual Cure Options (Option A: Code Patch / Option B: Whitepaper Redline)",
+                      "양방향 시정 권고안 (Option A: 코드 패치 / Option B: 백서 정정)"
+                    )}
                   </th>
                 </tr>
               </thead>
@@ -743,7 +864,9 @@ export function ReviewWorkspace({
                           {spec.titleKo}
                         </div>
                         <p className="mt-2 border-l-2 border-[#991B1B] pl-2.5 text-xs leading-relaxed text-[#5A6065]">
-                          <strong className="text-[#991B1B]">취약점 진단:</strong>{" "}
+                          <strong className="text-[#991B1B]">
+                            {t("Diagnosis:", "취약점 진단:")}
+                          </strong>{" "}
                           {spec.vulnerabilitySummaryKo}
                         </p>
                       </td>
@@ -772,7 +895,10 @@ export function ReviewWorkspace({
                       <td className="space-y-2.5 p-4 text-xs lg:w-[26%]">
                         <div className="border border-[#166534]/50 bg-[#EAF3EC]/30 p-2.5">
                           <div className="font-mono text-[0.65rem] font-bold uppercase text-[#166534]">
-                            [OPTION A] 스마트계약 재배포 / 권한 소각
+                            {t(
+                              "[OPTION A] Smart Contract Patch / Privilege Renouncement",
+                              "[OPTION A] 스마트계약 재배포 / 권한 소각"
+                            )}
                           </div>
                           <p className="mt-1 text-[0.72rem] leading-relaxed text-[#111315]">
                             {spec.whitepaperRedline.optionACodeEnforcedText}
@@ -781,7 +907,10 @@ export function ReviewWorkspace({
 
                         <div className="border border-[#D8D4CC] bg-[#FAF9F5] p-2.5">
                           <div className="font-mono text-[0.65rem] font-bold uppercase text-[#92400E]">
-                            [OPTION B] 백서 공시 문구 정정 (Redline)
+                            {t(
+                              "[OPTION B] Whitepaper Risk Disclosure Amendment (Redline)",
+                              "[OPTION B] 백서 공시 문구 정정 (Redline)"
+                            )}
                           </div>
                           <p className="mt-1 text-[0.72rem] leading-relaxed text-[#111315]">
                             {spec.whitepaperRedline.optionBDisclosureRiskRedline}
@@ -823,7 +952,7 @@ export function ReviewWorkspace({
                       CLAUSE § {clauseNum} [{item.itemKey}]
                     </span>
                     <h3 className="font-editorial text-lg font-bold text-[#111315]">
-                      {item.titleKo}
+                      {lang === "en" ? item.titleEn : item.titleKo}
                     </h3>
                   </div>
 
@@ -833,7 +962,7 @@ export function ReviewWorkspace({
                       htmlFor={`status-${item.itemKey}`}
                       className="sr-only"
                     >
-                      최종 상태 변경
+                      {t("Change Final Verdict", "최종 상태 변경")}
                     </label>
                     <select
                       id={`status-${item.itemKey}`}
@@ -847,12 +976,21 @@ export function ReviewWorkspace({
                       }
                       className="rounded-[2px] border border-[#111315] bg-[#FAF9F5] px-3 py-1.5 font-mono text-xs font-semibold text-[#111315] focus:bg-white focus:outline-none"
                     >
-                      <option value="MATCH">MATCH (일치 확정)</option>
-                      <option value="MISMATCH">MISMATCH (불일치 확정)</option>
-                      <option value="NEEDS_HUMAN_REVIEW">
-                        NEEDS_HUMAN_REVIEW (추가 소명/검토 필요)
+                      <option value="MATCH">
+                        {t("MATCH (Verified Compliant)", "MATCH (일치 확정)")}
                       </option>
-                      <option value="PENDING">PENDING (대기)</option>
+                      <option value="MISMATCH">
+                        {t("MISMATCH (Confirmed Breach)", "MISMATCH (불일치 확정)")}
+                      </option>
+                      <option value="NEEDS_HUMAN_REVIEW">
+                        {t(
+                          "NEEDS_HUMAN_REVIEW (Requires Off-Chain Evidence)",
+                          "NEEDS_HUMAN_REVIEW (추가 소명/검토 필요)"
+                        )}
+                      </option>
+                      <option value="PENDING">
+                        {t("PENDING (Awaiting Audit)", "PENDING (대기)")}
+                      </option>
                     </select>
                   </div>
                 </div>
@@ -860,7 +998,8 @@ export function ReviewWorkspace({
                 <div className="mt-4 grid grid-cols-1 gap-4 text-xs sm:grid-cols-2">
                   <div className="border border-[#D8D4CC] bg-[#FAF9F5] p-3.5">
                     <div className="font-mono text-[0.6875rem] font-bold uppercase text-[#5A6065]">
-                      백서 공시 주장 ({item.sectionRef})
+                      {t("Disclosed Whitepaper Claim", "백서 공시 주장")} (
+                      {item.sectionRef})
                     </div>
                     <p className="mt-1.5 font-medium leading-relaxed text-[#111315]">
                       {item.disclosedClaim}
@@ -868,7 +1007,8 @@ export function ReviewWorkspace({
                   </div>
                   <div className="border border-[#D8D4CC] bg-[#FAF9F5] p-3.5">
                     <div className="font-mono text-[0.6875rem] font-bold uppercase text-[#5A6065]">
-                      온체인 실제 값 ({item.evidenceFunctionOrSlot})
+                      {t("On-Chain Empirical State", "온체인 실제 값")} (
+                      {item.evidenceFunctionOrSlot})
                     </div>
                     <p className="mt-1.5 font-mono leading-relaxed text-[#111315]">
                       {item.onchainState}
@@ -879,7 +1019,10 @@ export function ReviewWorkspace({
                 {legalMapping && (
                   <div className="mt-3 border border-[#D8D4CC] bg-white p-3">
                     <div className="font-mono text-[0.6875rem] font-bold uppercase tracking-[0.06em] text-[#5A6065]">
-                      적용 법조문 및 거래소 심사 기준 (KR / EU / US)
+                      {t(
+                        "Applicable Regulatory Statutes & Listing Standards (KR / EU / US)",
+                        "적용 법조문 및 거래소 심사 기준 (KR / EU / US)"
+                      )}
                     </div>
                     <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-3">
                       {Object.values(legalMapping.statutes).map((cit) => (
@@ -904,7 +1047,10 @@ export function ReviewWorkspace({
                     htmlFor={`note-${item.itemKey}`}
                     className="block font-mono text-[0.6875rem] font-bold uppercase tracking-[0.08em] text-[#111315]"
                   >
-                    법무·컴플라이언스 담당자 검토 메모 (reviewerNote)
+                    {t(
+                      "Legal & Compliance Counsel Reviewer Note (reviewerNote)",
+                      "법무·컴플라이언스 담당자 검토 메모 (reviewerNote)"
+                    )}
                   </label>
                   <textarea
                     id={`note-${item.itemKey}`}
@@ -913,7 +1059,10 @@ export function ReviewWorkspace({
                     onChange={(e) =>
                       updateItemReview(item.itemKey, "reviewerNote", e.target.value)
                     }
-                    placeholder="소명 요청 사항, 온체인 함수 위험도, 오프체인 증빙 대조 결과 등을 기록하세요."
+                    placeholder={t(
+                      "Record cure requirements, on-chain privilege risk analysis, and off-chain evidentiary verification notes.",
+                      "소명 요청 사항, 온체인 함수 위험도, 오프체인 증빙 대조 결과 등을 기록하세요."
+                    )}
                     className="mt-1.5 w-full rounded-[2px] border border-[#111315] bg-[#FAF9F5] p-3 text-xs leading-relaxed text-[#111315] focus:bg-white focus:outline-none"
                   />
                 </div>
@@ -929,11 +1078,18 @@ export function ReviewWorkspace({
           href={`/audits/${audit.id}/compare`}
           className="rounded-[2px] border border-[#111315] bg-white px-4 py-2 font-mono text-xs font-semibold text-[#111315] transition-colors hover:bg-[#F7F6F2]"
         >
-          &larr; 이전 단계: Chainlink CRE 대조 (/compare)
+          &larr;{" "}
+          {t(
+            "Previous Step: Chainlink CRE Comparison (/compare)",
+            "이전 단계: Chainlink CRE 대조 (/compare)"
+          )}
         </Link>
 
         <div className="font-mono text-xs text-[#5A6065]">
-          ARCHIVAL PERSISTENCE: 모든 변경사항은 SQLite DB(prisma/dev.db)에 영구 보존됩니다.
+          {t(
+            "ARCHIVAL PERSISTENCE: All determinations are permanently stored in SQLite DB (prisma/dev.db).",
+            "ARCHIVAL PERSISTENCE: 모든 변경사항은 SQLite DB(prisma/dev.db)에 영구 보존됩니다."
+          )}
         </div>
       </div>
     </div>

@@ -100,7 +100,10 @@ async function main() {
 
   const auditsPageTree = await AuditsListPage();
   const auditsPageHtml = renderWithAppRouter(auditsPageTree);
-  assert.ok(auditsPageHtml.includes("저장된 공시·스마트계약 불일치 점검 목록"), "Audits page title must render");
+  assert.ok(
+    auditsPageHtml.includes("Saved Disclosure vs. Smart Contract Audit Dockets"),
+    "Audits page title must render in English default"
+  );
   assert.ok(auditsPageHtml.includes("audit-compliant-blic"), "BLIC case ID must render on /audits");
   assert.ok(auditsPageHtml.includes("audit-mismatched-blix"), "BLIX case ID must render on /audits");
   assert.ok(auditsPageHtml.includes("/audits/new"), "Link to /audits/new must render on /audits");
@@ -111,18 +114,27 @@ async function main() {
   // ---------------------------------------------------------------------------
   console.log("▶ [2/5] Verifying Route 2: `GET /audits/new` & `POST /api/audits` (Create New Audit Case)...");
   const newPageHtml = renderWithAppRouter(React.createElement(NewAuditPage));
-  assert.ok(newPageHtml.includes("새 공시·스마트계약 불일치 점검 건 생성"), "New audit page header must render");
-  assert.ok(newPageHtml.includes("샘플 1 불러오기: 정상 일치 백서 (BLIC)"), "Sample 1 preset button must render");
-  assert.ok(newPageHtml.includes("샘플 2 불러오기: 불일치 백서 (BLIX)"), "Sample 2 preset button must render");
+  assert.ok(
+    newPageHtml.includes("Create New Disclosure vs. Smart Contract Audit Docket"),
+    "New audit page header must render in English default"
+  );
+  assert.ok(
+    newPageHtml.includes("Load Sample 1: Compliant Whitepaper (BLIC)"),
+    "Sample 1 preset button must render in English default"
+  );
+  assert.ok(
+    newPageHtml.includes("Load Sample 2: Mismatched Whitepaper (BLIX)"),
+    "Sample 2 preset button must render in English default"
+  );
 
   const mismatchedSample = samplesJson.samples.find((s: any) => s.presetKey === "mismatched");
   assert.ok(mismatchedSample, "Mismatched sample preset must be available");
 
-  const createReq = new NextRequest("http://localhost:3000/api/audits", {
+  const createReq = new NextRequest("http://localhost:3300/api/audits", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      title: "[Step 4 E2E] BLIX 상장심사 공시·스마트계약 불일치 전주기 점검",
+      title: "[Step 4 E2E] BLIX Exchange Listing Disclosure & Smart Contract Full-Lifecycle Audit",
       projectName: mismatchedSample.projectName,
       tokenSymbol: mismatchedSample.tokenSymbol,
       whitepaperFileName: mismatchedSample.whitepaperFileName,
@@ -147,7 +159,7 @@ async function main() {
   // ---------------------------------------------------------------------------
   console.log("▶ [3/5] Verifying Route 3: `GET /audits/[id]/extract` & `POST /api/audits/[id]/extract`...");
   // 3a. Auto-extract 5 items from whitepaper
-  const autoExtractReq = new NextRequest(`http://localhost:3000/api/audits/${createdId}/extract`, {
+  const autoExtractReq = new NextRequest(`http://localhost:3300/api/audits/${createdId}/extract`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ mode: "auto" }),
@@ -164,7 +176,7 @@ async function main() {
     item.itemKey === "transferFee"
       ? {
           itemKey: item.itemKey,
-          disclosedClaim: `${item.disclosedClaim} [법무팀 원문 대조 확인 완료]`,
+          disclosedClaim: `${item.disclosedClaim} [Verified by Legal Counsel against Original Whitepaper]`,
           sourceQuote: item.sourceQuote,
           sectionRef: item.sectionRef,
         }
@@ -175,7 +187,7 @@ async function main() {
           sectionRef: item.sectionRef,
         }
   );
-  const manualExtractReq = new NextRequest(`http://localhost:3000/api/audits/${createdId}/extract`, {
+  const manualExtractReq = new NextRequest(`http://localhost:3300/api/audits/${createdId}/extract`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ items: manualItems }),
@@ -189,7 +201,7 @@ async function main() {
     (i: any) => i.itemKey === "transferFee"
   )?.disclosedClaim;
   assert.ok(
-    updatedFeeClaim?.includes("[법무팀 원문 대조 확인 완료]"),
+    updatedFeeClaim?.includes("[Verified by Legal Counsel against Original Whitepaper]"),
     "Manual edit to disclosedClaim must persist in SQLite"
   );
 
@@ -198,8 +210,14 @@ async function main() {
     params: Promise.resolve({ id: createdId }),
   });
   const extractPageHtml = renderWithAppRouter(extractPageTree);
-  assert.ok(extractPageHtml.includes("백서 5대 핵심 항목 AI 자동 추출"), "Extract action button must render");
-  assert.ok(extractPageHtml.includes("[법무팀 원문 대조 확인 완료]"), "Saved manual edit must render in SSR HTML");
+  assert.ok(
+    extractPageHtml.includes("Auto-Extract 5 Core Claims (AI/Rule)"),
+    "Extract action button must render in English default"
+  );
+  assert.ok(
+    extractPageHtml.includes("[Verified by Legal Counsel against Original Whitepaper]"),
+    "Saved manual edit must render in SSR HTML"
+  );
   console.log(`  ✅ \`POST /api/audits/[id]/extract\` auto-extraction & manual override saved to SQLite`);
   console.log(`  ✅ \`GET /audits/[id]/extract\` SSR HTML rendered (${extractPageHtml.length.toLocaleString()} bytes)\n`);
 
@@ -207,7 +225,7 @@ async function main() {
   // 4. Page 4: `GET /audits/[id]/compare` & `POST /api/audits/[id]/compare`
   // ---------------------------------------------------------------------------
   console.log("▶ [4/5] Verifying Route 4: `GET /audits/[id]/compare` & `POST /api/audits/[id]/compare` (Chainlink CRE)...");
-  const compareReq = new NextRequest(`http://localhost:3000/api/audits/${createdId}/compare`, {
+  const compareReq = new NextRequest(`http://localhost:3300/api/audits/${createdId}/compare`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({}),
@@ -249,7 +267,7 @@ async function main() {
     "CRE 4-Step Pipeline Inspector must render on /compare"
   );
   assert.ok(
-    comparePageHtml.includes("온체인 공시 위반 행위 재현 결과"),
+    comparePageHtml.includes("Counterfactual Breach Simulation Proof"),
     "Counterfactual Breach Simulation Proof section must render on /compare"
   );
   assert.ok(
@@ -273,18 +291,18 @@ async function main() {
   // 5. Page 5: `GET /audits/[id]/review` & `POST /api/audits/[id]/review`
   // ---------------------------------------------------------------------------
   console.log("▶ [5/5] Verifying Route 5: `GET /audits/[id]/review` & `POST /api/audits/[id]/review` (Anchor & Report)...");
-  const reviewReq = new NextRequest(`http://localhost:3000/api/audits/${createdId}/review`, {
+  const reviewReq = new NextRequest(`http://localhost:3300/api/audits/${createdId}/review`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      reviewerName: "김법무 선임변호사 (E2E 검증)",
+      reviewerName: "Senior Legal Counsel (E2E Verification)",
       overallSummary:
-        "BLIX 백서 공시 주장과 MismatchedToken 온체인 상태 대조 결과 4건의 중대 불일치(MISMATCH) 및 1건의 법무 소명 필요(NEEDS_HUMAN_REVIEW)를 최종 확정하고 AuditRegistry에 해시를 앵커링함.",
+        "Following comparison between BLIX whitepaper claims and MismatchedToken on-chain state, 4 critical mismatches (MISMATCH) and 1 human review item (NEEDS_HUMAN_REVIEW) are finalized and anchored on AuditRegistry.",
       anchorAction: true,
       items: compareData.audit.checkItems.map((item: any) => ({
         itemKey: item.itemKey,
         status: item.status,
-        reviewerNote: `[법무검토 완료] ${item.titleKo}: 온체인 증빙(${item.evidenceFunctionOrSlot}) 확인 완료.`,
+        reviewerNote: `[Legal Sign-Off Complete] ${item.titleEn}: On-chain evidence (${item.evidenceFunctionOrSlot}) verified.`,
       })),
     }),
   });
@@ -310,7 +328,7 @@ async function main() {
   });
   const reviewPageHtml = renderWithAppRouter(reviewPageTree);
   assert.ok(
-    reviewPageHtml.includes("verifyAnchor() === true (온체인 검증 완료)"),
+    reviewPageHtml.includes("verifyAnchor() === true (On-Chain Verified)"),
     "On-chain verifyAnchor() badge must render on /review"
   );
   assert.ok(
@@ -318,12 +336,12 @@ async function main() {
     "anchorTxHash must render on /review"
   );
   assert.ok(
-    reviewPageHtml.includes("증빙 패키지(JSON) 다운로드"),
+    reviewPageHtml.includes("Download Evidence Package (JSON)"),
     "JSON evidence export button must render on /review"
   );
   assert.ok(
-    reviewPageHtml.includes("법무 시정요구서(Legal Cure Notice)") &&
-      reviewPageHtml.includes("Solidity 방어 패치(Code Remediation Diff)"),
+    reviewPageHtml.includes("Formal Legal Cure Notice") &&
+      reviewPageHtml.includes("Solidity Defense Patch (Code Remediation Diff)"),
     "Legal Cure Notice & Solidity Code Remediation Diff panel must render on /review"
   );
   console.log(
@@ -335,13 +353,13 @@ async function main() {
   // 6. Verify `GET /api/audits/[id]` & Clean Up Temporary Test Case (`DELETE /api/audits/[id]`)
   // ---------------------------------------------------------------------------
   const getByIdRes = await getAuditByIdHandler(
-    new Request(`http://localhost:3000/api/audits/${createdId}`),
+    new Request(`http://localhost:3300/api/audits/${createdId}`),
     { params: Promise.resolve({ id: createdId }) }
   );
   assert.equal(getByIdRes.status, 200, "GET /api/audits/[id] must return 200");
 
   const deleteRes = await deleteAuditByIdHandler(
-    new Request(`http://localhost:3000/api/audits/${createdId}`, { method: "DELETE" }),
+    new Request(`http://localhost:3300/api/audits/${createdId}`, { method: "DELETE" }),
     { params: Promise.resolve({ id: createdId }) }
   );
   assert.equal(deleteRes.status, 200, "DELETE /api/audits/[id] must return 200");

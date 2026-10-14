@@ -5,9 +5,12 @@ import { usePathname } from "next/navigation";
 import type { AuditCaseDTO } from "@/types/audit";
 import { ComparisonStatusBadge, StageBadge } from "@/components/StatusBadge";
 import { getEtherscanAddressUrl, getEtherscanTxUrl } from "@/lib/etherscan";
+import { useLanguage } from "@/lib/i18n";
 
 export function AuditStepHeader({ audit }: { audit: AuditCaseDTO }) {
   const pathname = usePathname();
+  const { t } = useLanguage();
+
   const tokenExplorerUrl = getEtherscanAddressUrl(
     audit.chainId,
     audit.tokenAddress
@@ -18,7 +21,10 @@ export function AuditStepHeader({ audit }: { audit: AuditCaseDTO }) {
     {
       stepNumber: "01",
       key: "extract",
-      label: "공시 조항 발췌 데스크",
+      label: t(
+        "Disclosure Clause Extraction Desk",
+        "공시 조항 발췌 데스크"
+      ),
       subLabel: `/audits/${audit.id}/extract`,
       href: `/audits/${audit.id}/extract`,
       active: pathname.endsWith("/extract"),
@@ -29,7 +35,10 @@ export function AuditStepHeader({ audit }: { audit: AuditCaseDTO }) {
     {
       stepNumber: "02",
       key: "compare",
-      label: "Chainlink CRE 포렌식 대조 터미널",
+      label: t(
+        "Chainlink CRE Forensic Terminal",
+        "Chainlink CRE 포렌식 대조 터미널"
+      ),
       subLabel: `/audits/${audit.id}/compare`,
       href: `/audits/${audit.id}/compare`,
       active: pathname.endsWith("/compare"),
@@ -38,7 +47,10 @@ export function AuditStepHeader({ audit }: { audit: AuditCaseDTO }) {
     {
       stepNumber: "03",
       key: "review",
-      label: "법률 의견서·시정명세 및 온체인 공증",
+      label: t(
+        "Legal Opinion, Cure Notice & Notary",
+        "법률 의견서·시정명세 및 온체인 공증"
+      ),
       subLabel: `/audits/${audit.id}/review`,
       href: `/audits/${audit.id}/review`,
       active: pathname.endsWith("/review"),
@@ -55,7 +67,7 @@ export function AuditStepHeader({ audit }: { audit: AuditCaseDTO }) {
             href="/audits"
             className="font-sans font-semibold text-[#0F172A] underline-offset-4 hover:underline"
           >
-            ← 전체 점검 원장으로 (/audits)
+            {t("← Back to Master Ledger (/audits)", "← 전체 점검 원장으로 (/audits)")}
           </Link>
           <span className="text-[#D8D4CC]">|</span>
           <span>
@@ -124,14 +136,16 @@ export function AuditStepHeader({ audit }: { audit: AuditCaseDTO }) {
                 )}
               </>
             ) : (
-              <span className="text-[#92400E]">UNANCHORED (공증 대기)</span>
+              <span className="text-[#92400E]">
+                {t("UNANCHORED (Pending Notarization)", "UNANCHORED (공증 대기)")}
+              </span>
             )}
           </div>
         </div>
       </div>
 
       {/* 3-Desk Ledger Tab Navigation */}
-      <nav aria-label="점검 단계 진행 내비게이션">
+      <nav aria-label={t("Audit Desk Navigation", "점검 단계 진행 내비게이션")}>
         <ol className="grid grid-cols-1 divide-y divide-[#D8D4CC] md:grid-cols-3 md:divide-x md:divide-y-0">
           {steps.map((step) => (
             <li

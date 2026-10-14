@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useLanguage } from "@/lib/i18n";
 
 export function AppHeader() {
   const pathname = usePathname();
+  const { lang, setLang, t } = useLanguage();
 
   return (
     <header className="border-b border-[#111315] bg-[#FFFFFF]">
@@ -22,9 +24,15 @@ export function AppHeader() {
           </div>
           <div className="text-[0.6875rem] text-[#5A6065]">
             <strong className="font-semibold text-[#111315]">
-              법률 자문 면책 고지(Non-Legal-Advice):
+              {t(
+                "Non-Legal-Advice Notice:",
+                "법률 자문 면책 고지(Non-Legal-Advice):"
+              )}
             </strong>{" "}
-            본 시스템은 위법 여부를 자동 판정하지 않으며, 공시 백서(Claim)와 온체인 계약(Fact) 간의 사실적 불일치를 추출·증빙합니다.
+            {t(
+              "This system does not render automated legal conclusions; it extracts and verifies factual discrepancies between disclosure claims and on-chain smart contracts.",
+              "본 시스템은 위법 여부를 자동 판정하지 않으며, 공시 백서(Claim)와 온체인 계약(Fact) 간의 사실적 불일치를 추출·증빙합니다."
+            )}
           </div>
         </div>
       </div>
@@ -38,16 +46,25 @@ export function AppHeader() {
                 BLI // EDGAR-CRE
               </span>
               <span className="font-editorial text-xl font-bold tracking-tight text-[#111315] sm:text-2xl">
-                스마트계약·공시자료(백서) 불일치 점검 원장
+                {t(
+                  "Disclosure vs. Smart Contract Mismatch Auditor",
+                  "스마트계약·공시자료(백서) 불일치 점검 원장"
+                )}
               </span>
             </div>
             <p className="mt-0.5 font-mono text-[0.6875rem] tracking-tight text-[#5A6065]">
-              DISCLOSURE VS. SMART CONTRACT MISMATCH AUDITOR · ON-CHAIN FORENSIC &amp; LEGAL WORKSPACE
+              {t(
+                "ON-CHAIN FORENSIC & LEGAL COMPLIANCE LEDGER · CHAINLINK CRE ORCHESTRATION",
+                "DISCLOSURE VS. SMART CONTRACT MISMATCH AUDITOR · ON-CHAIN FORENSIC & LEGAL WORKSPACE"
+              )}
             </p>
           </Link>
         </div>
 
-        <nav aria-label="전역 메뉴" className="flex items-center gap-2">
+        <nav
+          aria-label={t("Global Navigation", "전역 메뉴")}
+          className="flex flex-wrap items-center gap-2"
+        >
           <Link
             href="/audits"
             className={`inline-flex items-center gap-2 rounded-[2px] border px-3.5 py-2 text-xs font-semibold transition ${
@@ -57,7 +74,7 @@ export function AppHeader() {
             }`}
           >
             <span className="font-mono text-[0.6875rem] text-[#5A6065]">01</span>
-            점검 원장 목록 (/audits)
+            {t("Audit Docket Ledger (/audits)", "점검 원장 목록 (/audits)")}
           </Link>
           <Link
             href="/audits/new"
@@ -68,8 +85,41 @@ export function AppHeader() {
             }`}
           >
             <span className="font-mono text-[0.6875rem] text-[#D8D4CC]">+</span>
-            새 점검 건 생성 (/audits/new)
+            {t("New Audit Docket (/audits/new)", "새 점검 건 생성 (/audits/new)")}
           </Link>
+
+          {/* EN | KO Language Toggle */}
+          <div
+            role="group"
+            aria-label="Language switcher"
+            className="ml-1 inline-flex items-center rounded-[2px] border border-[#111315] bg-[#EFECE6] font-mono text-[0.7rem] font-bold"
+          >
+            <button
+              type="button"
+              onClick={() => setLang("en")}
+              aria-pressed={lang === "en"}
+              className={`px-2.5 py-2 transition ${
+                lang === "en"
+                  ? "bg-[#0F172A] text-white"
+                  : "text-[#5A6065] hover:text-[#111315]"
+              }`}
+            >
+              EN
+            </button>
+            <span className="text-[#D8D4CC]">|</span>
+            <button
+              type="button"
+              onClick={() => setLang("ko")}
+              aria-pressed={lang === "ko"}
+              className={`px-2.5 py-2 transition ${
+                lang === "ko"
+                  ? "bg-[#0F172A] text-white"
+                  : "text-[#5A6065] hover:text-[#111315]"
+              }`}
+            >
+              KO
+            </button>
+          </div>
         </nav>
       </div>
     </header>

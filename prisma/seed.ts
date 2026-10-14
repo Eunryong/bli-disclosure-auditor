@@ -15,7 +15,7 @@ const prisma = new PrismaClient();
 function updateWhitepaperAddress(filePath: string, newAddress: string): string {
   const raw = fs.readFileSync(filePath, "utf8");
   const updated = raw.replace(
-    /(\*\*컨트랙트 주소\*\*:\s*`)0x[a-fA-F0-9]{40}(`)/,
+    /(\*\*(?:Contract Address|컨트랙트 주소)\*\*:\s*`)0x[a-fA-F0-9]{40}(`)/,
     `$1${newAddress}$2`
   );
   fs.writeFileSync(filePath, updated, "utf8");
@@ -89,7 +89,7 @@ async function main() {
   await prisma.auditCase.create({
     data: {
       id: "audit-compliant-blic",
-      title: "BLI Compliant Utility Token (BLIC) 정기 공시·온체인 정합성 점검",
+      title: "BLI Compliant Utility Token (BLIC) — Statutory Disclosure & Smart Contract Alignment Audit",
       projectName: "BLI LegalTech Foundation",
       tokenSymbol: "BLIC",
       whitepaperFileName: "samples/compliant-whitepaper.md",
@@ -126,35 +126,35 @@ async function main() {
 
   // Run real review & AuditRegistry.recordAudit + verifyAnchor for BLIC
   await saveAuditReview("audit-compliant-blic", {
-    reviewerName: "김법무 선임변호사 (디지털자산 컴플라이언스팀)",
+    reviewerName: "Daniel Kim, Esq. — Senior Digital Asset Compliance Counsel",
     overallSummary:
-      "백서(v2.1)에 공시된 5대 핵심 항목(총발행량 1억 개 고정·추가 발행 불가, 전송 수수료 100 bps 상수 고정, 일시정지/블랙리스트 부재, 팀 물량 2028-01-01 타임락 강제, 프록시 업그레이드 불가)이 온체인 스마트계약(CompliantToken.sol) 상태와 100% 일치함을 확인하고 AuditRegistry에 해시를 앵커링함.",
+      "All 5 core disclosure commitments in Whitepaper v2.1 (100M fixed supply with no minting, hardcoded 100 bps transfer fee, absence of pause/blacklist controls, on-chain enforced 2028-01-01 team timelock, and non-upgradeable immutable architecture) are 100% verified against CompliantToken.sol on Ethereum Sepolia and anchored to AuditRegistry.",
     anchorAction: true,
     items: [
       {
         itemKey: "maxSupplyAndMintability",
         status: "MATCH",
-        reviewerNote: "바이트코드 및 ABI 내 mint 관련 외부 호출 엔트리 부재 및 owner=0x0 확인 완료.",
+        reviewerNote: "Verified absence of any external minting selector in bytecode/ABI and confirmed owner = 0x0.",
       },
       {
         itemKey: "transferFee",
         status: "MATCH",
-        reviewerNote: "전송 수수료 100 bps 상수 고정 및 feeMutable=false 검증 완료.",
+        reviewerNote: "Confirmed transferFeeBps = 100 constant and feeMutable = false.",
       },
       {
         itemKey: "transferRestrictions",
         status: "MATCH",
-        reviewerNote: "비수탁 무허가 전송 요건(pausable=false, blacklistable=false) 충족 확인.",
+        reviewerNote: "Verified permissionless transfer guarantees (pausable = false, blacklistable = false).",
       },
       {
         itemKey: "teamLockup",
         status: "MATCH",
-        reviewerNote: "_transfer 내부 TeamTokensLockedUntilRelease(1830297600) 온체인 가드 확인.",
+        reviewerNote: "Confirmed on-chain TeamTokensLockedUntilRelease(1830297600) revert guard inside _transfer().",
       },
       {
         itemKey: "upgradeability",
         status: "MATCH",
-        reviewerNote: "단독 배포 불변 컨트랙트(upgradeable=false, adminAddress=0x0) 최종 확인.",
+        reviewerNote: "Verified standalone non-upgradeable deployment (upgradeable = false, adminAddress = 0x0).",
       },
     ],
   });
@@ -190,7 +190,7 @@ async function main() {
   await prisma.auditCase.create({
     data: {
       id: "audit-mismatched-blix",
-      title: "BLI Alpha Protocol Token (BLIX) 상장심사 공시·스마트계약 불일치 점검",
+      title: "BLI Alpha Protocol Token (BLIX) — Listing Eligibility & Smart Contract Mismatch Audit",
       projectName: "BLI Alpha Labs Ltd.",
       tokenSymbol: "BLIX",
       whitepaperFileName: "samples/mismatched-whitepaper.md",
@@ -201,9 +201,9 @@ async function main() {
       chainName: "Ethereum Sepolia",
       stage: "EXTRACTED",
       auditRegistryAddress: deployed.auditRegistry.address,
-      reviewerName: "박준법 수석심사역 (거래소 상장적격성심사위원회)",
+      reviewerName: "Victoria Park, J.D. — Chief Listing Compliance Examiner",
       overallSummary:
-        "Chainlink CRE 온체인 대조 결과, 백서(v1.4)의 5대 핵심 공시 항목 중 4개 항목에서 중대한 사실 불일치(MISMATCH)가 검출되었고, 1개 항목(거버넌스/업그레이드 권한 구조)은 단일 EOA 관리자 권한이 확인되어 법무 담당자의 심층 검토(NEEDS_HUMAN_REVIEW)가 요구됨.",
+        "Chainlink CRE on-chain verification detected 4 critical factual mismatches (MISMATCH) between Whitepaper v1.4 and MismatchedToken.sol, plus 1 governance centralization finding (NEEDS_HUMAN_REVIEW) where a single EOA retains immediate logic upgrade authority.",
       checkItems: {
         create: mismatchedExtracted.map((item) => {
           const meta = AUDIT_CHECK_ITEM_METADATA[item.itemKey];
@@ -231,15 +231,15 @@ async function main() {
   // Add initial reviewer notes on BLIX while keeping it in COMPARED stage for live demo anchoring
   const blixNotes: Record<string, string> = {
     maxSupplyAndMintability:
-      "발행량 임의 증발 가능성 확인(MAX_SUPPLY=uint256.max, mintable=true). 발행사 측에 mint 권한 소각(renounce) 또는 컨트랙트 재배포 소명 요청 필요.",
+      "Confirmed uncapped inflation exposure (MAX_SUPPLY = uint256.max, mintable = true). Formal Legal Cure Notice required demanding ownership renouncement or patched contract redeployment.",
     transferFee:
-      "실제 수수료가 공시(100 bps)의 5배인 500 bps이며 최대 10,000 bps(100%)까지 변경 가능하여 매도 차단 위험 존재.",
+      "Active on-chain transfer fee is 500 bps (5x disclosed 100 bps) and mutable up to 10,000 bps (100%), posing an immediate honeypot/confiscation risk.",
     transferRestrictions:
-      "법원 명령 등 예외적 집행 절차 공시 없이 setPaused 및 setBlacklisted 권한이 단일 EOA에 부여됨.",
+      "Unilateral setPaused and setBlacklisted privileges are assigned to a single EOA despite explicit censorship-resistance claims in Article 3.",
     teamLockup:
-      "창업팀 물량 2,000만 개에 온체인 타임락이 전혀 설정되어 있지 않아(teamLockupActive=false, releaseTimestamp=0) 즉시 장내 매도 가능한 상태임.",
+      "20,000,000 team tokens have zero on-chain timelock enforcement (teamLockupActive = false, releaseTimestamp = 0) and can be liquidated immediately.",
     upgradeability:
-      "발행사 측에 멀티시그 지갑 주소 이전 공증 서류 및 setLogicImplementation 용도 소명서 제출 요구 중.",
+      "Demanding notarized proof of multi-sig timelock migration and formal legal explanation regarding setLogicImplementation() EOA control.",
   };
 
   for (const [itemKey, reviewerNote] of Object.entries(blixNotes)) {
@@ -252,7 +252,7 @@ async function main() {
       },
       data: {
         reviewerNote,
-        reviewedBy: "박준법 수석심사역",
+        reviewedBy: "Victoria Park, J.D.",
         reviewedAt: new Date(),
       },
     });

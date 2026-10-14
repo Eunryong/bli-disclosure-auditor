@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { AppHeader } from "@/components/AppHeader";
+import { LanguageProvider } from "@/lib/i18n";
 
 export const metadata: Metadata = {
   title:
-    "스마트계약·공시자료(백서) 불일치 점검기 | BLI LegalTech & Chainlink CRE",
+    "Disclosure vs. Smart Contract Mismatch Auditor | BLI LegalTech & Chainlink CRE",
   description:
-    "가상자산 공시 백서(Disclosure Claim)와 온체인 스마트계약 설정(On-chain Fact) 간의 사실적 불일치를 점검·증빙하는 법무·컴플라이언스 지원 원장",
+    "Forensic legal & compliance ledger verifying factual discrepancies between digital asset disclosure whitepapers (Claims) and on-chain smart contracts (Facts) via Chainlink CRE.",
 };
 
 export default function RootLayout({
@@ -15,7 +16,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko">
+    <html lang="en">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
@@ -29,8 +30,10 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-[#F7F6F2] text-[#111315] antialiased selection:bg-[#0F172A] selection:text-white">
-        <AppHeader />
-        <main className="mx-auto max-w-[1400px] px-6 py-8">{children}</main>
+        <LanguageProvider>
+          <AppHeader />
+          <main className="mx-auto max-w-[1400px] px-6 py-8">{children}</main>
+        </LanguageProvider>
       </body>
     </html>
   );

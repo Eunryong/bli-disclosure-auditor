@@ -1,30 +1,32 @@
-# BLI Compliant Utility Token (BLIC) — 가상자산 공시 백서 (v2.1)
+# BLI Compliant Utility Token (BLIC) — Official Digital Asset Disclosure Whitepaper (v1.0)
 
-**발행 주체**: BLI LegalTech Foundation  
-**토큰 명칭 / 심볼**: BLI Compliant Utility Token (`BLIC`)  
-**배포 네트워크**: Ethereum Sepolia Testnet (`chainId: 11155111`)  
-**컨트랙트 주소**: `0x534c51921913a8717Ca2db550b77fFabf168f71e`  
-**공시 기준일**: 2026년 10월 14일  
+- **Issuing Entity**: BLI LegalTech Foundation
+- **Token Symbol**: `BLIC`
+- **Target Network**: Ethereum Sepolia (Chain ID: `11155111`)
+- **Contract Address**: `0x534c51921913a8717Ca2db550b77fFabf168f71e`
+- **Filing Date**: October 15, 2025
 
 ---
 
-## 제1조 (총발행량 상한 및 추가 발행 불가 원칙)
-1. `BLIC` 토큰의 최대 총발행량(Max Supply)은 **100,000,000 BLIC (1억 개)**으로 영구 고정된다.
-2. 제네시스(Genesis) 배포 시점에 전량(100,000,000 BLIC)이 일괄 발행되며, 배포 이후 어떠한 주체도 추가 발행(`mint`)을 수행할 수 없다.
-3. 스마트계약 내에 `mint()` 함수가 존재하지 않으며(`mintable = false`), 소유자 권한(`owner`)은 제네시스 배포 즉시 영구 포기(`address(0)`)되어 추가 발행으로 인한 가치 희석 위험이 원천 배제된다.
+## Article 1 (Total Supply Cap & Mintability Authority)
+1. The maximum and initial total supply of `BLIC` is permanently fixed at **100,000,000 BLIC** (100 million tokens, 18 decimals).
+2. All 100,000,000 BLIC tokens are minted once at contract deployment, and **no additional tokens can ever be minted after genesis (`mintable = false`)**.
+3. The smart contract contains no `mint()` function and all administrative ownership privileges have been permanently renounced (`owner = 0x0000000000000000000000000000000000000000`), ensuring zero dilution risk for token holders.
 
-## 제2조 (전송 수수료율 및 수수료 변경 불가 구조)
-1. 온체인 생태계 운영 재원 확보를 위해 모든 토큰 전송(`transfer`, `transferFrom`) 시 **1.00% (100 bps)**의 고정 전송 수수료가 부과된다.
-2. 전송 수수료율(`transferFeeBps = 100`)과 최대 수수료 상한(`maxTransferFeeBps = 100`)은 스마트계약 상수(`constant`)로 하드코딩되어 있으며, 배포 이후 수수료율을 인상하거나 변경할 수 있는 관리자 함수가 존재하지 않는다(`feeMutable = false`).
+## Article 2 (Transfer Fee Rate & Mutability Cap)
+1. On-chain transfers of `BLIC` incur a fixed ecosystem maintenance fee of **1.00% (100 bps, `transferFeeBps = 100`)**.
+2. The transfer fee rate is hardcoded as an immutable constant in the smart contract (`feeMutable = false`, `maxTransferFeeBps = 100`), and **cannot be modified or increased after deployment**.
+3. Neither the Foundation nor any third party possesses any setter function (`setTransferFeeBps` absent) to raise transfer fees.
 
-## 제3조 (거래 제한·일시정지 및 지갑 동결 기능 부재)
-1. `BLIC` 토큰은 완전한 비수탁·무허가(Permissionless) 전송을 보장한다.
-2. 스마트계약에는 전체 거래를 중단시키는 일시정지(`pause`) 기능이나 특정 사용자의 지갑 주소를 동결·차단하는 블랙리스트(`blacklist`) 기능이 일체 포함되어 있지 않다(`pausable = false`, `blacklistable = false`).
+## Article 3 (Transfer Pause & Address Blacklist Controls)
+1. To guarantee censorship resistance and uninterrupted settlement, the `BLIC` smart contract **does not include any emergency transfer pause (`pausable = false`, `paused = false`) or wallet freezing/blacklist (`blacklistable = false`) functions**.
+2. No issuer, administrator, or external account can unilaterally halt token trading or freeze individual investor balances on-chain.
 
-## 제4조 (팀 할당 물량 및 온체인 타임락 보호)
-1. 총발행량의 20%에 해당하는 **20,000,000 BLIC**은 핵심 개발팀 할당 물량으로 지정 지갑(`0x70997970C51812dc3A010C7d01b50e0d17dc79C8`)에 배정된다.
-2. 해당 팀 물량은 스마트계약 내부 전송 로직(`_transfer`)에 의해 **2028년 1월 1일 00:00:00 UTC (`releaseTimestamp: 1830297600`)**까지 온체인에서 강제 락업(`teamLockupActive = true`)되며, 해제 시각 이전에는 어떠한 경우에도 외부 이체가 불가능하다.
+## Article 4 (Team Allocation Wallet & On-Chain Lockup Schedule)
+1. The Founding Team & Core Contributors allocation of **20,000,000 BLIC (20% of total supply)** is held in the designated Team Allocation Wallet (`0x1111111111111111111111111111111111111111`).
+2. This team allocation is strictly locked on-chain (`teamLockupActive = true`) until **January 1, 2028 at 00:00:00 UTC (Unix Timestamp `1830297600`)**.
+3. Any transfer attempt from `teamWallet` prior to `teamLockupReleaseTimestamp (1830297600)` is automatically reverted by the smart contract's `_transfer` enforcement logic.
 
-## 제5조 (컨트랙트 불변성 및 프록시 업그레이드 불가)
-1. `BLIC` 스마트계약은 프록시(Proxy) 패턴을 사용하지 않는 단일 불변(Immutable) 컨트랙트로 배포된다(`upgradeable = false`).
-2. 배포 이후 비즈니스 로직을 교체하거나 스토리지 슬롯을 덮어쓸 수 있는 관리자 계정(`adminAddress = address(0)`)이 존재하지 않으므로, 투자자는 공시된 코드 그대로의 실행을 보장받는다.
+## Article 5 (Proxy Upgradeability & Administrative Governance Structure)
+1. The `BLIC` token is deployed as a **standalone, non-upgradeable immutable smart contract (`upgradeable = false`)** and does not use EIP-1967 or UUPS proxy delegation (`logicImplementation = 0x0000000000000000000000000000000000000000`).
+2. There is no proxy administrator (`adminAddress = 0x0000000000000000000000000000000000000000`), making post-deployment logic replacement technically impossible.

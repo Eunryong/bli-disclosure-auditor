@@ -1067,10 +1067,10 @@ export async function simulateCounterfactualBreaches(params: {
         scenarioId: "breach_1_unauthorized_mint",
         order: 1,
         itemKey: "maxSupplyAndMintability",
-        titleKo: "[시나리오 1] 무단 추가 발행 시도 (Unauthorized Minting)",
+        titleKo: "[Scenario 1] Unauthorized 10M Token Mint Attempt",
         titleEn: "Unauthorized 10M Token Mint Attempt",
-        whitepaperPromiseKo: `총발행량 ${beforeSupplyNum} ${params.symbol} 영구 고정 및 추가 발행(Mint) 불가 공시`,
-        adversarialActionKo: `관리자(${adminCallerHex.slice(0, 10)}...) 계정으로 mint(attacker, 10,000,000 * 10^18) 강제 호출`,
+        whitepaperPromiseKo: `Max supply permanently fixed at ${beforeSupplyNum} ${params.symbol}; post-genesis minting disabled (mintable = false)`,
+        adversarialActionKo: `Admin (${adminCallerHex.slice(0, 10)}...) calls mint(attacker, 10,000,000 * 10^18)`,
         callerAddress: adminCallerHex,
         callerRole:
           params.owner !== "0x0000000000000000000000000000000000000000"
@@ -1086,11 +1086,11 @@ export async function simulateCounterfactualBreaches(params: {
         returnDataHex: returnHex1,
         gasUsed: res1.execResult.executionGasUsed.toString(),
         beforeState: `totalSupply = ${beforeSupplyNum} ${params.symbol} | balanceOf(attacker) = 0 ${params.symbol}`,
-        afterState: `totalSupply = ${beforeSupplyNum} ${params.symbol} (변동 없음) | balanceOf(attacker) = 0 ${params.symbol}`,
+        afterState: `totalSupply = ${beforeSupplyNum} ${params.symbol} (Unchanged) | balanceOf(attacker) = 0 ${params.symbol}`,
         stateDeltaSummary:
-          "추가 발행 함수 자체가 바이트코드에 존재하지 않아 트랜잭션이 즉시 Revert되었으며 1억 개 상한이 코드로 방어됨",
+          "The mint() function selector does not exist in bytecode; transaction reverted immediately, enforcing the 100M cap.",
         legalImpactKo:
-          "백서 공시대로 추가 발행이 기술적으로 불가능함이 입증됨 (가상자산이용자보호법 제10조 중요사항 부합)",
+          "Proves on-chain that post-genesis supply inflation is technically impossible, fulfilling the whitepaper promise.",
       });
     } else {
       const afterSupplyBig = await readSandboxUint("totalSupply");
@@ -1106,12 +1106,12 @@ export async function simulateCounterfactualBreaches(params: {
         scenarioId: "breach_1_unauthorized_mint",
         order: 1,
         itemKey: "maxSupplyAndMintability",
-        titleKo: "[시나리오 1] 무단 추가 발행 시도 (Unauthorized Minting)",
+        titleKo: "[Scenario 1] Unauthorized 10M Token Mint Attempt",
         titleEn: "Unauthorized 10M Token Mint Attempt",
-        whitepaperPromiseKo: `총발행량 ${beforeSupplyNum} ${params.symbol} 영구 고정 및 추가 발행(Mint) 불가 공시`,
-        adversarialActionKo: `관리자(${adminCallerHex.slice(0, 10)}...) 계정으로 mint(attacker, 10,000,000 * 10^18) 강제 호출`,
+        whitepaperPromiseKo: `Max supply permanently fixed at ${beforeSupplyNum} ${params.symbol}; post-genesis minting disabled (mintable = false)`,
+        adversarialActionKo: `Admin (${adminCallerHex.slice(0, 10)}...) calls mint(attacker, 10,000,000 * 10^18)`,
         callerAddress: adminCallerHex,
-        callerRole: "Owner EOA (단일 관리자 지갑)",
+        callerRole: "Owner EOA (Single Admin Wallet)",
         targetFunction: "mint(address,uint256)",
         calldata: mintCalldata,
         outcome: "BREACH_SUCCEEDED",
@@ -1121,10 +1121,10 @@ export async function simulateCounterfactualBreaches(params: {
         returnDataHex: returnHex1,
         gasUsed: res1.execResult.executionGasUsed.toString(),
         beforeState: `totalSupply = ${beforeSupplyNum} ${params.symbol} | balanceOf(attacker) = 0 ${params.symbol}`,
-        afterState: `totalSupply = ${afterSupplyFormatted} ${params.symbol} (+1,000만 개 팽창) | balanceOf(attacker) = ${afterAttackerFormatted} ${params.symbol}`,
-        stateDeltaSummary: `단일 관리자 호출만으로 총발행량이 ${beforeSupplyNum} → ${afterSupplyFormatted} ${params.symbol}(+10%)로 즉시 증가하여 투자자 지분이 강제 희석됨`,
+        afterState: `totalSupply = ${afterSupplyFormatted} ${params.symbol} (+10,000,000 Inflated) | balanceOf(attacker) = ${afterAttackerFormatted} ${params.symbol}`,
+        stateDeltaSummary: `Single EOA owner call inflated totalSupply from ${beforeSupplyNum} to ${afterSupplyFormatted} ${params.symbol} (+10%), diluting holders immediately.`,
         legalImpactKo:
-          "백서의 '추가 발행 영구 불가' 공시와 정면 배치되는 무제한 발행이 실제 성공함 — 중요사항 거짓 기재 입증 증거",
+          "Demonstrates material misrepresentation of the 'fixed 100M supply / no minting' disclosure via executable EVM state transition.",
       });
     }
   } finally {
@@ -1132,7 +1132,7 @@ export async function simulateCounterfactualBreaches(params: {
   }
 
   // ============================================================================
-  // Scenario 2: [수수료 기습 50% 인상 시도] Admin calls setTransferFeeBps(5000)
+  // Scenario 2: [Predatory 50% Fee Hike] Admin calls setTransferFeeBps(5000)
   // ============================================================================
   await evm.stateManager.checkpoint();
   try {
@@ -1159,10 +1159,10 @@ export async function simulateCounterfactualBreaches(params: {
         scenarioId: "breach_2_fee_hike_50pct",
         order: 2,
         itemKey: "transferFee",
-        titleKo: "[시나리오 2] 전송 수수료 기습 50% 인상 시도 (Predatory 50% Fee Hike)",
+        titleKo: "[Scenario 2] Predatory 50% Transfer Fee Hike Attempt",
         titleEn: "Predatory 50% Transfer Fee Hike Attempt",
-        whitepaperPromiseKo: "전송 수수료 1.00% (100 bps) 영구 고정 및 사후 인상 불가 공시",
-        adversarialActionKo: `관리자(${adminCallerHex.slice(0, 10)}...) 계정으로 setTransferFeeBps(5000) (50.00% 징수) 호출`,
+        whitepaperPromiseKo: "Transfer fee permanently fixed at 1.00% (100 bps); post-deployment fee hike disabled",
+        adversarialActionKo: `Admin (${adminCallerHex.slice(0, 10)}...) calls setTransferFeeBps(5000) (50.00% fee)`,
         callerAddress: adminCallerHex,
         callerRole: "Deployer EOA (owner=0x0)",
         targetFunction: "setTransferFeeBps(uint256)",
@@ -1175,11 +1175,11 @@ export async function simulateCounterfactualBreaches(params: {
         returnDataHex: returnHex2,
         gasUsed: res2.execResult.executionGasUsed.toString(),
         beforeState: `transferFeeBps = ${params.transferFeeBps} bps (${beforeFeePct}%, constant)`,
-        afterState: `transferFeeBps = ${params.transferFeeBps} bps (${beforeFeePct}%, 변동 없음)`,
+        afterState: `transferFeeBps = ${params.transferFeeBps} bps (${beforeFeePct}%, Unchanged)`,
         stateDeltaSummary:
-          "수수료 변경 setter가 존재하지 않고 상수로 고정되어 있어 50% 기습 인상 트랜잭션이 즉시 Revert됨",
+          "No fee-modification setter exists in bytecode; the 50% fee hike transaction reverted immediately.",
         legalImpactKo:
-          "수수료율 고정 공시가 스마트계약 상수로 강제되어 임의 수수료 편취 위험이 없음을 입증함",
+          "Confirms the disclosed 1.00% fixed transfer fee is enforced by an immutable smart contract constant.",
       });
     } else {
       const afterFeeBps = Number(await readSandboxUint("transferFeeBps"));
@@ -1189,12 +1189,12 @@ export async function simulateCounterfactualBreaches(params: {
         scenarioId: "breach_2_fee_hike_50pct",
         order: 2,
         itemKey: "transferFee",
-        titleKo: "[시나리오 2] 전송 수수료 기습 50% 인상 시도 (Predatory 50% Fee Hike)",
+        titleKo: "[Scenario 2] Predatory 50% Transfer Fee Hike Attempt",
         titleEn: "Predatory 50% Transfer Fee Hike Attempt",
-        whitepaperPromiseKo: "전송 수수료 1.00% (100 bps) 영구 고정 및 사후 인상 불가 공시",
-        adversarialActionKo: `관리자(${adminCallerHex.slice(0, 10)}...) 계정으로 setTransferFeeBps(5000) (50.00% 징수) 호출`,
+        whitepaperPromiseKo: "Transfer fee permanently fixed at 1.00% (100 bps); post-deployment fee hike disabled",
+        adversarialActionKo: `Admin (${adminCallerHex.slice(0, 10)}...) calls setTransferFeeBps(5000) (50.00% fee)`,
         callerAddress: adminCallerHex,
-        callerRole: "Owner EOA (단일 관리자 지갑)",
+        callerRole: "Owner EOA (Single Admin Wallet)",
         targetFunction: "setTransferFeeBps(uint256)",
         calldata: feeCalldata,
         outcome: "BREACH_SUCCEEDED",
@@ -1203,11 +1203,11 @@ export async function simulateCounterfactualBreaches(params: {
         revertReason: null,
         returnDataHex: returnHex2,
         gasUsed: res2.execResult.executionGasUsed.toString(),
-        beforeState: `transferFeeBps = ${params.transferFeeBps} bps (${beforeFeePct}%, 공시 100 bps)`,
-        afterState: `transferFeeBps = ${afterFeeBps.toLocaleString("en-US")} bps (${afterFeePct}%로 기습 인상 완료)`,
-        stateDeltaSummary: `관리자 단일 트랜잭션으로 전송 수수료가 ${beforeFeePct}% → ${afterFeePct}%(${afterFeeBps} bps)로 변경되어 전송액의 절반이 강제 징수됨`,
+        beforeState: `transferFeeBps = ${params.transferFeeBps} bps (${beforeFeePct}%, disclosed 100 bps)`,
+        afterState: `transferFeeBps = ${afterFeeBps.toLocaleString("en-US")} bps (${afterFeePct}% Predatory Hike Applied)`,
+        stateDeltaSummary: `Single admin transaction raised transferFeeBps from ${beforeFeePct}% to ${afterFeePct}% (${afterFeeBps} bps), confiscating half of every transfer.`,
         legalImpactKo:
-          "공시된 1% 고정 수수료와 달리 최대 100%(10,000 bps)까지 즉시 인상 가능함이 입증됨 — 사실상 매도 제한(Honeypot) 위험",
+          "Proves the owner can unilaterally raise transfer fees up to 100% (10,000 bps), creating a severe honeypot / confiscation risk.",
       });
     }
   } finally {
@@ -1215,7 +1215,7 @@ export async function simulateCounterfactualBreaches(params: {
   }
 
   // ============================================================================
-  // Scenario 3: [투자자 지갑 강제 동결 시도] Admin calls setBlacklisted(investor, true) -> investor.transfer()
+  // Scenario 3: [Targeted Investor Wallet Freeze] Admin calls setBlacklisted(investor, true) -> investor.transfer()
   // ============================================================================
   await evm.stateManager.checkpoint();
   try {
@@ -1271,11 +1271,11 @@ export async function simulateCounterfactualBreaches(params: {
         scenarioId: "breach_3_investor_wallet_freeze",
         order: 3,
         itemKey: "transferRestrictions",
-        titleKo: "[시나리오 3] 투자자 지갑 강제 동결 시도 (Targeted Investor Wallet Freeze)",
+        titleKo: "[Scenario 3] Targeted Investor Wallet Freeze & Transfer Block",
         titleEn: "Targeted Investor Wallet Freeze & Transfer Block",
-        whitepaperPromiseKo: "특정 지갑 동결(Blacklist) 및 임의 전송 차단 기능 미탑재 공시",
+        whitepaperPromiseKo: "No address blacklist or unilateral wallet freezing mechanism implemented",
         adversarialActionKo:
-          "관리자가 setBlacklisted(investor, true) 호출 후, 해당 투자자가 transfer(recipient, 1,000) 실행",
+          "Admin calls setBlacklisted(investor, true), followed by investor calling transfer(recipient, 1,000)",
         callerAddress: adminCallerHex,
         callerRole: "Deployer EOA -> Investor Wallet",
         targetFunction: "setBlacklisted(address,bool) → transfer(address,uint256)",
@@ -1288,12 +1288,12 @@ export async function simulateCounterfactualBreaches(params: {
           "setBlacklisted(address,bool) Reverted (blacklistable=false); subsequent investor transfer(1,000 BLIC) Succeeded",
         returnDataHex: bytesToHex(transferRes.execResult.returnValue) as Hex,
         gasUsed: totalGas3.toString(),
-        beforeState: `isBlacklisted(investor) = false | investor 정상 전송 가능`,
-        afterState: `isBlacklisted(investor) = false (동결 실패) | investor 1,000 ${params.symbol} 정상 전송 완료`,
+        beforeState: `isBlacklisted(investor) = false | Investor transfer unrestricted`,
+        afterState: `isBlacklisted(investor) = false (Freeze Reverted) | Investor 1,000 ${params.symbol} transfer succeeded`,
         stateDeltaSummary:
-          "블랙리스트 상태변수 및 동결 함수가 존재하지 않아 관리자 동결 시도가 Revert되었으며 투자자 자산 이동이 정상 실행됨",
+          "No blacklist mapping or setter exists in bytecode; admin freeze attempt reverted and investor transfer succeeded.",
         legalImpactKo:
-          "백서 공시대로 제3자(관리자)에 의한 임의 자산 동결이 불가능함이 온체인 실행으로 입증됨",
+          "Proves on-chain that no third party or issuer can arbitrarily freeze investor token balances.",
       });
     } else {
       const revertHex3 = bytesToHex(transferRes.execResult.returnValue) as Hex;
@@ -1301,11 +1301,11 @@ export async function simulateCounterfactualBreaches(params: {
         scenarioId: "breach_3_investor_wallet_freeze",
         order: 3,
         itemKey: "transferRestrictions",
-        titleKo: "[시나리오 3] 투자자 지갑 강제 동결 시도 (Targeted Investor Wallet Freeze)",
+        titleKo: "[Scenario 3] Targeted Investor Wallet Freeze & Transfer Block",
         titleEn: "Targeted Investor Wallet Freeze & Transfer Block",
-        whitepaperPromiseKo: "특정 지갑 동결(Blacklist) 및 임의 전송 차단 기능 미탑재 공시",
+        whitepaperPromiseKo: "No address blacklist or unilateral wallet freezing mechanism implemented",
         adversarialActionKo:
-          "관리자가 setBlacklisted(investor, true) 호출 후, 해당 투자자가 transfer(recipient, 1,000) 실행",
+          "Admin calls setBlacklisted(investor, true), followed by investor calling transfer(recipient, 1,000)",
         callerAddress: adminCallerHex,
         callerRole: "Owner EOA -> Investor Wallet",
         targetFunction: "setBlacklisted(address,bool) → transfer(address,uint256)",
@@ -1317,12 +1317,12 @@ export async function simulateCounterfactualBreaches(params: {
         revertReason: `Investor transfer() Reverted with custom error AddressBlacklisted(${investorAddress}) [selector: ${revertHex3.slice(0, 10)}]`,
         returnDataHex: revertHex3,
         gasUsed: totalGas3.toString(),
-        beforeState: `isBlacklisted(investor) = false | investor 보유량 = 9,500 ${params.symbol}`,
-        afterState: `isBlacklisted(investor) = true (강제 동결됨) | investor.transfer(1,000 ${params.symbol}) 즉시 Revert (AddressBlacklisted)`,
+        beforeState: `isBlacklisted(investor) = false | Investor balance = 9,500 ${params.symbol}`,
+        afterState: `isBlacklisted(investor) = true (Frozen) | investor.transfer(1,000 ${params.symbol}) Reverted (AddressBlacklisted)`,
         stateDeltaSummary:
-          "관리자 단일 서명으로 특정 투자자 지갑이 즉시 블랙리스트에 등록되어 토큰 전송·매도가 전면 차단됨",
+          "Single EOA admin blacklisted the investor wallet, causing all subsequent token transfers from that investor to revert.",
         legalImpactKo:
-          "백서의 '검열 저항성·블랙리스트 부재' 공시와 달리 단일 관리자가 이용자 자산을 임의 동결할 수 있음이 입증됨",
+          "Contradicts the whitepaper's censorship-resistance claim; single EOA can unilaterally freeze any holder's assets.",
       });
     }
   } finally {
@@ -1330,7 +1330,7 @@ export async function simulateCounterfactualBreaches(params: {
   }
 
   // ============================================================================
-  // Scenario 4: [팀 락업 물량 조기 유출 시도] Before 2028-01-01, teamWallet calls transfer(recipient, 5,000,000 * 10^18)
+  // Scenario 4: [Premature Team Token Dump] Before 2028-01-01, teamWallet calls transfer(recipient, 5,000,000 * 10^18)
   // ============================================================================
   await evm.stateManager.checkpoint();
   try {
@@ -1361,11 +1361,11 @@ export async function simulateCounterfactualBreaches(params: {
         scenarioId: "breach_4_premature_team_dump",
         order: 4,
         itemKey: "teamLockup",
-        titleKo: "[시나리오 4] 팀 락업 물량 조기 유출 시도 (Premature Team Token Dump)",
+        titleKo: "[Scenario 4] Pre-2028 Team Wallet 5M Token Dump Attempt",
         titleEn: "Pre-2028 Team Wallet 5M Token Dump Attempt",
         whitepaperPromiseKo:
-          "팀 할당 물량(20,000,000개) 2028-01-01 00:00:00 UTC(1830297600)까지 온체인 타임락 강제 동결 공시",
-        adversarialActionKo: `락업 해제일 이전 블록(timestamp=${preUnlockTimestamp})에서 teamWallet(${params.teamWallet.slice(0, 10)}...)이 transfer(recipient, 5,000,000 * 10^18) 호출`,
+          "Team allocation (20,000,000 tokens) locked on-chain until 2028-01-01 00:00:00 UTC (timestamp 1830297600)",
+        adversarialActionKo: `Prior to unlock date (timestamp=${preUnlockTimestamp}), teamWallet (${params.teamWallet.slice(0, 10)}...) calls transfer(recipient, 5,000,000 * 10^18)`,
         callerAddress: params.teamWallet,
         callerRole: "Team Allocation Wallet",
         targetFunction: "transfer(address,uint256)",
@@ -1377,11 +1377,11 @@ export async function simulateCounterfactualBreaches(params: {
         returnDataHex: returnHex4,
         gasUsed: res4.execResult.executionGasUsed.toString(),
         beforeState: `balanceOf(teamWallet) = ${beforeTeamFormatted} ${params.symbol} | releaseTimestamp = 1830297600 (2028-01-01)`,
-        afterState: `balanceOf(teamWallet) = ${beforeTeamFormatted} ${params.symbol} (유출 차단) | balanceOf(recipient) = 0 ${params.symbol}`,
+        afterState: `balanceOf(teamWallet) = ${beforeTeamFormatted} ${params.symbol} (Dump Blocked) | balanceOf(recipient) = 0 ${params.symbol}`,
         stateDeltaSummary:
-          "_transfer() 내부 타임락 조건문(block.timestamp < teamLockupReleaseTimestamp)이 작동하여 조기 유출 트랜잭션이 즉시 Revert됨",
+          "On-chain _transfer() timelock guard (block.timestamp < teamLockupReleaseTimestamp) reverted the premature 5M token transfer.",
         legalImpactKo:
-          "백서에 공시된 2028년 팀 물량 락업 의무가 스마트계약 코드로 완벽히 강제되고 있음이 입증됨",
+          "Proves the disclosed 2028 team lockup commitment is strictly enforced by immutable smart contract logic.",
       });
     } else {
       const afterTeamBalBig = await readSandboxUint("balanceOf", [params.teamWallet]);
@@ -1397,11 +1397,11 @@ export async function simulateCounterfactualBreaches(params: {
         scenarioId: "breach_4_premature_team_dump",
         order: 4,
         itemKey: "teamLockup",
-        titleKo: "[시나리오 4] 팀 락업 물량 조기 유출 시도 (Premature Team Token Dump)",
+        titleKo: "[Scenario 4] Pre-2028 Team Wallet 5M Token Dump Attempt",
         titleEn: "Pre-2028 Team Wallet 5M Token Dump Attempt",
         whitepaperPromiseKo:
-          "팀 할당 물량(20,000,000개) 2028-01-01 00:00:00 UTC(1830297600)까지 온체인 타임락 강제 동결 공시",
-        adversarialActionKo: `락업 해제일 이전 블록(timestamp=${preUnlockTimestamp})에서 teamWallet(${params.teamWallet.slice(0, 10)}...)이 transfer(recipient, 5,000,000 * 10^18) 호출`,
+          "Team allocation (20,000,000 tokens) locked on-chain until 2028-01-01 00:00:00 UTC (timestamp 1830297600)",
+        adversarialActionKo: `Prior to unlock date (timestamp=${preUnlockTimestamp}), teamWallet (${params.teamWallet.slice(0, 10)}...) calls transfer(recipient, 5,000,000 * 10^18)`,
         callerAddress: params.teamWallet,
         callerRole: "Team Allocation Wallet",
         targetFunction: "transfer(address,uint256)",
@@ -1413,10 +1413,10 @@ export async function simulateCounterfactualBreaches(params: {
         returnDataHex: returnHex4,
         gasUsed: res4.execResult.executionGasUsed.toString(),
         beforeState: `balanceOf(teamWallet) = ${beforeTeamFormatted} ${params.symbol} | teamLockupActive = false (timestamp=0)`,
-        afterState: `balanceOf(teamWallet) = ${afterTeamFormatted} ${params.symbol} (-5,000,000 유출) | balanceOf(recipient) = +${afterRecipientFormatted} ${params.symbol}`,
-        stateDeltaSummary: `온체인 타임락 코드가 전무하여 2028년까지 동결된다던 팀 물량 500만 개가 즉시 외부 지갑으로 처분·유출됨`,
+        afterState: `balanceOf(teamWallet) = ${afterTeamFormatted} ${params.symbol} (-5,000,000 Dumped) | balanceOf(recipient) = +${afterRecipientFormatted} ${params.symbol}`,
+        stateDeltaSummary: `Zero on-chain timelock enforcement exists; 5,000,000 team tokens supposedly locked until 2028 were transferred immediately.`,
         legalImpactKo:
-          "백서의 '온체인 스마트계약을 통한 2028년까지 강제 락업' 공시가 허위임이 실제 출금 성공으로 입증됨",
+          "Proves the whitepaper claim of an 'on-chain smart contract timelock until 2028' is false via actual premature token liquidation.",
       });
     }
   } finally {
