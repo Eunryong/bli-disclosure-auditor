@@ -41,8 +41,8 @@ Under global digital asset frameworks (EU MiCA, Korean Virtual Asset User Protec
 3. **`/audits/[id]/extract` (Off-Chain Claim Extraction):** Uses structured AI / deterministic rule extraction to pull the **5 core disclosure claims**, exact quotes (`sourceQuote`), and section references (`sectionRef`), with full human-in-the-loop editing.
 4. **`/audits/[id]/compare` (Chainlink CRE 4-Stage Workflow & 1:1 Comparison):**
    - **Step 1 (`capabilities.http.client`):** Fetches off-chain whitepaper claims & SHA-256 digest.
-   - **Step 2 (`capabilities.blockchain.evm.read`):** Reads 16 EVM functions (`totalSupply`, `MAX_SUPPLY`, `mintable`, `transferFeeBps`, `feeMutable`, `pausable`, `blacklistable`, `teamLockedAmount`, `vestingContract`, `upgradeable`, `proxyAdmin`, etc.) + raw EIP-1967 implementation storage slot (`0x360894...bbc`).
-   - **Step 3 (`capabilities.compute.consensus`):** Executes OCR3-BFT DON consensus (4/5 quorum) to evaluate `MATCH` / `MISMATCH` / `NEEDS_HUMAN_REVIEW` and compute a deterministic `reportHash`.
+   - **Step 2 (`capabilities.blockchain.evm.read`):** Reads 16 EVM functions (`totalSupply`, `MAX_SUPPLY`, `mintable`, `transferFeeBps`, `feeMutable`, `pausable`, `blacklistable`, `teamWallet`, `teamAllocation`, `teamLockupActive`, `teamLockupReleaseTimestamp`, `upgradeable`, `adminAddress`, `logicImplementation`, etc.) + raw EIP-1967 implementation storage slot (`0x360894...bbc`).
+   - **Step 3 (`capabilities.compute.consensus`):** Executes OCR3-BFT DON consensus (`4/4 nodes (quorum >= 3)`) to evaluate `MATCH` / `MISMATCH` / `NEEDS_HUMAN_REVIEW` and compute a deterministic `reportHash`.
    - **Step 4 (`capabilities.blockchain.evm.write`):** Generates `AuditRegistry.recordAudit` payload and verifies on-chain integrity.
 5. **`/audits/[id]/review` (Legal Sign-Off & On-Chain Hash Anchoring):** Allows legal counsel to record item-by-item review notes, finalize statuses, execute `AuditRegistry.recordAudit()` on-chain, verify `verifyAnchor() === true`, and export JSON/PDF compliance evidence packages.
 
@@ -50,6 +50,12 @@ Under global digital asset frameworks (EU MiCA, Korean Virtual Asset User Protec
 - **Manifest & Config:** `cre-workflow/workflow.yaml` & `cre-workflow/config.json`
 - **Orchestrator Module:** `cre-workflow/src/index.ts`
 - **CLI Simulation (`npm run cre:simulate`):** Runs the 4-stage CRE workflow end-to-end against both `CompliantToken (BLIC)` and `MismatchedToken (BLIX)`, outputting step latencies, DON consensus digests, and deterministic report hashes.
+
+## Live Ethereum Sepolia Deployments (`chainId: 11155111`)
+- **CompliantToken (`BLIC`):** `https://sepolia.etherscan.io/address/0x534c51921913a8717Ca2db550b77fFabf168f71e`
+- **MismatchedToken (`BLIX`):** `https://sepolia.etherscan.io/address/0xbbE3c849D90c63645F917Be84a5b454FE858186F`
+- **AuditRegistry:** `https://sepolia.etherscan.io/address/0x5B0547C68bc608E6A9b94C515B5B66215981856c`
+- **Anchored Audit Tx:** `https://sepolia.etherscan.io/tx/0x36850fc9853adf71484870098cec806002a786b1a61d26536bda8175a12fb788`
 ```
 
 ### 6. Tech Stack Tags
@@ -64,7 +70,7 @@ npm run contracts:deploy
 npm run db:seed
 npm run cre:simulate
 npm run test:e2e
-npm run dev
+npm run dev   # Opens on http://localhost:3300 (redirects to /audits)
 ```
 
 ---
@@ -72,16 +78,16 @@ npm run dev
 ## Part 2. 2분 30초 데모 영상 촬영 가이드 (2m 30s Demo Video Script)
 
 ### 촬영 전 사전 준비 (Pre-Flight Checklist)
-1. 터미널 창 1개: `npm run dev` 실행 후 브라우저에서 `http://localhost:3000` 접속 (`/audits`로 자동 리다이렉트 확인)
+1. 터미널 창 1개: `npm run dev` 실행 후 브라우저에서 `http://localhost:3300` 접속 (`/audits`로 자동 리다이렉트 확인)
 2. 터미널 창 2개째(분할 또는 탭): `npm run cre:simulate` 실행 대기 상태
 
 ---
 
 ### 타임라인별 화면 동선 및 내레이션 대본 (2분 30초 구성)
 
-#### [0:00 ~ 0:25] 1단계: 문제 정의 및 `/audits` 대시보드 소개 (`http://localhost:3000/audits`)
+#### [0:00 ~ 0:25] 1단계: 문제 정의 및 `/audits` 대시보드 소개 (`http://localhost:3300/audits`)
 - **화면 동선:**
-  - `http://localhost:3000` 접속 → `/audits` 페이지 표시
+  - `http://localhost:3300` 접속 → `/audits` 페이지 표시
   - 상단 LegalTech & RegTech 면책 배너("위법 여부 자동 판정 도구가 아닌 사실 불일치 증빙 도구")와 SQLite에 저장된 2건의 시연 케이스(`BLIC` 정상 일치 건, `BLIX` 4건 불일치 건)를 마우스로 짚어줌.
 - **내레이션 (KR):**
   > "안녕하세요. 저희는 가상자산 백서의 공시 약속과 실제 배포된 스마트계약 설정 간의 불일치를 검증하는 **스마트계약·공시자료 불일치 점검기**를 구현했습니다. 이 도구는 위법성을 자동 판정하는 대신, 법무·컴플라이언스 담당자가 백서 주장과 온체인 사실을 1:1로 대조하고 증빙 해시를 온체인에 앵커링할 수 있도록 설계된 멀티 페이지 증빙 플랫폼입니다."
@@ -93,7 +99,7 @@ npm run dev
 #### [0:25 ~ 0:50] 2단계: 새 점검 건 등록 (`/audits/new`)
 - **화면 동선:**
   - 우측 상단 **`새 점검 건 생성 (/audits/new)`** 버튼 클릭 → `/audits/new` 이동
-  - 상단 **`샘플 2 불러오기: 불일치 백서 (BLIX)`** 버튼 클릭 → 백서 원문 마크다운과 `MismatchedToken` 컨트랙트 주소(`0xe7f1725E...`)가 자동 입력됨을 보여줌.
+  - 상단 **`샘플 2 불러오기: 불일치 백서 (BLIX)`** 버튼 클릭 → 백서 원문 마크다운과 `MismatchedToken` 컨트랙트 주소(`0xbbE3c849...`)가 자동 입력됨을 보여줌.
   - 하단 **`DB 저장 및 5대 항목 추출 단계로 이동`** 버튼 클릭 → SQLite DB에 신규 케이스 생성 후 `/audits/[id]/extract`로 이동.
 - **내레이션 (KR):**
   > "`/audits/new` 페이지에서 점검 대상 백서 파일과 스마트계약 주소를 등록합니다. '불일치 백서 샘플(BLIX)'을 불러와 저장하면, 백서 원문 전체와 SHA-256 문서 해시(`documentHash`)가 SQLite 데이터베이스에 영구 저장되며 추출 단계 페이지로 이동합니다."
@@ -116,7 +122,7 @@ npm run dev
 
 #### [1:15 ~ 1:55] 4단계: Chainlink CRE 4단계 워크플로 CLI 시뮬레이션 & 웹 대조 (`/audits/[id]/compare`)
 - **화면 동선:**
-  - 먼저 터미널 창을 잠깐 띄워 `npm run cre:simulate` 실행 결과를 보여줌 (`cre-workflow/workflow.yaml` 기반 Step 1~4 실행 시간, OCR3-BFT 4/5 DON 합의 다이제스트, BLIC vs BLIX 대조 요약표 출력).
+  - 먼저 터미널 창을 잠깐 띄워 `npm run cre:simulate` 실행 결과를 보여줌 (`cre-workflow/workflow.yaml` 기반 Step 1~4 실행 시간, OCR3-BFT `4/4 nodes (quorum >= 3)` DON 합의 다이제스트, BLIC vs BLIX 대조 요약표 출력).
   - 다시 브라우저 `/audits/[id]/compare`로 돌아와 **`Chainlink CRE 워크플로 실행 (온체인 스냅샷 & 1:1 대조)`** 버튼 클릭.
   - 화면 중앙 **`Chainlink CRE Workflow Execution Trace`** 패널에서 STEP 1~4 카드와 DON Consensus Digest, Deterministic Report Hash를 클릭해 보여주고, 아래 5개 항목 카드에서 **4건의 `MISMATCH`(무제한 추가 발행 활성화, 5% 전송세 부과 및 100%까지 인상 가능, 블랙리스트/일시정지 활성화, 팀 락업 미설정)** 및 **1건의 `NEEDS_HUMAN_REVIEW`(단일 EOA 프록시 업그레이드 권한 법무 소명 필요)**를 스크롤하며 강조.
 - **내레이션 (KR):**

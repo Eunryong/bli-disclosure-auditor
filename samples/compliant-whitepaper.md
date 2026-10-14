@@ -3,7 +3,7 @@
 **발행 주체**: BLI LegalTech Foundation  
 **토큰 명칭 / 심볼**: BLI Compliant Utility Token (`BLIC`)  
 **배포 네트워크**: Ethereum Sepolia Testnet (`chainId: 11155111`)  
-**컨트랙트 주소**: `0x5FbDB2315678afecb367f032d93F642f64180aa3`  
+**컨트랙트 주소**: `0x534c51921913a8717Ca2db550b77fFabf168f71e`  
 **공시 기준일**: 2026년 10월 14일  
 
 ---

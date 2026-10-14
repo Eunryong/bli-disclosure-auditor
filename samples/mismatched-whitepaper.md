@@ -3,7 +3,7 @@
 **발행 주체**: BLI Alpha Labs Ltd.  
 **토큰 명칭 / 심볼**: BLI Alpha Protocol Token (`BLIX`)  
 **배포 네트워크**: Ethereum Sepolia Testnet (`chainId: 11155111`)  
-**컨트랙트 주소**: `0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512`  
+**컨트랙트 주소**: `0xbbE3c849D90c63645F917Be84a5b454FE858186F`  
 **공시 기준일**: 2026년 10월 14일  
 
 ---

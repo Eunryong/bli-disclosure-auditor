@@ -83,16 +83,22 @@ flowchart TB
 |                 Chainlink CRE 4-Stage Workflow (cre-workflow/workflow.yaml & src/index.ts)        |
 |  [Step 1] Off-chain Whitepaper Claim & SHA-256 Fetch (HTTP / Structured LLM / Rule Parser)        |
 |  [Step 2] EVM Read Capability: 16 View Functions + EIP-1967 Proxy Slot (0x360894...bbc)           |
-|  [Step 3] DON OCR3-BFT Consensus (4/5 Quorum): 1:1 Claim vs Fact Evaluation & reportHash          |
+|  [Step 3] DON OCR3-BFT Consensus (4/4 nodes, quorum >= 3): 1:1 Claim vs Fact & reportHash         |
 |  [Step 4] On-Chain AuditRegistry.recordAudit() Calldata & verifyAnchor() Integrity Verification   |
 +-------------------------------------------------+-------------------------------------------------+
                                                   | ABI eth_call & eth_sendTransaction
                                                   v
 +-------------------------------+  +-------------------------------+  +-----------------------------+
 | CompliantToken.sol (BLIC)     |  | MismatchedToken.sol (BLIX)    |  | AuditRegistry.sol           |
-| 0x5FbDB2315678afecb367f032... |  | 0xe7f1725E7734CE288F8367e1... |  | 0x9fE46736679d2D9a65F099... |
+| 0x534c51921913a8717Ca2db55... |  | 0xbbE3c849D90c63645F917Be8... |  | 0x5B0547C68bc608E6A9b94C... |
 +-------------------------------+  +-------------------------------+  +-----------------------------+
 ```
+
+### Live Ethereum Sepolia Testnet Contracts (`chainId: 11155111`)
+- **`CompliantToken.sol (BLIC)`:** [`0x534c51921913a8717Ca2db550b77fFabf168f71e`](https://sepolia.etherscan.io/address/0x534c51921913a8717Ca2db550b77fFabf168f71e)
+- **`MismatchedToken.sol (BLIX)`:** [`0xbbE3c849D90c63645F917Be84a5b454FE858186F`](https://sepolia.etherscan.io/address/0xbbE3c849D90c63645F917Be84a5b454FE858186F)
+- **`AuditRegistry.sol`:** [`0x5B0547C68bc608E6A9b94C515B5B66215981856c`](https://sepolia.etherscan.io/address/0x5B0547C68bc608E6A9b94C515B5B66215981856c)
+- **Sample On-Chain Anchor Tx (`recordAudit`):** [`0x36850fc9853adf71484870098cec806002a786b1a61d26536bda8175a12fb788`](https://sepolia.etherscan.io/tx/0x36850fc9853adf71484870098cec806002a786b1a61d26536bda8175a12fb788)
 
 ---
 
@@ -105,7 +111,7 @@ Every audit case evaluates **5 core regulatory disclosure dimensions** by compar
 | **1** | `maxSupplyAndMintability` | **Max Supply Cap & Additional Minting Privilege**<br/>(최대 발행량 및 추가 발행 권한) | `totalSupply()`, `MAX_SUPPLY()`, `maxSupply()`, `mintable()`, `owner()` | **`MATCH`**<br/>100M fixed cap, `mintable=false`, `owner=0x0` (renounced) | **`MISMATCH` (HIGH)**<br/>Whitepaper claims 100M fixed cap & no minting, but `mintable=true` & `MAX_SUPPLY=uint256.max` (unlimited) |
 | **2** | `transferFee` | **Transfer Tax / Fee Rate & Mutability**<br/>(전송 수수료율 및 임의 변경 권한) | `transferFeeBps()`, `maxTransferFeeBps()`, `feeMutable()` | **`MATCH`**<br/>`transferFeeBps=100` (1.00% fixed as disclosed), `feeMutable=false` | **`MISMATCH` (HIGH)**<br/>Whitepaper claims 0% tax, but `transferFeeBps=500` (**5.00%**) & `feeMutable=true` (up to 100%) |
 | **3** | `transferRestrictions` | **Pause & Wallet Blacklist/Freeze Privileges**<br/>(전송 일시정지 및 블랙리스트 동결 권한) | `paused()`, `pausable()`, `blacklistable()`, `owner()` | **`MATCH`**<br/>`pausable=false`, `blacklistable=false` | **`MISMATCH` (HIGH)**<br/>Whitepaper claims unrestricted transfers, but `pausable=true` & `blacklistable=true` |
-| **4** | `teamLockup` | **Team/Advisor Token Lockup & Vesting Enforcement**<br/>(팀 물량 락업 및 온체인 베스팅 강제 여부) | `teamWallet()`, `teamLockupActive()`, `teamLockupReleaseTimestamp()` | **`MATCH`**<br/>`teamLockupActive=true`, locked until `1830297600` (`2028-01-01 UTC`) | **`MISMATCH` (HIGH)**<br/>Whitepaper claims 24-month on-chain lockup until `2028-01-01`, but `teamLockupActive=false` & `releaseTimestamp=0` |
+| **4** | `teamLockup` | **Team/Advisor Token Lockup & Vesting Enforcement**<br/>(팀 물량 락업 및 온체인 베스팅 강제 여부) | `teamWallet()`, `teamAllocation()`, `teamLockupActive()`, `teamLockupReleaseTimestamp()` | **`MATCH`**<br/>`teamLockupActive=true`, locked until `1830297600` (`2028-01-01 UTC`) | **`MISMATCH` (HIGH)**<br/>Whitepaper claims 24-month on-chain lockup until `2028-01-01`, but `teamLockupActive=false` & `releaseTimestamp=0` |
 | **5** | `upgradeability` | **Proxy Upgradeability & Logic Replacement Privilege**<br/>(프록시 업그레이드 및 컨트랙트 로직 변경 권한) | `upgradeable()`, `logicImplementation()`, `adminAddress()`, EIP-1967 Slot (`0x360894...bbc`) | **`MATCH`**<br/>`upgradeable=false`, `adminAddress=0x0`, EIP-1967 slot empty | **`NEEDS_HUMAN_REVIEW` (MEDIUM)**<br/>Whitepaper claims immutable contract, but `upgradeable=true` with single-EOA `adminAddress` & active EIP-1967 slot (requires governance timelock review) |
 
 ---
@@ -130,16 +136,16 @@ npm run cre:simulate
 # 5. Run End-to-End Verification across all 5 Multi-Page Routes & APIs
 npm run test:e2e
 
-# 6. Start the Next.js Web Application (http://localhost:3000 -> redirects to /audits)
+# 6. Start the Next.js Web Application (http://localhost:3300 -> redirects to /audits)
 npm run dev
 ```
 
 ### Multi-Page URL Routes to Explore in Browser
-- **`http://localhost:3000/audits`** — Saved audit case repository (`BLIC` & `BLIX` pre-loaded from SQLite)
-- **`http://localhost:3000/audits/new`** — Register a new whitepaper (`.md`/`.txt` or 1-click sample loader) & smart contract address
-- **`http://localhost:3000/audits/audit-mismatched-blix/extract`** — Inspect raw whitepaper & edit extracted 5 core claims
-- **`http://localhost:3000/audits/audit-mismatched-blix/compare`** — Run Chainlink CRE 4-step workflow, inspect DON consensus digest, and view 1:1 claim vs. on-chain state diff
-- **`http://localhost:3000/audits/audit-mismatched-blix/review`** — Enter legal counsel notes, execute on-chain `AuditRegistry.recordAudit()`, verify `verifyAnchor() === true`, and export JSON/PDF evidence package
+- **`http://localhost:3300/audits`** — Saved audit case repository (`BLIC` & `BLIX` pre-loaded from SQLite)
+- **`http://localhost:3300/audits/new`** — Register a new whitepaper (`.md`/`.txt` or 1-click sample loader) & smart contract address
+- **`http://localhost:3300/audits/audit-mismatched-blix/extract`** — Inspect raw whitepaper & edit extracted 5 core claims
+- **`http://localhost:3300/audits/audit-mismatched-blix/compare`** — Run Chainlink CRE 4-step workflow, inspect DON consensus digest, and view 1:1 claim vs. on-chain state diff
+- **`http://localhost:3300/audits/audit-mismatched-blix/review`** — Enter legal counsel notes, execute on-chain `AuditRegistry.recordAudit()`, verify `verifyAnchor() === true`, and export JSON/PDF evidence package
 
 ---
 
