@@ -3,23 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import {
-  ArrowLeft,
-  ArrowRight,
-  CheckCircle2,
-  Cpu,
-  Play,
-  Terminal,
-  Code2,
-  ShieldCheck,
-  ShieldAlert,
-  Scale,
-  Flame,
-  Layers,
-  ChevronDown,
-  ChevronUp,
-  ExternalLink,
-} from "lucide-react";
 import type {
   AuditCaseDTO,
   CounterfactualBreachSimulation,
@@ -103,44 +86,43 @@ export function CompareWorkspace({
   }
 
   return (
-    <div className="space-y-6">
-      {/* Chainlink CRE Workflow Control Panel */}
-      <div className="rounded-xl border border-indigo-500/30 bg-indigo-950/20 p-5">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-indigo-300">
-              <Cpu className="h-4 w-4 text-indigo-400" />
-              Chainlink CRE (Compute Runtime Environment) On-Chain Verification
+    <div className="space-y-8">
+      {/* =================================================================== */}
+      {/* Top Control & Telemetry Ledger Header                               */}
+      {/* =================================================================== */}
+      <section className="border border-[#111315] bg-white">
+        <div className="flex flex-wrap items-start justify-between gap-4 px-6 py-5">
+          <div className="max-w-3xl space-y-1.5">
+            <div className="font-mono text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-[#5A6065]">
+              DESK 02 // CHAINLINK CRE FORENSIC CROSS-EXAMINATION TERMINAL
             </div>
-            <h2 className="text-lg font-bold text-white">
+            <h2 className="font-editorial text-2xl font-bold tracking-tight text-[#111315]">
               백서 공시 주장 vs 온체인 스마트계약 상태 1:1 대조
             </h2>
-            <p className="text-xs text-slate-300">
-              오케스트레이션 매니페스트(<code>cre-workflow/workflow.yaml</code>)에 정의된 4단계 파이프라인을 실행해 오프체인 백서 주장 추출(HTTP/LLM)과 대상 컨트랙트(
-              <code className="text-indigo-200">{audit.tokenAddress}</code>
+            <p className="text-xs leading-relaxed text-[#5A6065]">
+              오케스트레이션 매니페스트(<code className="font-mono text-[#111315]">cre-workflow/workflow.yaml</code>)에 정의된 4단계 파이프라인을 실행해 오프체인 백서 주장 추출(HTTP/LLM)과 대상 컨트랙트(
+              <code className="font-mono font-semibold text-[#111315]">{audit.tokenAddress}</code>
               {tokenExplorerUrl && (
                 <a
                   href={tokenExplorerUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="ml-1.5 inline-flex items-center gap-1 rounded border border-indigo-400/40 bg-indigo-500/20 px-1.5 py-0.5 text-[0.65rem] font-semibold text-indigo-200 hover:bg-indigo-500/30"
+                  className="ml-1.5 inline-flex items-center rounded-[2px] border border-[#111315] bg-[#EFECE6] px-1.5 py-0.5 font-mono text-[0.65rem] font-semibold text-[#111315] hover:bg-[#111315] hover:text-white"
                 >
-                  Etherscan에서 컨트랙트 보기
-                  <ExternalLink className="h-2.5 w-2.5" />
+                  Etherscan에서 컨트랙트 보기 &#8599;
                 </a>
               )}
               )의 16개 view 함수·EIP-1967 슬롯 조회 결과를 DON 합의(OCR3-BFT)로 검증하고 DB에 영구 기록합니다.
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
               disabled={runningCre}
               onClick={handleRunCreCompare}
-              className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-xs font-semibold text-white shadow hover:bg-indigo-500 disabled:opacity-50"
+              className="rounded-[2px] border border-[#0F172A] bg-[#0F172A] px-4 py-2.5 font-mono text-xs font-semibold text-white transition-colors hover:bg-[#1E293B] disabled:opacity-50"
             >
-              <Play className="h-3.5 w-3.5" />
               {runningCre
                 ? "Chainlink CRE 워크플로 실행 중..."
                 : "Chainlink CRE 워크플로 실행 (실제 온체인 스냅샷 조회)"}
@@ -148,34 +130,37 @@ export function CompareWorkspace({
             <button
               type="button"
               onClick={() => setShowRawTraces((prev) => !prev)}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-indigo-400/30 bg-slate-900/90 px-3.5 py-2.5 text-xs font-semibold text-indigo-200 hover:bg-slate-800"
+              className="rounded-[2px] border border-[#111315] bg-[#EFECE6] px-3.5 py-2.5 font-mono text-xs font-semibold text-[#111315] transition-colors hover:bg-[#111315] hover:text-white"
             >
-              <Code2 className="h-3.5 w-3.5" />
               {showRawTraces
                 ? "ABI eth_call 트레이스 접기"
                 : `ABI eth_call 트레이스 보기 (${callTraces.length}건)`}
             </button>
             <Link
               href={`/audits/${audit.id}/review`}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-4 py-2.5 text-xs font-semibold text-white hover:bg-blue-500"
+              className="rounded-[2px] border border-[#111315] bg-white px-4 py-2.5 font-mono text-xs font-semibold text-[#111315] transition-colors hover:bg-[#F7F6F2]"
             >
-              Step 3 (법무 검토·앵커링) 이동
-              <ArrowRight className="h-3.5 w-3.5" />
+              Step 3 (법무 검토·앵커링) 이동 &rarr;
             </Link>
           </div>
         </div>
 
-        {/* Snapshot Telemetry */}
-        <div className="mt-4 grid grid-cols-1 gap-3 border-t border-indigo-500/20 pt-4 text-xs sm:grid-cols-4">
-          <div className="rounded-lg bg-slate-950/70 p-3">
-            <span className="text-slate-400">CRE Workflow Run ID</span>
-            <div className="mt-1 font-mono font-semibold text-indigo-300">
+        {/* 4-Column Border-Divided Snapshot Telemetry Strip */}
+        <div className="grid grid-cols-1 divide-y divide-[#D8D4CC] border-t border-[#111315] bg-[#FAF9F5] sm:grid-cols-4 sm:divide-x sm:divide-y-0">
+          <div className="px-5 py-3.5">
+            <div className="font-mono text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-[#5A6065]">
+              CRE Workflow Run ID
+            </div>
+            <div className="mt-1 font-mono text-xs font-bold text-[#111315]">
               {audit.creWorkflowRunId || "미실행 (실행 버튼을 눌러주세요)"}
             </div>
           </div>
-          <div className="rounded-lg bg-slate-950/70 p-3">
-            <span className="text-slate-400">온체인 스냅샷 블록 번호</span>
-            <div className="mt-1 font-mono font-semibold text-white">
+
+          <div className="px-5 py-3.5">
+            <div className="font-mono text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-[#5A6065]">
+              온체인 스냅샷 블록 번호
+            </div>
+            <div className="mt-1 font-mono text-xs font-bold text-[#111315]">
               {audit.snapshotBlockNumber
                 ? `#${audit.snapshotBlockNumber} (${audit.chainName})`
                 : "미수집"}
@@ -185,70 +170,70 @@ export function CompareWorkspace({
                 href={txExplorerUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-1 inline-flex items-center gap-1 font-sans text-[0.65rem] font-semibold text-emerald-300 hover:underline"
+                className="mt-1 inline-block font-mono text-[0.65rem] font-semibold text-[#166534] underline"
               >
-                Anchor Tx Etherscan 보기
-                <ExternalLink className="h-2.5 w-2.5" />
+                Anchor Tx Etherscan 보기 &#8599;
               </a>
             )}
           </div>
-          <div className="rounded-lg bg-slate-950/70 p-3">
-            <span className="text-slate-400">일치 / 불일치 / 법무검토 건수</span>
-            <div className="mt-1 flex items-center gap-2 font-semibold">
-              <span className="text-emerald-300">MATCH {audit.matchCount}</span>
-              <span>·</span>
-              <span className="text-rose-300">
-                MISMATCH {audit.mismatchCount}
-              </span>
-              <span>·</span>
-              <span className="text-amber-300">
-                REVIEW {audit.needsReviewCount}
-              </span>
+
+          <div className="px-5 py-3.5">
+            <div className="font-mono text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-[#5A6065]">
+              일치 / 불일치 / 법무검토 건수
+            </div>
+            <div className="mt-1 flex items-center gap-2 font-mono text-xs font-bold">
+              <span className="text-[#166534]">MATCH {audit.matchCount}</span>
+              <span className="text-[#D8D4CC]">|</span>
+              <span className="text-[#991B1B]">MISMATCH {audit.mismatchCount}</span>
+              <span className="text-[#D8D4CC]">|</span>
+              <span className="text-[#92400E]">REVIEW {audit.needsReviewCount}</span>
             </div>
           </div>
-          <div className="rounded-lg bg-slate-950/70 p-3">
-            <span className="text-slate-400">종합 대조 판정</span>
+
+          <div className="px-5 py-3.5">
+            <div className="font-mono text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-[#5A6065]">
+              종합 대조 판정
+            </div>
             <div className="mt-1">
               <ComparisonStatusBadge status={audit.overallStatus} />
             </div>
           </div>
         </div>
 
-        {/* Optional ABI eth_call Raw Trace Inspector */}
+        {/* Optional ABI eth_call Raw Trace Inspector Table */}
         {showRawTraces && callTraces.length > 0 && (
-          <div className="mt-4 rounded-lg border border-slate-800 bg-slate-950 p-4">
-            <div className="mb-2 flex items-center justify-between text-xs font-semibold text-indigo-300">
-              <span>
-                실제 ABI 인코딩 eth_call 호출 및 디코딩 로그 (Contract:{" "}
-                {audit.tokenAddress})
+          <div className="border-t border-[#111315] bg-white p-5">
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+              <span className="font-mono text-xs font-bold uppercase tracking-[0.08em] text-[#111315]">
+                LOW-LEVEL ABI ETH_CALL &amp; STORAGE SLOT TRACE LOG (CONTRACT: {audit.tokenAddress})
               </span>
-              <span className="font-mono text-slate-400">
+              <span className="font-mono text-xs text-[#5A6065]">
                 Block #{audit.snapshotBlockNumber}
               </span>
             </div>
-            <div className="max-h-64 overflow-y-auto">
-              <table className="w-full text-left font-mono text-[0.6875rem] text-slate-300">
-                <thead className="border-b border-slate-800 text-slate-400">
+            <div className="max-h-64 overflow-y-auto border border-[#111315]">
+              <table className="w-full border-collapse text-left font-mono text-[0.6875rem]">
+                <thead className="border-b border-[#111315] bg-[#EFECE6] text-[#111315]">
                   <tr>
-                    <th className="py-1.5 pr-3">Function</th>
-                    <th className="py-1.5 pr-3">Selector (Calldata)</th>
-                    <th className="py-1.5 pr-3">Decoded Value</th>
-                    <th className="py-1.5">Raw Return Word (32-byte Hex)</th>
+                    <th className="border-r border-[#D8D4CC] px-3 py-2">Function</th>
+                    <th className="border-r border-[#D8D4CC] px-3 py-2">Selector (Calldata)</th>
+                    <th className="border-r border-[#D8D4CC] px-3 py-2">Decoded Value</th>
+                    <th className="px-3 py-2">Raw Return Word (32-byte Hex)</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-900">
+                <tbody className="divide-y divide-[#D8D4CC] bg-white">
                   {callTraces.map((trace) => (
                     <tr key={trace.fn}>
-                      <td className="py-1.5 pr-3 font-semibold text-indigo-300">
+                      <td className="border-r border-[#D8D4CC] px-3 py-1.5 font-semibold text-[#111315]">
                         {trace.fn}
                       </td>
-                      <td className="py-1.5 pr-3 text-sky-300">
+                      <td className="border-r border-[#D8D4CC] px-3 py-1.5 text-[#5A6065]">
                         {trace.calldata}
                       </td>
-                      <td className="py-1.5 pr-3 text-emerald-300">
+                      <td className="border-r border-[#D8D4CC] px-3 py-1.5 font-semibold text-[#166534]">
                         {trace.decoded}
                       </td>
-                      <td className="max-w-xs truncate py-1.5 text-slate-500">
+                      <td className="max-w-xs truncate px-3 py-1.5 text-[#5A6065]">
                         {trace.rawHex}
                       </td>
                     </tr>
@@ -258,67 +243,56 @@ export function CompareWorkspace({
             </div>
           </div>
         )}
-      </div>
 
-      {feedback && (
-        <div className="rounded-lg border border-indigo-500/40 bg-indigo-950/40 px-4 py-3 text-xs text-indigo-200">
-          {feedback}
-        </div>
-      )}
+        {feedback && (
+          <div className="border-t border-[#166534] bg-[#EAF3EC] px-6 py-3 font-mono text-xs font-medium text-[#166534]">
+            [CRE EXECUTION NOTICE] {feedback}
+          </div>
+        )}
+      </section>
 
       {/* =================================================================== */}
-      {/* Dedicated Panel: Chainlink CRE Workflow Execution Trace Viewer      */}
+      {/* Horizontal 4-Stage Chainlink CRE Pipeline Timeline Ledger           */}
       {/* =================================================================== */}
-      <div className="rounded-xl border border-cyan-500/30 bg-slate-900/90 p-5 shadow-lg">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-4">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-cyan-300">
-              <Layers className="h-4 w-4 text-cyan-400" />
-              Chainlink CRE Workflow Execution Trace (Trigger → Off-chain API/LLM → EVM Read → Consensus Report Hash)
+      <section className="border border-[#111315] bg-white">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#111315] bg-[#EFECE6] px-6 py-3.5">
+          <div>
+            <div className="font-mono text-xs font-bold uppercase tracking-[0.1em] text-[#111315]">
+              Chainlink CRE Workflow Execution Trace (Trigger &rarr; Off-chain API/LLM &rarr; EVM Read &rarr; Consensus Report Hash)
             </div>
-            <p className="text-xs text-slate-400">
-              매니페스트(<code>{creTrace?.manifestPath || "cre-workflow/workflow.yaml"}</code>) 기반 4단계 오케스트레이션 실행 로그 및 DON 합의(OCR3-BFT) 출력 페이로드
+            <p className="mt-0.5 font-mono text-[0.6875rem] text-[#5A6065]">
+              Manifest: {creTrace?.manifestPath || "cre-workflow/workflow.yaml"} // 4-Stage Deterministic Orchestration Ledger
             </p>
           </div>
 
           {creTrace && (
             <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded-md border border-cyan-500/30 bg-cyan-950/40 px-2.5 py-1 font-mono text-[0.6875rem] text-cyan-200">
+              <span className="rounded-[2px] border border-[#111315] bg-white px-2.5 py-1 font-mono text-[0.6875rem] font-semibold text-[#111315]">
                 Engine: {creTrace.runtimeEngine} ({creTrace.totalDurationMs} ms)
               </span>
               <button
                 type="button"
                 onClick={() => setShowAllStepsJson((prev) => !prev)}
-                className="inline-flex items-center gap-1 rounded-md border border-slate-700 bg-slate-800 px-3 py-1 text-xs font-semibold text-slate-200 hover:bg-slate-700"
+                className="rounded-[2px] border border-[#111315] bg-[#0F172A] px-3 py-1 font-mono text-[0.6875rem] font-semibold text-white transition-colors hover:bg-[#1E293B]"
               >
-                {showAllStepsJson ? (
-                  <>
-                    <ChevronUp className="h-3.5 w-3.5" />
-                    선택 단계만 보기
-                  </>
-                ) : (
-                  <>
-                    <ChevronDown className="h-3.5 w-3.5" />
-                    4단계 JSON 전체 펼치기
-                  </>
-                )}
+                {showAllStepsJson ? "선택 단계만 보기" : "4단계 JSON 전체 펼치기"}
               </button>
             </div>
           )}
         </div>
 
         {!creTrace ? (
-          <div className="mt-4 rounded-lg border border-dashed border-slate-700 bg-slate-950/60 p-6 text-center text-xs text-slate-400">
+          <div className="p-8 text-center font-mono text-xs text-[#5A6065]">
             아직 이 점검 건에 대한 Chainlink CRE Workflow 실행 트레이스가 없습니다. 상단의{" "}
-            <strong className="text-indigo-300">
+            <strong className="text-[#111315]">
               &ldquo;Chainlink CRE 워크플로 실행&rdquo;
             </strong>{" "}
             버튼을 클릭하거나 터미널에서 <code>npm run cre:simulate</code>를 실행하세요.
           </div>
         ) : (
-          <div className="mt-4 space-y-4">
-            {/* 4-Stage Pipeline Step Selector Cards */}
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-4">
+          <div>
+            {/* 4-Column Horizontal Pipeline Timeline */}
+            <div className="grid grid-cols-1 divide-y divide-[#D8D4CC] border-b border-[#111315] md:grid-cols-4 md:divide-x md:divide-y-0">
               {creTrace.steps.map((step) => {
                 const isSelected =
                   showAllStepsJson || selectedStepNumber === step.stepNumber;
@@ -330,30 +304,29 @@ export function CompareWorkspace({
                       setShowAllStepsJson(false);
                       setSelectedStepNumber(step.stepNumber);
                     }}
-                    className={`flex flex-col justify-between rounded-lg border p-3.5 text-left transition ${
+                    className={`flex flex-col justify-between p-4 text-left transition-colors ${
                       isSelected
-                        ? "border-cyan-400/60 bg-cyan-950/25 shadow-sm"
-                        : "border-slate-800 bg-slate-950/70 hover:border-slate-700"
+                        ? "bg-[#FAF9F5] shadow-[inset_0_-3px_0_0_#111315]"
+                        : "bg-white hover:bg-[#F7F6F2]"
                     }`}
                   >
                     <div>
                       <div className="flex items-center justify-between gap-2">
-                        <span className="inline-flex items-center gap-1 font-mono text-[0.6875rem] font-bold text-cyan-300">
-                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
-                          STEP {step.stepNumber} · {step.status}
+                        <span className="font-mono text-[0.6875rem] font-bold uppercase tracking-[0.08em] text-[#111315]">
+                          STAGE 0{step.stepNumber} // {step.status}
                         </span>
-                        <span className="rounded bg-slate-900 px-1.5 py-0.5 font-mono text-[0.65rem] text-slate-400">
+                        <span className="rounded-[2px] border border-[#D8D4CC] bg-[#EFECE6] px-1.5 py-0.5 font-mono text-[0.65rem] font-semibold text-[#111315]">
                           {step.durationMs} ms
                         </span>
                       </div>
-                      <div className="mt-1.5 text-xs font-bold text-white">
+                      <div className="font-editorial mt-2 text-base font-bold text-[#111315]">
                         {step.title.replace(/^\[Step \d:\s*|\s*\]$/g, "")}
                       </div>
-                      <div className="mt-1 truncate font-mono text-[0.65rem] text-indigo-300">
+                      <div className="mt-1 truncate font-mono text-[0.65rem] font-semibold text-[#5A6065]">
                         {step.capability}
                       </div>
                     </div>
-                    <p className="mt-2 line-clamp-2 text-[0.7rem] leading-relaxed text-slate-400">
+                    <p className="mt-3 line-clamp-2 border-t border-[#D8D4CC] pt-2 text-[0.72rem] leading-relaxed text-[#5A6065]">
                       {step.summary}
                     </p>
                   </button>
@@ -361,74 +334,68 @@ export function CompareWorkspace({
               })}
             </div>
 
-            {/* DON Consensus & Report Hash Digest Bar */}
-            <div className="rounded-lg border border-indigo-500/30 bg-slate-950/90 p-3.5 text-xs">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <div className="flex items-center gap-2 font-semibold text-indigo-300">
-                  <ShieldCheck className="h-4 w-4 text-emerald-400" />
-                  <span>
-                    DON Consensus ({creTrace.consensus.donId} · {creTrace.consensus.protocol}) — Quorum{" "}
-                    {creTrace.consensus.quorumReached}/{creTrace.consensus.nodeCount} Oracle Nodes Verified
-                  </span>
+            {/* DON Consensus & Report Hash Digest Strip */}
+            <div className="border-b border-[#111315] bg-[#FAF9F5] px-6 py-3.5">
+              <div className="flex flex-wrap items-center justify-between gap-2 font-mono text-xs">
+                <div className="font-bold text-[#111315]">
+                  DON CONSENSUS ({creTrace.consensus.donId} · {creTrace.consensus.protocol}) — QUORUM{" "}
+                  {creTrace.consensus.quorumReached}/{creTrace.consensus.nodeCount} ORACLE NODES VERIFIED
                 </div>
-                <span className="font-mono text-[0.6875rem] text-slate-400">
+                <span className="text-[0.6875rem] text-[#5A6065]">
                   Executed: {creTrace.executedAt.replace("T", " ").slice(0, 19)} UTC
                 </span>
               </div>
               <div className="mt-2.5 grid grid-cols-1 gap-2 font-mono text-[0.6875rem] lg:grid-cols-2">
-                <div className="truncate rounded border border-slate-800 bg-slate-900/80 px-2.5 py-1.5 text-slate-300">
-                  <span className="text-slate-400">Consensus Digest: </span>
-                  <span className="text-cyan-300">{creTrace.consensus.consensusDigest}</span>
+                <div className="truncate border border-[#D8D4CC] bg-white px-3 py-1.5 text-[#111315]">
+                  <span className="font-semibold text-[#5A6065]">Consensus Digest: </span>
+                  <span className="font-bold">{creTrace.consensus.consensusDigest}</span>
                 </div>
-                <div className="truncate rounded border border-slate-800 bg-slate-900/80 px-2.5 py-1.5 text-slate-300">
-                  <span className="text-slate-400">Deterministic Report Hash: </span>
-                  <span className="text-emerald-300">{creTrace.consensus.reportHash}</span>
+                <div className="truncate border border-[#D8D4CC] bg-white px-3 py-1.5 text-[#111315]">
+                  <span className="font-semibold text-[#5A6065]">Deterministic Report Hash: </span>
+                  <span className="font-bold text-[#166534]">{creTrace.consensus.reportHash}</span>
                 </div>
               </div>
             </div>
 
             {/* Step-by-Step Input / Output JSON Payload Inspector */}
-            <div className="space-y-3">
+            <div className="divide-y divide-[#D8D4CC] bg-white">
               {creTrace.steps
                 .filter(
                   (step) =>
                     showAllStepsJson || step.stepNumber === selectedStepNumber
                 )
                 .map((step) => (
-                  <div
-                    key={step.stepId}
-                    className="rounded-lg border border-slate-800 bg-slate-950 p-4"
-                  >
-                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
+                  <div key={step.stepId} className="p-5">
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#D8D4CC] pb-2.5">
                       <div>
-                        <span className="font-mono text-xs font-bold text-cyan-300">
+                        <span className="font-mono text-xs font-bold text-[#111315]">
                           {step.title}
                         </span>
-                        <span className="ml-2 rounded bg-indigo-950/80 px-2 py-0.5 font-mono text-[0.6875rem] text-indigo-300">
+                        <span className="ml-2 rounded-[2px] border border-[#D8D4CC] bg-[#EFECE6] px-2 py-0.5 font-mono text-[0.6875rem] font-semibold text-[#111315]">
                           {step.capability}
                         </span>
                       </div>
-                      <span className="font-mono text-[0.6875rem] text-slate-400">
+                      <span className="font-mono text-[0.6875rem] text-[#5A6065]">
                         Duration: {step.durationMs} ms | Status: {step.status}
                       </span>
                     </div>
 
-                    <p className="mt-2 text-xs text-slate-300">{step.summary}</p>
+                    <p className="mt-2 text-xs text-[#5A6065]">{step.summary}</p>
 
-                    <div className="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-2">
+                    <div className="mt-3 grid grid-cols-1 gap-4 lg:grid-cols-2">
                       <div>
-                        <div className="mb-1 font-mono text-[0.6875rem] font-semibold text-sky-300">
+                        <div className="mb-1 font-mono text-[0.6875rem] font-bold uppercase tracking-[0.08em] text-[#111315]">
                           Input Payload (JSON)
                         </div>
-                        <pre className="max-h-60 overflow-auto rounded border border-slate-800/90 bg-slate-900/90 p-3 font-mono text-[0.6875rem] leading-relaxed text-slate-200">
+                        <pre className="max-h-56 overflow-auto border border-[#D8D4CC] bg-[#FAF9F5] p-3 font-mono text-[0.6875rem] leading-relaxed text-[#111315]">
                           {JSON.stringify(step.inputPayload, null, 2)}
                         </pre>
                       </div>
                       <div>
-                        <div className="mb-1 font-mono text-[0.6875rem] font-semibold text-emerald-300">
-                          Output Payload & Consensus Result (JSON)
+                        <div className="mb-1 font-mono text-[0.6875rem] font-bold uppercase tracking-[0.08em] text-[#166534]">
+                          Output Payload &amp; Consensus Result (JSON)
                         </div>
-                        <pre className="max-h-60 overflow-auto rounded border border-slate-800/90 bg-slate-900/90 p-3 font-mono text-[0.6875rem] leading-relaxed text-slate-200">
+                        <pre className="max-h-56 overflow-auto border border-[#D8D4CC] bg-[#FAF9F5] p-3 font-mono text-[0.6875rem] leading-relaxed text-[#111315]">
                           {JSON.stringify(step.outputPayload, null, 2)}
                         </pre>
                       </div>
@@ -438,284 +405,316 @@ export function CompareWorkspace({
             </div>
           </div>
         )}
-      </div>
+      </section>
 
       {/* =================================================================== */}
-      {/* Dedicated Panel: Counterfactual Breach Simulation Proof             */}
+      {/* Middle Section: Monospace Forensic Execution Log & State Table      */}
       {/* =================================================================== */}
       {breachSimulations.length > 0 && (
-        <div className="rounded-xl border border-amber-500/40 bg-slate-900/95 p-5 shadow-lg">
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-4">
+        <section className="border-2 border-[#111315] bg-white">
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b-2 border-[#111315] bg-[#EFECE6] px-6 py-4">
             <div className="space-y-1">
-              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-amber-300">
-                <Flame className="h-4 w-4 text-amber-400" />
-                온체인 공시 위반 행위 재현 결과 (Adversarial Breach Simulation Proof)
+              <div className="font-mono text-[0.6875rem] font-bold uppercase tracking-[0.14em] text-[#5A6065]">
+                EXHIBIT B // ADVERSARIAL EVM SANDBOX EXECUTION LOG (evm.runCall)
               </div>
-              <p className="text-xs text-slate-300">
-                단순 <code>view</code> 변수 조회를 넘어, 복제된 EVM 샌드박스 상태(
-                <code>evm.runCall</code>)에서 백서 공시 약속을 위반하는 4대 악의적 트랜잭션(무단 발행·기습 수수료 50% 인상·투자자 지갑 동결·팀 물량 조기 유출)을 직접 실행해 스마트계약 코드가 이를 실제로 차단(
-                <code>DEFENDED / BLOCKED_BY_CODE</code>)하는지 혹은 위반이 성공(
-                <code>BREACH_SUCCEEDED</code>)하는지 실증합니다.
+              <h3 className="font-editorial text-xl font-bold text-[#111315]">
+                온체인 공시 위반 행위 재현 결과 (Adversarial Breach Simulation Proof)
+              </h3>
+              <p className="text-xs text-[#5A6065]">
+                단순 <code>view</code> 변수 조회를 넘어, 복제된 EVM 샌드박스 상태(<code>evm.runCall</code>)에서 백서 공시 약속을 위반하는 4대 악의적 트랜잭션(무단 발행·기습 수수료 50% 인상·투자자 지갑 동결·팀 물량 조기 유출)을 직접 실행해 코드 차원의 방어 여부(<code>DEFENDED / BLOCKED_BY_CODE</code> vs <code>BREACH_SUCCEEDED</code>)를 실증합니다.
               </p>
             </div>
-            <div className="flex items-center gap-2 text-xs font-mono">
-              <span className="rounded-md border border-emerald-500/40 bg-emerald-950/50 px-2.5 py-1 font-bold text-emerald-300">
-                DEFENDED:{" "}
-                {
-                  breachSimulations.filter((b) => b.outcome === "DEFENDED")
-                    .length
-                }
-                건
+
+            <div className="flex items-center gap-2 font-mono text-xs">
+              <span className="rounded-[2px] border border-[#166534] bg-[#EAF3EC] px-3 py-1 font-bold text-[#166534]">
+                DEFENDED: {breachSimulations.filter((b) => b.outcome === "DEFENDED").length}건
               </span>
-              <span className="rounded-md border border-rose-500/40 bg-rose-950/50 px-2.5 py-1 font-bold text-rose-300">
-                BREACH_SUCCEEDED:{" "}
-                {
-                  breachSimulations.filter(
-                    (b) => b.outcome === "BREACH_SUCCEEDED"
-                  ).length
-                }
-                건
+              <span className="rounded-[2px] border border-[#991B1B] bg-[#FDECEC] px-3 py-1 font-bold text-[#991B1B]">
+                BREACH_SUCCEEDED: {breachSimulations.filter((b) => b.outcome === "BREACH_SUCCEEDED").length}건
               </span>
             </div>
           </div>
 
-          <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
-            {breachSimulations.map((sim) => {
-              const isBreached = sim.outcome === "BREACH_SUCCEEDED";
-              return (
-                <div
-                  key={sim.scenarioId}
-                  className={`rounded-xl border p-4 ${
-                    isBreached
-                      ? "border-rose-500/50 bg-rose-950/20"
-                      : "border-emerald-500/40 bg-emerald-950/15"
-                  }`}
-                >
-                  <div className="flex flex-wrap items-start justify-between gap-2 border-b border-slate-800/80 pb-2.5">
-                    <div>
-                      <span className="font-mono text-[0.6875rem] font-semibold text-amber-300">
-                        {sim.titleEn}
-                      </span>
-                      <h4 className="text-sm font-bold text-white">
-                        {sim.titleKo}
-                      </h4>
-                    </div>
-                    {isBreached ? (
-                      <span className="inline-flex items-center gap-1 rounded-full border border-rose-500/50 bg-rose-500/20 px-2.5 py-0.5 font-mono text-[0.6875rem] font-bold text-rose-300">
-                        <ShieldAlert className="h-3.5 w-3.5" />
-                        BREACH_SUCCEEDED (위반 성공)
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/50 bg-emerald-500/20 px-2.5 py-0.5 font-mono text-[0.6875rem] font-bold text-emerald-300">
-                        <ShieldCheck className="h-3.5 w-3.5" />
-                        DEFENDED / BLOCKED_BY_CODE
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="mt-3 space-y-2 text-xs">
-                    <div className="rounded bg-slate-950/80 p-2.5">
-                      <div className="text-[0.6875rem] font-semibold text-sky-300">
-                        백서 공시 약속 (Disclosed Promise)
-                      </div>
-                      <div className="mt-0.5 text-slate-200">
-                        {sim.whitepaperPromiseKo}
-                      </div>
-                    </div>
-
-                    <div className="rounded bg-slate-950/80 p-2.5">
-                      <div className="flex flex-wrap items-center justify-between gap-1 text-[0.6875rem] font-semibold text-indigo-300">
-                        <span>시도한 공격/배신 트랜잭션 (Attempted Action)</span>
-                        <span className="font-mono text-slate-400">
-                          Gas: {sim.gasUsed} | Reverted:{" "}
-                          {sim.txReverted ? "true" : "false"}
-                        </span>
-                      </div>
-                      <div className="mt-0.5 font-mono text-[0.7rem] text-white">
-                        [{sim.targetFunction}] {sim.adversarialActionKo}
-                      </div>
-                      <div className="mt-1 truncate font-mono text-[0.65rem] text-slate-400">
-                        Calldata: {sim.calldata}
-                      </div>
-                      {sim.revertReason && (
-                        <div className="mt-1 font-mono text-[0.6875rem] text-amber-300">
-                          Revert / Custom Error: {sim.revertReason}
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse text-left">
+              <thead>
+                <tr className="border-b border-[#111315] bg-[#FAF9F5] font-mono text-[0.6875rem] font-bold uppercase tracking-[0.08em] text-[#111315]">
+                  <th className="border-r border-[#D8D4CC] px-4 py-3">
+                    시나리오 및 백서 공시 약속
+                  </th>
+                  <th className="border-r border-[#D8D4CC] px-4 py-3">
+                    재현 공격 트랜잭션 (EVM Call Trace)
+                  </th>
+                  <th className="border-r border-[#D8D4CC] px-4 py-3">
+                    실행 전 상태 (Before State)
+                  </th>
+                  <th className="border-r border-[#D8D4CC] px-4 py-3">
+                    실행 후 상태 (After State)
+                  </th>
+                  <th className="px-4 py-3">
+                    방어 / 위반 판정 (Verdict)
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#111315]">
+                {breachSimulations.map((sim, idx) => {
+                  const isBreached = sim.outcome === "BREACH_SUCCEEDED";
+                  return (
+                    <tr
+                      key={sim.scenarioId}
+                      className={`align-top ${
+                        isBreached ? "bg-[#FDECEC]/35" : "bg-white"
+                      }`}
+                    >
+                      {/* Col 1: Scenario & Promise */}
+                      <td className="border-r border-[#D8D4CC] px-4 py-4">
+                        <div className="font-mono text-[0.65rem] font-bold uppercase tracking-[0.08em] text-[#5A6065]">
+                          SIMULATION #0{idx + 1} // {sim.titleEn}
                         </div>
-                      )}
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                      <div className="rounded border border-slate-800 bg-slate-950/90 p-2.5">
-                        <div className="text-[0.65rem] font-semibold uppercase text-slate-400">
-                          실행 전 온체인 상태 (Before State)
+                        <div className="font-editorial mt-1 text-base font-bold text-[#111315]">
+                          {sim.titleKo}
                         </div>
-                        <div className="mt-1 font-mono text-[0.7rem] text-slate-200">
+                        <div className="mt-2 border-l-2 border-[#111315] pl-2.5 text-xs leading-relaxed text-[#5A6065]">
+                          <span className="font-mono text-[0.65rem] font-semibold uppercase text-[#111315]">
+                            [백서 약속]
+                          </span>{" "}
+                          {sim.whitepaperPromiseKo}
+                        </div>
+                      </td>
+
+                      {/* Col 2: Attempted EVM Call Trace */}
+                      <td className="border-r border-[#D8D4CC] px-4 py-4 font-mono text-xs">
+                        <div className="font-bold text-[#111315]">
+                          [{sim.targetFunction}]
+                        </div>
+                        <div className="mt-1 font-sans text-xs text-[#111315]">
+                          {sim.adversarialActionKo}
+                        </div>
+                        <div className="mt-2 space-y-0.5 border border-[#D8D4CC] bg-[#FAF9F5] p-2 text-[0.65rem] text-[#5A6065]">
+                          <div>
+                            Gas Used: <strong className="text-[#111315]">{sim.gasUsed}</strong> | Reverted:{" "}
+                            <strong className="text-[#111315]">
+                              {sim.txReverted ? "true" : "false"}
+                            </strong>
+                          </div>
+                          <div className="max-w-xs truncate">
+                            Calldata: {sim.calldata}
+                          </div>
+                          {sim.revertReason && (
+                            <div className="font-semibold text-[#166534]">
+                              Revert/Guard: {sim.revertReason}
+                            </div>
+                          )}
+                        </div>
+                      </td>
+
+                      {/* Col 3: Before State */}
+                      <td className="border-r border-[#D8D4CC] px-4 py-4 font-mono text-xs text-[#111315]">
+                        <div className="border border-[#D8D4CC] bg-[#FAF9F5] p-2.5 leading-relaxed">
                           {sim.beforeState}
                         </div>
-                      </div>
-                      <div
-                        className={`rounded border p-2.5 ${
-                          isBreached
-                            ? "border-rose-500/40 bg-rose-950/40"
-                            : "border-emerald-500/30 bg-emerald-950/30"
-                        }`}
-                      >
-                        <div className="text-[0.65rem] font-semibold uppercase text-slate-300">
-                          실행 후 온체인 상태 (After State)
-                        </div>
+                      </td>
+
+                      {/* Col 4: After State */}
+                      <td className="border-r border-[#D8D4CC] px-4 py-4 font-mono text-xs">
                         <div
-                          className={`mt-1 font-mono text-[0.7rem] font-semibold ${
-                            isBreached ? "text-rose-200" : "text-emerald-200"
+                          className={`border p-2.5 font-bold leading-relaxed ${
+                            isBreached
+                              ? "border-[#991B1B] bg-[#FDECEC] text-[#991B1B]"
+                              : "border-[#166534] bg-[#EAF3EC] text-[#166534]"
                           }`}
                         >
                           {sim.afterState}
                         </div>
-                      </div>
-                    </div>
+                      </td>
 
-                    <p className="pt-1 text-[0.72rem] leading-relaxed text-slate-300">
-                      <strong className="text-white">증빙 결론:</strong>{" "}
-                      {sim.stateDeltaSummary} ({sim.legalImpactKo})
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
+                      {/* Col 5: Forensic Verdict & Impact */}
+                      <td className="px-4 py-4">
+                        {isBreached ? (
+                          <span className="inline-block rounded-[2px] border border-[#991B1B] bg-[#FDECEC] px-2.5 py-1 font-mono text-[0.6875rem] font-bold text-[#991B1B]">
+                            BREACH_SUCCEEDED (위반 성공)
+                          </span>
+                        ) : (
+                          <span className="inline-block rounded-[2px] border border-[#166534] bg-[#EAF3EC] px-2.5 py-1 font-mono text-[0.6875rem] font-bold text-[#166534]">
+                            DEFENDED / BLOCKED_BY_CODE
+                          </span>
+                        )}
+                        <p className="mt-2 text-xs leading-relaxed text-[#111315]">
+                          <strong>증빙 결론:</strong> {sim.stateDeltaSummary}
+                        </p>
+                        <p className="mt-1 text-[0.7rem] leading-relaxed text-[#5A6065]">
+                          {sim.legalImpactKo}
+                        </p>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
-        </div>
+        </section>
       )}
 
-      {/* 1:1 Comparison Cards for the 5 Core Items */}
-      <div className="space-y-4">
-        {items.map((item) => {
+      {/* =================================================================== */}
+      {/* Bottom Section: 3-Column Precision Comparison Matrix                */}
+      {/* [공시 원문 주장 | 온체인 실측값 | 위반 법령 조항 (KR·EU·US)]          */}
+      {/* =================================================================== */}
+      <section className="space-y-5">
+        <div className="border-b-2 border-[#111315] pb-3">
+          <div className="font-mono text-[0.6875rem] font-bold uppercase tracking-[0.14em] text-[#5A6065]">
+            EXHIBIT C // 3-COLUMN CROSS-EXAMINATION MATRIX (CLAIM VS. FACT VS. STATUTE)
+          </div>
+          <h3 className="font-editorial mt-1 text-xl font-bold text-[#111315]">
+            5대 핵심 공시 조항 · 온체인 실측값 · 3대 관할권(KR·EU·US) 법조문 대조 원장
+          </h3>
+        </div>
+
+        {items.map((item, idx) => {
           const legalMapping = LEGAL_STATUTE_MAP[item.itemKey];
+          const clauseNum = String(idx + 1).padStart(2, "0");
+          const isMismatch = item.status === "MISMATCH";
+          const isReview = item.status === "NEEDS_HUMAN_REVIEW";
+
           return (
             <div
               key={item.itemKey}
-              className={`rounded-xl border p-5 ${
-                item.status === "MISMATCH"
-                  ? "border-rose-500/40 bg-rose-950/15"
-                  : item.status === "NEEDS_HUMAN_REVIEW"
-                  ? "border-amber-500/40 bg-amber-950/15"
-                  : item.status === "MATCH"
-                  ? "border-emerald-500/30 bg-slate-900/80"
-                  : "border-slate-800 bg-slate-900/80"
+              className={`border bg-white ${
+                isMismatch
+                  ? "border-2 border-[#991B1B]"
+                  : isReview
+                  ? "border-2 border-[#92400E]"
+                  : "border-[#111315]"
               }`}
             >
-              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800/80 pb-3">
-                <div>
-                  <span className="font-mono text-xs font-semibold text-blue-400">
-                    [{item.itemKey}]
+              {/* Clause Row Header Bar */}
+              <div
+                className={`flex flex-wrap items-center justify-between gap-2 border-b border-[#111315] px-5 py-3 ${
+                  isMismatch
+                    ? "bg-[#FDECEC]"
+                    : isReview
+                    ? "bg-[#FEF3C7]"
+                    : "bg-[#EFECE6]"
+                }`}
+              >
+                <div className="flex flex-wrap items-baseline gap-2.5">
+                  <span className="font-mono text-xs font-bold tracking-[0.08em] text-[#111315]">
+                    CLAUSE § {clauseNum} [{item.itemKey}]
                   </span>
-                  <h3 className="text-base font-bold text-white">
+                  <h4 className="font-editorial text-lg font-bold text-[#111315]">
                     {item.titleKo}
-                  </h3>
+                  </h4>
+                  <span className="font-mono text-xs text-[#5A6065]">
+                    ({item.titleEn})
+                  </span>
                 </div>
+
                 <div className="flex items-center gap-2">
-                  <span className="rounded bg-slate-800 px-2 py-0.5 font-mono text-xs text-slate-300">
+                  <span className="rounded-[2px] border border-[#111315] bg-white px-2 py-0.5 font-mono text-[0.6875rem] font-semibold text-[#111315]">
                     Severity: {item.severity}
                   </span>
                   <ComparisonStatusBadge status={item.status} />
                 </div>
               </div>
 
-              <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
-                {/* Left: Disclosed Claim from Whitepaper */}
-                <div className="rounded-lg border border-slate-800 bg-slate-950/80 p-4">
-                  <div className="flex items-center justify-between text-xs font-semibold text-sky-300">
-                    <span>공시 백서 주장 (Disclosed Claim)</span>
-                    <span className="font-mono text-slate-400">
+              {/* 3-Column Comparison Matrix */}
+              <div className="grid grid-cols-1 divide-y divide-[#D8D4CC] lg:grid-cols-12 lg:divide-x lg:divide-y-0">
+                {/* Column 1 (4 cols): 공시 원문 주장 (Disclosed Claim) */}
+                <div className="p-5 lg:col-span-4">
+                  <div className="flex items-center justify-between border-b border-[#D8D4CC] pb-2">
+                    <span className="font-mono text-[0.6875rem] font-bold uppercase tracking-[0.08em] text-[#111315]">
+                      COL I // 공시 백서 주장 (DISCLOSED CLAIM)
+                    </span>
+                    <span className="font-mono text-[0.6875rem] font-semibold text-[#5A6065]">
                       {item.sectionRef || "조항 미기재"}
                     </span>
                   </div>
-                  <p className="mt-2 text-sm font-medium text-white">
+
+                  <p className="mt-3 text-sm font-semibold leading-relaxed text-[#111315]">
                     {item.disclosedClaim || "추출된 공시 주장이 없습니다."}
                   </p>
+
                   {item.sourceQuote && (
-                    <blockquote className="mt-2 border-l-2 border-sky-500/50 pl-3 text-xs italic text-slate-400">
+                    <blockquote className="mt-3 border-l-2 border-[#111315] bg-[#FAF9F5] p-3 font-serif text-xs italic leading-relaxed text-[#5A6065]">
                       &ldquo;{item.sourceQuote}&rdquo;
                     </blockquote>
                   )}
                 </div>
 
-                {/* Right: On-chain State from Smart Contract */}
-                <div className="rounded-lg border border-slate-800 bg-slate-950/80 p-4">
-                  <div className="flex items-center justify-between text-xs font-semibold text-indigo-300">
-                    <span>온체인 실제 상태 (On-Chain Fact)</span>
-                    <span className="inline-flex items-center gap-1 font-mono text-[0.6875rem] text-slate-400">
-                      <Terminal className="h-3 w-3" />
+                {/* Column 2 (4 cols): 온체인 실측값 (On-Chain Fact & Rationale) */}
+                <div className="bg-[#FAF9F5] p-5 lg:col-span-4">
+                  <div className="flex items-center justify-between border-b border-[#D8D4CC] pb-2">
+                    <span className="font-mono text-[0.6875rem] font-bold uppercase tracking-[0.08em] text-[#111315]">
+                      COL II // 온체인 실측값 (ON-CHAIN FACT)
+                    </span>
+                    <span className="font-mono text-[0.65rem] text-[#5A6065]">
                       {item.evidenceFunctionOrSlot}
                     </span>
                   </div>
-                  <p className="mt-2 font-mono text-xs leading-relaxed text-slate-100">
+
+                  <div className="mt-3 border border-[#D8D4CC] bg-white p-3 font-mono text-xs leading-relaxed text-[#111315]">
                     {item.onchainState ||
                       "아직 온체인 상태 스냅샷이 수집되지 않았습니다."}
-                  </p>
-                  <div className="mt-3 border-t border-slate-800/80 pt-2 text-xs text-slate-300">
-                    <strong className="text-slate-100">
-                      대조 판정 근거(Rationale):
-                    </strong>{" "}
-                    {item.rationale ||
-                      "CRE 대조 실행 후 판정 근거가 생성됩니다."}
+                  </div>
+
+                  <div className="mt-3 border-t border-[#D8D4CC] pt-2.5 text-xs leading-relaxed text-[#111315]">
+                    <strong className="font-mono text-[0.6875rem] uppercase tracking-[0.06em] text-[#5A6065]">
+                      대조 판정 근거 (Rationale):
+                    </strong>
+                    <p className="mt-1">{item.rationale || "CRE 대조 실행 후 판정 근거가 생성됩니다."}</p>
                   </div>
                 </div>
-              </div>
 
-              {/* 3-Jurisdiction (KR / EU / US) Legal & Regulatory Statute Mapping */}
-              {legalMapping && (
-                <div className="mt-4 rounded-lg border border-slate-800/90 bg-slate-950/90 p-3.5">
-                  <div className="flex items-center gap-1.5 text-xs font-semibold text-amber-300">
-                    <Scale className="h-3.5 w-3.5 text-amber-400" />
-                    <span>
-                      글로벌 3대 규제 관할권(한국·EU·미국) 관련 법조문 및 상장심사 기준 매핑
+                {/* Column 3 (4 cols): 위반/적용 법령 조항 (KR · EU · US Statutes) */}
+                <div className="p-5 lg:col-span-4">
+                  <div className="border-b border-[#D8D4CC] pb-2">
+                    <span className="font-mono text-[0.6875rem] font-bold uppercase tracking-[0.08em] text-[#111315]">
+                      COL III // 관련 법령 조항 (KR · EU · US STATUTES)
                     </span>
                   </div>
-                  <div className="mt-2.5 grid grid-cols-1 gap-2.5 md:grid-cols-3">
-                    {Object.values(legalMapping.statutes).map((cit) => (
-                      <div
-                        key={cit.jurisdiction}
-                        className="rounded border border-slate-800 bg-slate-900/70 p-2.5 text-[0.7rem]"
-                      >
-                        <div className="flex items-center justify-between gap-1 font-semibold text-indigo-200">
-                          <span>
-                            {cit.flag} [{cit.jurisdictionLabelKo}]
-                          </span>
+
+                  {legalMapping ? (
+                    <div className="mt-3 divide-y divide-[#D8D4CC]">
+                      {Object.values(legalMapping.statutes).map((cit) => (
+                        <div key={cit.jurisdiction} className="py-2.5 first:pt-0 last:pb-0">
+                          <div className="flex items-center justify-between font-mono text-[0.6875rem] font-bold text-[#111315]">
+                            <span>
+                              {cit.flag} [{cit.jurisdictionLabelKo}]
+                            </span>
+                            <span className="text-[#92400E]">{cit.articleRef}</span>
+                          </div>
+                          <div className="mt-0.5 text-xs font-semibold text-[#111315]">
+                            {cit.statuteTitle}
+                          </div>
+                          <p className="mt-1 text-[0.7rem] leading-relaxed text-[#5A6065]">
+                            {cit.relevanceSummaryKo}
+                          </p>
                         </div>
-                        <div className="mt-1 font-semibold text-white">
-                          {cit.statuteTitle} —{" "}
-                          <span className="text-amber-300">
-                            {cit.articleRef}
-                          </span>
-                        </div>
-                        <p className="mt-1 leading-relaxed text-slate-400">
-                          {cit.relevanceSummaryKo}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="mt-3 text-xs text-[#5A6065]">법조문 매핑 없음</p>
+                  )}
                 </div>
-              )}
+              </div>
             </div>
           );
         })}
-      </div>
+      </section>
 
       {/* Bottom Step Navigation */}
-      <div className="flex flex-wrap items-center justify-between gap-4 border-t border-slate-800 pt-4">
+      <div className="flex flex-wrap items-center justify-between gap-4 border border-[#111315] bg-[#EFECE6] px-6 py-4">
         <Link
           href={`/audits/${audit.id}/extract`}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-slate-700 px-4 py-2 text-xs font-medium text-slate-300 hover:bg-slate-800"
+          className="rounded-[2px] border border-[#111315] bg-white px-4 py-2 font-mono text-xs font-semibold text-[#111315] transition-colors hover:bg-[#F7F6F2]"
         >
-          <ArrowLeft className="h-3.5 w-3.5" />
-          이전 단계: 백서 5대 항목 추출 (/extract)
+          &larr; 이전 단계: 백서 5대 항목 추출 (/extract)
         </Link>
 
         <Link
           href={`/audits/${audit.id}/review`}
-          className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-blue-500"
+          className="rounded-[2px] border border-[#0F172A] bg-[#0F172A] px-5 py-2.5 font-mono text-xs font-semibold text-white transition-colors hover:bg-[#1E293B]"
         >
-          다음 단계: 법무 검토 메모 작성 및 해시 앵커링 (/review)
-          <ArrowRight className="h-4 w-4" />
+          다음 단계: 법무 검토 메모 작성 및 해시 앵커링 (/review) &rarr;
         </Link>
       </div>
     </div>

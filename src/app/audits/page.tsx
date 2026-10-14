@@ -1,16 +1,4 @@
 import Link from "next/link";
-import {
-  FilePlus2,
-  FileSearch,
-  Cpu,
-  FileCheck2,
-  Hash,
-  Layers,
-  AlertTriangle,
-  CheckCircle2,
-  Clock,
-  ExternalLink,
-} from "lucide-react";
 import { listAuditCases } from "@/lib/audit-service";
 import { ComparisonStatusBadge, StageBadge } from "@/components/StatusBadge";
 import { getEtherscanAddressUrl, getEtherscanTxUrl } from "@/lib/etherscan";
@@ -25,231 +13,322 @@ export default async function AuditsListPage() {
     (a) => a.overallStatus === "MISMATCH"
   ).length;
   const anchoredCases = audits.filter((a) => a.stage === "ANCHORED").length;
+  const totalCheckItems = audits.reduce(
+    (acc, a) => acc + (a.matchCount + a.mismatchCount + a.needsReviewCount || 5),
+    0
+  );
 
   return (
-    <div className="space-y-8">
-      {/* Page Title & Action Header */}
-      <div className="flex flex-wrap items-end justify-between gap-4 border-b border-slate-800 pb-6">
-        <div>
-          <div className="text-xs font-semibold uppercase tracking-wider text-blue-400">
-            Audit Case Repository · SQLite Persistent Storage
-          </div>
-          <h1 className="mt-1 text-2xl font-bold text-white sm:text-3xl">
-            저장된 공시·스마트계약 불일치 점검 목록
-          </h1>
-          <p className="mt-2 max-w-3xl text-sm text-slate-400">
-            등록된 가상자산 백서 원문(SHA-256)과 온체인 스마트계약의 5대 핵심 항목 대조 현황을 조회하고, 단계별 전용 페이지(추출 → CRE 대조 → 법무 검토·앵커링)로 이어서 작업할 수 있습니다.
-          </p>
-        </div>
-
-        <Link
-          href="/audits/new"
-          className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow hover:bg-blue-500"
-        >
-          <FilePlus2 className="h-4 w-4" />
-          새 점검 건 생성 (/audits/new)
-        </Link>
-      </div>
-
-      {/* Summary KPI Cards */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-5">
-          <div className="text-xs font-medium text-slate-400">
-            총 등록 점검 건수 (SQLite DB)
-          </div>
-          <div className="mt-2 flex items-baseline justify-between">
-            <span className="text-3xl font-bold text-white">{totalCases}건</span>
-            <span className="text-xs text-slate-400">5대 필수 항목 기준</span>
-          </div>
-        </div>
-
-        <div className="rounded-xl border border-rose-500/30 bg-rose-950/20 p-5">
-          <div className="text-xs font-medium text-rose-300">
-            불일치 검출 건수 (MISMATCH)
-          </div>
-          <div className="mt-2 flex items-baseline justify-between">
-            <span className="text-3xl font-bold text-rose-300">
-              {mismatchCases}건
-            </span>
-            <span className="inline-flex items-center gap-1 text-xs text-rose-300">
-              <AlertTriangle className="h-3.5 w-3.5" />
-              법무 소명 요청 대상
-            </span>
-          </div>
-        </div>
-
-        <div className="rounded-xl border border-emerald-500/30 bg-emerald-950/20 p-5">
-          <div className="text-xs font-medium text-emerald-300">
-            AuditRegistry 온체인 해시 앵커링 완료
-          </div>
-          <div className="mt-2 flex items-baseline justify-between">
-            <span className="text-3xl font-bold text-emerald-300">
-              {anchoredCases}건
-            </span>
-            <span className="inline-flex items-center gap-1 text-xs text-emerald-300">
-              <CheckCircle2 className="h-3.5 w-3.5" />
-              무결성 증빙 완료
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* Audit Cases List */}
-      <div className="space-y-4">
-        {audits.map((audit) => {
-          const tokenExplorerUrl = getEtherscanAddressUrl(
-            audit.chainId,
-            audit.tokenAddress
-          );
-          const txExplorerUrl = getEtherscanTxUrl(
-            audit.chainId,
-            audit.anchorTxHash
-          );
-
-          return (
-            <article
-              key={audit.id}
-              className="rounded-xl border border-slate-800 bg-slate-900/80 p-6 transition hover:border-slate-700"
-            >
-              <div className="flex flex-wrap items-start justify-between gap-4">
-                <div className="space-y-1.5">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="rounded bg-slate-800 px-2 py-0.5 font-mono text-xs font-semibold text-blue-300">
-                      {audit.tokenSymbol || "TOKEN"}
-                    </span>
-                    <span className="text-xs text-slate-400">
-                      {audit.projectName}
-                    </span>
-                    <span className="text-xs text-slate-600">·</span>
-                    <span className="font-mono text-xs text-slate-400">
-                      ID: {audit.id}
-                    </span>
-                  </div>
-                  <h2 className="text-lg font-bold text-white sm:text-xl">
-                    {audit.title}
-                  </h2>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-2">
-                  <StageBadge stage={audit.stage} />
-                  <ComparisonStatusBadge status={audit.overallStatus} />
-                </div>
-              </div>
-
-              {/* Metadata Grid */}
-              <div className="mt-4 grid grid-cols-1 gap-3 rounded-lg border border-slate-800/90 bg-slate-950/60 p-4 text-xs sm:grid-cols-3">
-                <div>
-                  <div className="text-slate-400">스마트계약 주소 / 체인</div>
-                  <div className="mt-1 flex flex-wrap items-center gap-1.5 font-mono text-slate-200">
-                    <Layers className="h-3.5 w-3.5 shrink-0 text-blue-400" />
-                    <span className="truncate">{audit.tokenAddress}</span>
-                    {tokenExplorerUrl && (
-                      <a
-                        href={tokenExplorerUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 rounded border border-blue-500/40 bg-blue-500/15 px-1.5 py-0.5 font-sans text-[0.65rem] font-semibold text-blue-300 hover:bg-blue-500/25"
-                      >
-                        Etherscan
-                        <ExternalLink className="h-2.5 w-2.5" />
-                      </a>
-                    )}
-                  </div>
-                  <div className="mt-0.5 text-[0.6875rem] text-slate-400">
-                    {audit.chainName} (Chain ID: {audit.chainId})
-                    {audit.snapshotBlockNumber
-                      ? ` · Block #${audit.snapshotBlockNumber}`
-                      : ""}
-                  </div>
-                </div>
-
-                <div>
-                  <div className="text-slate-400">공시 백서 원문 &amp; SHA-256 해시</div>
-                  <div className="mt-1 flex items-center gap-1.5 font-mono text-slate-200">
-                    <Hash className="h-3.5 w-3.5 shrink-0 text-purple-400" />
-                    <span className="truncate">{audit.documentHash}</span>
-                  </div>
-                  <div className="mt-0.5 text-[0.6875rem] text-slate-400">
-                    파일명: {audit.whitepaperFileName}
-                  </div>
-                </div>
-
-                <div>
-                  <div className="text-slate-400">5대 핵심 항목 판정 요약</div>
-                  <div className="mt-1 flex flex-wrap items-center gap-2 font-medium">
-                    <span className="rounded bg-emerald-500/15 px-2 py-0.5 text-emerald-300">
-                      일치(MATCH): {audit.matchCount}
-                    </span>
-                    <span className="rounded bg-rose-500/15 px-2 py-0.5 text-rose-300">
-                      불일치(MISMATCH): {audit.mismatchCount}
-                    </span>
-                    <span className="rounded bg-amber-500/15 px-2 py-0.5 text-amber-300">
-                      법무검토(REVIEW): {audit.needsReviewCount}
-                    </span>
-                  </div>
-                  {audit.anchorTxHash && (
-                    <div className="mt-1 flex flex-wrap items-center gap-1.5 font-mono text-[0.6875rem] text-emerald-400">
-                      <span>Anchor Tx: {audit.anchorTxHash.slice(0, 18)}…</span>
-                      {txExplorerUrl && (
-                        <a
-                          href={txExplorerUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 rounded border border-emerald-500/40 bg-emerald-500/15 px-1.5 py-0.5 font-sans text-[0.65rem] font-semibold text-emerald-300 hover:bg-emerald-500/25"
-                        >
-                          Sepolia Tx
-                          <ExternalLink className="h-2.5 w-2.5" />
-                        </a>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-            {audit.overallSummary && (
-              <p className="mt-3 text-xs text-slate-300">
-                <strong className="text-slate-100">검토 요약:</strong>{" "}
-                {audit.overallSummary}
-              </p>
-            )}
-
-            {/* Direct Step Route Navigation Buttons */}
-            <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-slate-800/80 pt-4">
-              <div className="flex items-center gap-1.5 text-xs text-slate-400">
-                <Clock className="h-3.5 w-3.5" />
-                최종 업데이트:{" "}
-                {new Date(audit.updatedAt).toLocaleString("ko-KR")}
-                {audit.reviewerName ? ` · 담당자: ${audit.reviewerName}` : ""}
-              </div>
-
-              <div className="flex flex-wrap items-center gap-2">
-                <Link
-                  href={`/audits/${audit.id}/extract`}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800/90 px-3 py-1.5 text-xs font-semibold text-slate-200 hover:border-blue-500/50 hover:bg-slate-800 hover:text-white"
-                >
-                  <FileSearch className="h-3.5 w-3.5 text-sky-400" />
-                  1. 추출 확인/수정 (/extract)
-                </Link>
-                <Link
-                  href={`/audits/${audit.id}/compare`}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800/90 px-3 py-1.5 text-xs font-semibold text-slate-200 hover:border-blue-500/50 hover:bg-slate-800 hover:text-white"
-                >
-                  <Cpu className="h-3.5 w-3.5 text-indigo-400" />
-                  2. CRE 온체인 대조 (/compare)
-                </Link>
-                <Link
-                  href={`/audits/${audit.id}/review`}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-blue-500/40 bg-blue-600/20 px-3 py-1.5 text-xs font-semibold text-blue-200 hover:bg-blue-600/30"
-                >
-                  <FileCheck2 className="h-3.5 w-3.5 text-blue-400" />
-                  3. 법무 검토·앵커링 (/review)
-                  <ExternalLink className="h-3 w-3" />
-                </Link>
-              </div>
+    <div className="space-y-6">
+      {/* Editorial Ledger Masthead */}
+      <div className="border border-[#111315] bg-white">
+        <div className="flex flex-wrap items-end justify-between gap-4 border-b border-[#111315] px-6 py-5">
+          <div>
+            <div className="font-mono text-[0.6875rem] font-semibold uppercase tracking-widest text-[#5A6065]">
+              MASTER EXAMINATION LEDGER // SQLITE ARCHIVE (PRISMA/DEV.DB)
             </div>
-          </article>
-          );
-        })}
+            <h1 className="mt-1 font-editorial text-2xl font-bold text-[#111315] sm:text-3xl">
+              저장된 공시·스마트계약 불일치 점검 목록
+            </h1>
+            <p className="mt-1.5 max-w-3xl text-xs leading-relaxed text-[#5A6065]">
+              접수된 가상자산 공시 백서 원문(SHA-256)과 온체인 스마트계약의 5대 핵심 조항 정합성 심사 원장입니다. 각 사건 번호(Docket ID)별로 발췌 데스크(<code>/extract</code>), CRE 포렌식 터미널(<code>/compare</code>), 법률 의견서 발행소(<code>/review</code>)로 즉시 이동할 수 있습니다.
+            </p>
+          </div>
+
+          <Link
+            href="/audits/new"
+            className="inline-flex items-center gap-2 rounded-[2px] border border-[#0F172A] bg-[#0F172A] px-4 py-2.5 text-xs font-semibold text-white transition hover:bg-[#1E293B]"
+          >
+            <span className="font-mono text-[#D8D4CC]">[+ DOCKET]</span>
+            새 점검 건 생성 (/audits/new)
+          </Link>
+        </div>
+
+        {/* Border-Divided Summary KPI Strip */}
+        <div className="grid grid-cols-1 divide-y divide-[#D8D4CC] bg-[#EFECE6] sm:grid-cols-4 sm:divide-x sm:divide-y-0">
+          <div className="px-6 py-4">
+            <div className="font-mono text-[0.6875rem] uppercase tracking-wider text-[#5A6065]">
+              01 // TOTAL REGISTERED DOCKETS
+            </div>
+            <div className="mt-1 flex items-baseline justify-between">
+              <span className="font-editorial text-3xl font-bold text-[#111315]">
+                {totalCases}
+              </span>
+              <span className="font-mono text-[0.6875rem] text-[#5A6065]">
+                누적 접수 사건
+              </span>
+            </div>
+          </div>
+
+          <div className="px-6 py-4">
+            <div className="font-mono text-[0.6875rem] uppercase tracking-wider text-[#991B1B]">
+              02 // MATERIAL MISMATCH DETECTED
+            </div>
+            <div className="mt-1 flex items-baseline justify-between">
+              <span className="font-editorial text-3xl font-bold text-[#991B1B]">
+                {mismatchCases}
+              </span>
+              <span className="rounded-[2px] border border-[#991B1B]/35 bg-[#FDECEC] px-1.5 py-0.5 font-mono text-[0.65rem] font-semibold text-[#991B1B]">
+                시정·소명 요구 대상
+              </span>
+            </div>
+          </div>
+
+          <div className="px-6 py-4">
+            <div className="font-mono text-[0.6875rem] uppercase tracking-wider text-[#166534]">
+              03 // ON-CHAIN NOTARIZED (ANCHORED)
+            </div>
+            <div className="mt-1 flex items-baseline justify-between">
+              <span className="font-editorial text-3xl font-bold text-[#166534]">
+                {anchoredCases}
+              </span>
+              <span className="rounded-[2px] border border-[#166534]/35 bg-[#EAF3EC] px-1.5 py-0.5 font-mono text-[0.65rem] font-semibold text-[#166534]">
+                AuditRegistry 검증됨
+              </span>
+            </div>
+          </div>
+
+          <div className="px-6 py-4">
+            <div className="font-mono text-[0.6875rem] uppercase tracking-wider text-[#5A6065]">
+              04 // EXAMINED CLAUSE VECTORS
+            </div>
+            <div className="mt-1 flex items-baseline justify-between">
+              <span className="font-editorial text-3xl font-bold text-[#111315]">
+                {totalCheckItems}
+              </span>
+              <span className="font-mono text-[0.6875rem] text-[#5A6065]">
+                5대 필수 공시 조항 기준
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* SEC EDGAR / Listing Examination Data Ledger Grid */}
+      <div className="border border-[#111315] bg-white">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#111315] bg-[#EFECE6] px-5 py-2.5">
+          <div className="font-mono text-xs font-semibold text-[#111315]">
+            SCHEDULE I — REGISTERED DISCLOSURE VS. SMART CONTRACT EXAMINATION LEDGER
+          </div>
+          <div className="font-mono text-[0.6875rem] text-[#5A6065]">
+            SORT: UPDATED_AT DESC · RECORDS: {audits.length}
+          </div>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-left text-xs">
+            <thead>
+              <tr className="border-b border-[#111315] bg-[#F7F6F2] font-mono text-[0.6875rem] uppercase tracking-wider text-[#5A6065]">
+                <th className="border-r border-[#D8D4CC] px-4 py-3">
+                  Docket ID / Symbol
+                </th>
+                <th className="border-r border-[#D8D4CC] px-4 py-3">
+                  Filing Entity &amp; Examination Title
+                </th>
+                <th className="border-r border-[#D8D4CC] px-4 py-3">
+                  On-Chain Contract &amp; Whitepaper Digest
+                </th>
+                <th className="border-r border-[#D8D4CC] px-4 py-3">
+                  5-Clause Verdict Matrix
+                </th>
+                <th className="border-r border-[#D8D4CC] px-4 py-3">
+                  Stage &amp; Notary Anchor
+                </th>
+                <th className="px-4 py-3">Workflow Desks</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#D8D4CC]">
+              {audits.map((audit, index) => {
+                const tokenExplorerUrl = getEtherscanAddressUrl(
+                  audit.chainId,
+                  audit.tokenAddress
+                );
+                const txExplorerUrl = getEtherscanTxUrl(
+                  audit.chainId,
+                  audit.anchorTxHash
+                );
+
+                return (
+                  <tr
+                    key={audit.id}
+                    className="align-top transition hover:bg-[#F7F6F2]/70"
+                  >
+                    {/* Col 1: Docket ID & Symbol */}
+                    <td className="border-r border-[#D8D4CC] px-4 py-4 font-mono">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[0.6875rem] text-[#5A6065]">
+                          #{String(index + 1).padStart(2, "0")}
+                        </span>
+                        <span className="border border-[#111315] bg-[#0F172A] px-1.5 py-0.5 text-[0.6875rem] font-bold text-white">
+                          {audit.tokenSymbol || "TOKEN"}
+                        </span>
+                      </div>
+                      <div className="mt-1.5 text-[0.72rem] font-semibold text-[#111315]">
+                        {audit.id}
+                      </div>
+                      <div className="mt-1 text-[0.65rem] text-[#5A6065]">
+                        {new Date(audit.updatedAt).toLocaleDateString("ko-KR")}{" "}
+                        {new Date(audit.updatedAt).toLocaleTimeString("ko-KR", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </div>
+                    </td>
+
+                    {/* Col 2: Filing Entity & Examination Title */}
+                    <td className="max-w-md border-r border-[#D8D4CC] px-4 py-4">
+                      <div className="font-mono text-[0.6875rem] font-semibold uppercase tracking-wide text-[#5A6065]">
+                        {audit.projectName}
+                      </div>
+                      <div className="mt-0.5 font-editorial text-base font-bold leading-snug text-[#111315]">
+                        {audit.title}
+                      </div>
+                      {audit.overallSummary && (
+                        <p className="mt-1.5 line-clamp-2 text-[0.72rem] leading-relaxed text-[#5A6065]">
+                          {audit.overallSummary}
+                        </p>
+                      )}
+                      {audit.reviewerName && (
+                        <div className="mt-1.5 font-mono text-[0.65rem] text-[#5A6065]">
+                          COUNSEL: {audit.reviewerName}
+                        </div>
+                      )}
+                    </td>
+
+                    {/* Col 3: On-Chain Target & Whitepaper SHA-256 */}
+                    <td className="border-r border-[#D8D4CC] px-4 py-4 font-mono text-[0.6875rem]">
+                      <div className="space-y-2">
+                        <div>
+                          <div className="text-[0.625rem] uppercase text-[#5A6065]">
+                            TARGET CONTRACT ({audit.chainName} · #{audit.chainId}
+                            {audit.snapshotBlockNumber
+                              ? ` · BLK #${audit.snapshotBlockNumber}`
+                              : ""}
+                            )
+                          </div>
+                          <div className="mt-0.5 flex flex-wrap items-center gap-1.5 text-[#111315]">
+                            <span>
+                              {audit.tokenAddress.slice(0, 12)}…
+                              {audit.tokenAddress.slice(-8)}
+                            </span>
+                            {tokenExplorerUrl && (
+                              <a
+                                href={tokenExplorerUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="border border-[#0F172A] bg-[#EFECE6] px-1.5 py-0.5 font-sans text-[0.625rem] font-semibold text-[#0F172A] hover:bg-[#0F172A] hover:text-white"
+                              >
+                                Etherscan ↗
+                              </a>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="border-t border-[#D8D4CC] pt-1.5">
+                          <div className="text-[0.625rem] uppercase text-[#5A6065]">
+                            DISCLOSURE DOC ({audit.whitepaperFileName})
+                          </div>
+                          <div className="mt-0.5 text-[#5A6065]">
+                            SHA-256: {audit.documentHash.slice(0, 16)}…
+                            {audit.documentHash.slice(-6)}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+
+                    {/* Col 4: 5-Clause Verdict Matrix */}
+                    <td className="border-r border-[#D8D4CC] px-4 py-4">
+                      <div>
+                        <ComparisonStatusBadge status={audit.overallStatus} />
+                      </div>
+                      <div className="mt-2 grid grid-cols-3 divide-x divide-[#D8D4CC] border border-[#D8D4CC] bg-[#F7F6F2] text-center font-mono text-[0.65rem]">
+                        <div className="px-1.5 py-1">
+                          <div className="text-[#5A6065]">MATCH</div>
+                          <div className="font-bold text-[#166534]">
+                            {audit.matchCount}
+                          </div>
+                        </div>
+                        <div className="px-1.5 py-1">
+                          <div className="text-[#5A6065]">BREACH</div>
+                          <div className="font-bold text-[#991B1B]">
+                            {audit.mismatchCount}
+                          </div>
+                        </div>
+                        <div className="px-1.5 py-1">
+                          <div className="text-[#5A6065]">REVIEW</div>
+                          <div className="font-bold text-[#92400E]">
+                            {audit.needsReviewCount}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+
+                    {/* Col 5: Stage & Notary Anchor */}
+                    <td className="border-r border-[#D8D4CC] px-4 py-4">
+                      <div>
+                        <StageBadge stage={audit.stage} />
+                      </div>
+                      {audit.anchorTxHash ? (
+                        <div className="mt-2 font-mono text-[0.65rem]">
+                          <div className="text-[#166534]">
+                            TX: {audit.anchorTxHash.slice(0, 14)}…
+                          </div>
+                          {txExplorerUrl && (
+                            <a
+                              href={txExplorerUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="mt-1 inline-block border border-[#166534]/40 bg-[#EAF3EC] px-1.5 py-0.5 font-sans text-[0.625rem] font-semibold text-[#166534] hover:bg-[#166534] hover:text-white"
+                            >
+                              Sepolia Tx ↗
+                            </a>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="mt-2 font-mono text-[0.65rem] text-[#5A6065]">
+                          NOTARY: 미공증
+                        </div>
+                      )}
+                    </td>
+
+                    {/* Col 6: Dedicated Multi-Page Desk Links */}
+                    <td className="px-4 py-4">
+                      <div className="flex flex-col gap-1.5">
+                        <Link
+                          href={`/audits/${audit.id}/extract`}
+                          className="flex items-center justify-between border border-[#D8D4CC] bg-white px-2.5 py-1.5 text-[0.7rem] font-semibold text-[#111315] transition hover:border-[#111315] hover:bg-[#EFECE6]"
+                        >
+                          <span>1. 조항 발췌</span>
+                          <span className="font-mono text-[0.65rem] text-[#5A6065]">
+                            /extract →
+                          </span>
+                        </Link>
+                        <Link
+                          href={`/audits/${audit.id}/compare`}
+                          className="flex items-center justify-between border border-[#D8D4CC] bg-white px-2.5 py-1.5 text-[0.7rem] font-semibold text-[#111315] transition hover:border-[#111315] hover:bg-[#EFECE6]"
+                        >
+                          <span>2. CRE 포렌식 대조</span>
+                          <span className="font-mono text-[0.65rem] text-[#5A6065]">
+                            /compare →
+                          </span>
+                        </Link>
+                        <Link
+                          href={`/audits/${audit.id}/review`}
+                          className="flex items-center justify-between border border-[#0F172A] bg-[#0F172A] px-2.5 py-1.5 text-[0.7rem] font-semibold text-white transition hover:bg-[#1E293B]"
+                        >
+                          <span>3. 법률 의견서·공증</span>
+                          <span className="font-mono text-[0.65rem] text-[#D8D4CC]">
+                            /review →
+                          </span>
+                        </Link>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

@@ -1,18 +1,56 @@
 @import "tailwindcss";
 
 @layer base {
+  :root {
+    --bg-paper: #f7f6f2;
+    --bg-sheet: #ffffff;
+    --bg-subtle: #efece6;
+    --ink-primary: #111315;
+    --ink-secondary: #5a6065;
+    --border-hairline: #d8d4cc;
+    --border-strong: #111315;
+    --accent-navy: #0f172a;
+    --status-match-fg: #166534;
+    --status-match-bg: #eaf3ec;
+    --status-mismatch-fg: #991b1b;
+    --status-mismatch-bg: #fdecec;
+    --status-review-fg: #92400e;
+    --status-review-bg: #fef3c7;
+  }
+
   html {
     font-size: 100%;
     line-height: 1.5;
-    color-scheme: dark;
+    color-scheme: light;
   }
 
   body {
-    background-color: #090d16;
-    color: #f1f5f9;
+    background-color: #f7f6f2;
+    color: #111315;
+    font-family:
+      "Plus Jakarta Sans",
+      -apple-system,
+      BlinkMacSystemFont,
+      "Apple SD Gothic Neo",
+      "Pretendard",
+      "Malgun Gothic",
+      sans-serif;
     line-height: 1.5;
     text-align: start;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  h1,
+  h2,
+  h3,
+  .font-editorial {
+    font-family:
+      "Newsreader",
+      "Noto Serif KR",
+      "Instrument Serif",
+      Georgia,
+      serif;
+    letter-spacing: -0.015em;
   }
 
   h1,
@@ -30,7 +68,17 @@
 
   code,
   pre,
+  .font-mono,
   .mono-hash {
+    font-family:
+      "JetBrains Mono",
+      ui-monospace,
+      SFMono-Regular,
+      Menlo,
+      Monaco,
+      Consolas,
+      monospace;
+    font-variant-numeric: tabular-nums;
     overflow-wrap: break-word;
     word-break: break-all;
   }
@@ -38,6 +86,13 @@
   input:user-invalid,
   textarea:user-invalid,
   select:user-invalid {
-    border-color: #ef4444;
+    border-color: #991b1b;
+  }
+}
+
+@media print {
+  body {
+    background-color: #ffffff !important;
+    color: #111315 !important;
   }
 }

@@ -3,22 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import {
-  ArrowLeft,
-  Anchor,
-  Download,
-  ExternalLink,
-  Save,
-  ShieldAlert,
-  CheckCircle2,
-  Printer,
-  ShieldCheck,
-  FileCheck2,
-  Scale,
-  Code2,
-  Copy,
-  Flame,
-} from "lucide-react";
 import type {
   AuditCaseDTO,
   AuditCheckItemDTO,
@@ -223,18 +207,26 @@ export function ReviewWorkspace({
   }
 
   return (
-    <div className="space-y-6">
-      {/* Top Reviewer & On-Chain Anchor Summary Card */}
-      <div className="rounded-xl border border-slate-800 bg-slate-900/80 p-6">
-        <div className="flex flex-wrap items-start justify-between gap-4 border-b border-slate-800 pb-4">
-          <div>
-            <h2 className="text-lg font-bold text-white">
+    <div className="space-y-8">
+      {/* =================================================================== */}
+      {/* Formal Legal Opinion & On-Chain Notary Certificate Sheet            */}
+      {/* =================================================================== */}
+      <section className="border-2 border-[#111315] bg-white">
+        {/* Official Law Firm Opinion Masthead */}
+        <div className="flex flex-wrap items-start justify-between gap-4 border-b-2 border-[#111315] bg-[#EFECE6] px-6 py-5">
+          <div className="max-w-3xl space-y-1.5">
+            <div className="font-mono text-[0.6875rem] font-bold uppercase tracking-[0.14em] text-[#5A6065]">
+              DESK 03 // FORMAL LEGAL OPINION &amp; CURE NOTICE BUREAU
+            </div>
+            <h2 className="font-editorial text-2xl font-bold tracking-tight text-[#111315]">
               법무·컴플라이언스 담당자 최종 검토 및 AuditRegistry 온체인 해시 앵커링
             </h2>
-            <p className="mt-1 text-xs text-slate-400">
-              각 항목의 최종 상태(<code>MATCH</code> / <code>MISMATCH</code> /{" "}
-              <code>NEEDS_HUMAN_REVIEW</code>)와 검토 메모를 확정하고, 개인정보·원문 노출 없이 해시 요약본만{" "}
-              <code>AuditRegistry.sol</code>의 <code>recordAudit()</code>로 온체인에 앵커링합니다.
+            <p className="text-xs leading-relaxed text-[#5A6065]">
+              각 조항의 최종 판정(<code className="font-mono text-[#111315]">MATCH</code> /{" "}
+              <code className="font-mono text-[#111315]">MISMATCH</code> /{" "}
+              <code className="font-mono text-[#111315]">NEEDS_HUMAN_REVIEW</code>)과 법무 검토 의견을 확정하고, 개인정보·원문 노출 없이 무결성 다이제스트만{" "}
+              <code className="font-mono text-[#111315]">AuditRegistry.sol</code>의{" "}
+              <code className="font-mono text-[#111315]">recordAudit()</code>로 온체인에 영구 공증(Notarize)합니다.
             </p>
           </div>
 
@@ -243,18 +235,16 @@ export function ReviewWorkspace({
               type="button"
               disabled={saving || anchoring}
               onClick={() => handleSaveReview(false)}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-200 hover:bg-slate-700 disabled:opacity-50"
+              className="rounded-[2px] border border-[#111315] bg-white px-3.5 py-2 font-mono text-xs font-semibold text-[#111315] transition-colors hover:bg-[#F7F6F2] disabled:opacity-50"
             >
-              <Save className="h-3.5 w-3.5" />
               {saving ? "저장 중..." : "검토 의견 DB 저장"}
             </button>
             <button
               type="button"
               disabled={saving || anchoring}
               onClick={() => handleSaveReview(true)}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-4 py-2 text-xs font-semibold text-white shadow hover:bg-emerald-500 disabled:opacity-50"
+              className="rounded-[2px] border border-[#166534] bg-[#166534] px-4 py-2 font-mono text-xs font-semibold text-white transition-colors hover:bg-[#14532D] disabled:opacity-50"
             >
-              <Anchor className="h-3.5 w-3.5" />
               {anchoring
                 ? "온체인 앵커링 중..."
                 : "온체인 앵커링 실행 (recordAudit & verifyAnchor)"}
@@ -262,191 +252,269 @@ export function ReviewWorkspace({
             <button
               type="button"
               onClick={handleExportJsonReport}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-blue-500/40 bg-blue-600/20 px-3.5 py-2 text-xs font-semibold text-blue-200 hover:bg-blue-600/30"
+              className="rounded-[2px] border border-[#0F172A] bg-[#0F172A] px-3.5 py-2 font-mono text-xs font-semibold text-white transition-colors hover:bg-[#1E293B]"
             >
-              <Download className="h-3.5 w-3.5" />
               증빙 패키지(JSON) 다운로드
             </button>
             <button
               type="button"
               onClick={() => setShowPrintReport((prev) => !prev)}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-indigo-500/40 bg-indigo-600/20 px-3.5 py-2 text-xs font-semibold text-indigo-200 hover:bg-indigo-600/30"
+              className="rounded-[2px] border border-[#111315] bg-[#FAF9F5] px-3.5 py-2 font-mono text-xs font-semibold text-[#111315] transition-colors hover:bg-[#EFECE6]"
             >
-              <FileCheck2 className="h-3.5 w-3.5" />
               {showPrintReport ? "인쇄용 리포트 뷰 닫기" : "인쇄/PDF용 리포트 뷰"}
             </button>
             <button
               type="button"
               onClick={handlePrintReport}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-200 hover:bg-slate-700"
+              className="rounded-[2px] border border-[#D8D4CC] bg-white px-3.5 py-2 font-mono text-xs font-semibold text-[#111315] transition-colors hover:border-[#111315]"
             >
-              <Printer className="h-3.5 w-3.5" />
               PDF / 인쇄
             </button>
           </div>
         </div>
 
-        {/* Reviewer Metadata Form */}
-        <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <div>
-            <label
-              htmlFor="reviewer-name"
-              className="block text-xs font-semibold text-slate-300"
-            >
-              검토 담당자 성명 / 소속 (reviewedBy)
-            </label>
-            <input
-              id="reviewer-name"
-              type="text"
-              value={reviewerName}
-              onChange={(e) => setReviewerName(e.target.value)}
-              className="mt-1.5 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white focus:border-blue-500 focus:outline-none"
-            />
-          </div>
-
-          <div className="sm:col-span-2">
-            <label
-              htmlFor="overall-summary"
-              className="block text-xs font-semibold text-slate-300"
-            >
-              법무·컴플라이언스 종합 검토 의견 (overallSummary)
-            </label>
-            <textarea
-              id="overall-summary"
-              rows={2}
-              value={overallSummary}
-              onChange={(e) => setOverallSummary(e.target.value)}
-              placeholder="상장적격성 심사 또는 정기 공시 점검에 관한 종합 검토 의견을 입력하세요."
-              className="mt-1.5 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white focus:border-blue-500 focus:outline-none"
-            />
-          </div>
-        </div>
-
-        {/* On-chain AuditRegistry Payload & verifyAnchor Verification Card */}
-        <div className="mt-5 rounded-lg border border-emerald-500/30 bg-slate-950/90 p-4">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <div className="flex items-center gap-2 text-xs font-semibold text-emerald-300">
-              <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-              AuditRegistry.sol 온체인 앵커링 & verifyAnchor() 무결성 검증 결과
+        {/* Counsel Sign-Off & Seal Block */}
+        <div className="grid grid-cols-1 divide-y divide-[#D8D4CC] border-b border-[#111315] lg:grid-cols-12 lg:divide-x lg:divide-y-0">
+          <div className="space-y-4 p-6 lg:col-span-8">
+            <div className="font-mono text-[0.6875rem] font-bold uppercase tracking-[0.12em] text-[#5A6065]">
+              SECTION I // LEAD COUNSEL SIGN-OFF &amp; EXECUTIVE LEGAL OPINION
             </div>
-            {verification?.verified ? (
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/50 bg-emerald-500/20 px-3 py-0.5 font-mono text-xs font-bold text-emerald-300">
-                <ShieldCheck className="h-3.5 w-3.5" />
-                verifyAnchor() === true (온체인 검증 완료)
-              </span>
-            ) : (
-              <span className="font-mono text-xs text-amber-300">
-                미앵커링 (우측 상단 &apos;온체인 앵커링 실행&apos; 버튼을 클릭하세요)
-              </span>
-            )}
-          </div>
 
-          <div className="mt-3 grid grid-cols-1 gap-2 font-mono text-[0.6875rem] text-slate-300 sm:grid-cols-2">
-            <div className="flex flex-wrap items-center gap-1.5">
-              <span className="text-slate-500">auditRegistryAddress:</span>{" "}
-              <span>{audit.auditRegistryAddress || "미배포"}</span>
-              {registryExplorerUrl && (
-                <a
-                  href={registryExplorerUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 rounded border border-emerald-500/40 bg-emerald-500/15 px-1.5 py-0.5 font-sans text-[0.65rem] font-semibold text-emerald-300 hover:bg-emerald-500/25"
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <div>
+                <label
+                  htmlFor="reviewer-name"
+                  className="block font-mono text-[0.6875rem] font-semibold uppercase tracking-[0.08em] text-[#111315]"
                 >
-                  Etherscan
-                  <ExternalLink className="h-2.5 w-2.5" />
-                </a>
-              )}
-            </div>
-            <div className="flex flex-wrap items-center gap-1.5">
-              <span className="text-slate-500">anchorTxHash:</span>{" "}
-              <span className="truncate">{audit.anchorTxHash || "미생성"}</span>
-              {txExplorerUrl && (
-                <a
-                  href={txExplorerUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 rounded border border-emerald-500/40 bg-emerald-500/15 px-1.5 py-0.5 font-sans text-[0.65rem] font-semibold text-emerald-300 hover:bg-emerald-500/25"
-                >
-                  Sepolia Tx 보기
-                  <ExternalLink className="h-2.5 w-2.5" />
-                </a>
-              )}
-            </div>
-            <div>
-              <span className="text-slate-500">documentHash (bytes32):</span>{" "}
-              {audit.documentHash}
-            </div>
-            <div>
-              <span className="text-slate-500">reportHash (bytes32):</span>{" "}
-              {audit.reportHash ||
-                "검토 저장 시 SHA-256 reportHash가 자동 생성됩니다."}
-            </div>
-            <div className="flex flex-wrap items-center gap-1.5">
-              <span className="text-slate-500">tokenAddress:</span>{" "}
-              <span>{audit.tokenAddress}</span>
-              {tokenExplorerUrl && (
-                <a
-                  href={tokenExplorerUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 rounded border border-blue-500/40 bg-blue-500/15 px-1.5 py-0.5 font-sans text-[0.65rem] font-semibold text-blue-300 hover:bg-blue-500/25"
-                >
-                  Etherscan
-                  <ExternalLink className="h-2.5 w-2.5" />
-                </a>
-              )}
-            </div>
-            <div>
-              <span className="text-slate-500">
-                chainId / blockNumber / mismatchCount:
-              </span>{" "}
-              {audit.chainId} / #{audit.snapshotBlockNumber ?? 1} /{" "}
-              {audit.mismatchCount}건
-            </div>
-            {verification && (
-              <>
-                <div>
-                  <span className="text-slate-500">auditor (msg.sender):</span>{" "}
-                  {verification.auditor}
-                </div>
-                <div>
-                  <span className="text-slate-500">
-                    anchoredAt (block.timestamp):
-                  </span>{" "}
-                  {verification.anchoredAtTimestamp} (
-                  {new Date(
-                    verification.anchoredAtTimestamp * 1000
-                  ).toISOString()}
-                  )
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {feedback && (
-        <div className="rounded-lg border border-emerald-500/40 bg-emerald-950/40 px-4 py-3 text-xs text-emerald-200">
-          {feedback}
-        </div>
-      )}
-
-      {/* Printable / PDF Compliance Evidence Report View */}
-      {showPrintReport && (
-        <section className="rounded-xl border-2 border-indigo-400/50 bg-white p-8 text-slate-900 shadow-2xl">
-          <div className="flex flex-wrap items-start justify-between gap-4 border-b-2 border-slate-900 pb-4">
-            <div>
-              <div className="text-xs font-bold uppercase tracking-widest text-indigo-700">
-                BLI LegalTech & RegTech Compliance Audit Evidence Report
+                  검토 담당자 성명 / 소속 (reviewedBy)
+                </label>
+                <input
+                  id="reviewer-name"
+                  type="text"
+                  value={reviewerName}
+                  onChange={(e) => setReviewerName(e.target.value)}
+                  className="mt-1.5 w-full rounded-[2px] border border-[#111315] bg-[#FAF9F5] px-3 py-2 text-xs font-semibold text-[#111315] focus:bg-white focus:outline-none"
+                />
               </div>
-              <h2 className="mt-1 text-2xl font-extrabold text-slate-900">
+
+              <div className="sm:col-span-2">
+                <label
+                  htmlFor="overall-summary"
+                  className="block font-mono text-[0.6875rem] font-semibold uppercase tracking-[0.08em] text-[#111315]"
+                >
+                  법무·컴플라이언스 종합 검토 의견 (overallSummary)
+                </label>
+                <textarea
+                  id="overall-summary"
+                  rows={3}
+                  value={overallSummary}
+                  onChange={(e) => setOverallSummary(e.target.value)}
+                  placeholder="상장적격성 심사 또는 정기 공시 점검에 관한 종합 검토 의견을 입력하세요."
+                  className="mt-1.5 w-full rounded-[2px] border border-[#111315] bg-[#FAF9F5] px-3 py-2 text-xs leading-relaxed text-[#111315] focus:bg-white focus:outline-none"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Official Counsel Seal & Opinion Stamp Box */}
+          <div className="flex flex-col justify-between bg-[#FAF9F5] p-6 lg:col-span-4">
+            <div>
+              <div className="font-mono text-[0.6875rem] font-bold uppercase tracking-[0.12em] text-[#5A6065]">
+                COUNSEL ATTESTATION &amp; SEAL
+              </div>
+              <div className="mt-3 border-2 border-[#111315] bg-white p-3.5">
+                <div className="flex items-center justify-between border-b border-[#D8D4CC] pb-2">
+                  <span className="font-mono text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[#111315]">
+                    BLI COMPLIANCE CHAMBER
+                  </span>
+                  <ComparisonStatusBadge status={audit.overallStatus} />
+                </div>
+                <div className="mt-2.5 font-editorial text-sm font-bold text-[#111315]">
+                  {reviewerName}
+                </div>
+                <div className="mt-1 font-mono text-[0.6875rem] text-[#5A6065]">
+                  DOCKET: {legalCureNotice.documentNumber}
+                </div>
+                <div className="mt-0.5 font-mono text-[0.6875rem] text-[#5A6065]">
+                  VERDICT: MATCH {audit.matchCount} / MISMATCH {audit.mismatchCount} / REVIEW {audit.needsReviewCount}
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-3 font-mono text-[0.65rem] leading-relaxed text-[#5A6065]">
+              * 본 서명란은 사실적 불일치 대조 결과에 대한 담당자 확인 기록이며 법률 자문이 아닙니다.
+            </div>
+          </div>
+        </div>
+
+        {/* ================================================================= */}
+        {/* Section II: AuditRegistry.sol On-Chain Notary Stamp Box           */}
+        {/* ================================================================= */}
+        <div className="p-6">
+          <div
+            className={`border-2 p-5 ${
+              verification?.verified
+                ? "border-[#166534] bg-[#EAF3EC]/45"
+                : "border-[#92400E] bg-[#FEF3C7]/45"
+            }`}
+          >
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#111315] pb-3">
+              <div>
+                <div className="font-mono text-[0.65rem] font-bold uppercase tracking-[0.14em] text-[#5A6065]">
+                  SECTION II // BLOCKCHAIN CRYPTOGRAPHIC NOTARY STAMP (AuditRegistry.sol)
+                </div>
+                <h3 className="font-editorial mt-0.5 text-lg font-bold text-[#111315]">
+                  AuditRegistry.sol 온체인 앵커링 &amp; verifyAnchor() 무결성 검증 결과
+                </h3>
+              </div>
+
+              {verification?.verified ? (
+                <span className="rounded-[2px] border border-[#166534] bg-[#EAF3EC] px-3 py-1 font-mono text-xs font-bold text-[#166534]">
+                  verifyAnchor() === true (온체인 검증 완료)
+                </span>
+              ) : (
+                <span className="rounded-[2px] border border-[#92400E] bg-[#FEF3C7] px-3 py-1 font-mono text-xs font-bold text-[#92400E]">
+                  미앵커링 (우측 상단 &apos;온체인 앵커링 실행&apos; 버튼을 클릭하세요)
+                </span>
+              )}
+            </div>
+
+            <div className="mt-4 grid grid-cols-1 gap-3 font-mono text-xs text-[#111315] sm:grid-cols-2">
+              <div className="border border-[#D8D4CC] bg-white p-3">
+                <div className="text-[0.65rem] font-semibold uppercase text-[#5A6065]">
+                  auditRegistryAddress
+                </div>
+                <div className="mt-1 flex flex-wrap items-center gap-2 break-all font-bold">
+                  <span>{audit.auditRegistryAddress || "미배포"}</span>
+                  {registryExplorerUrl && (
+                    <a
+                      href={registryExplorerUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="rounded-[2px] border border-[#111315] bg-[#EFECE6] px-1.5 py-0.5 text-[0.65rem] font-semibold text-[#111315] hover:bg-[#111315] hover:text-white"
+                    >
+                      Etherscan &#8599;
+                    </a>
+                  )}
+                </div>
+              </div>
+
+              <div className="border border-[#D8D4CC] bg-white p-3">
+                <div className="text-[0.65rem] font-semibold uppercase text-[#5A6065]">
+                  anchorTxHash
+                </div>
+                <div className="mt-1 flex flex-wrap items-center gap-2 break-all font-bold">
+                  <span>{audit.anchorTxHash || "미생성"}</span>
+                  {txExplorerUrl && (
+                    <a
+                      href={txExplorerUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="rounded-[2px] border border-[#166534] bg-[#EAF3EC] px-1.5 py-0.5 text-[0.65rem] font-semibold text-[#166534] hover:bg-[#166534] hover:text-white"
+                    >
+                      Sepolia Tx 보기 &#8599;
+                    </a>
+                  )}
+                </div>
+              </div>
+
+              <div className="border border-[#D8D4CC] bg-white p-3">
+                <div className="text-[0.65rem] font-semibold uppercase text-[#5A6065]">
+                  documentHash (bytes32)
+                </div>
+                <div className="mt-1 break-all">{audit.documentHash}</div>
+              </div>
+
+              <div className="border border-[#D8D4CC] bg-white p-3">
+                <div className="text-[0.65rem] font-semibold uppercase text-[#5A6065]">
+                  reportHash (bytes32)
+                </div>
+                <div className="mt-1 break-all">
+                  {audit.reportHash ||
+                    "검토 저장 시 SHA-256 reportHash가 자동 생성됩니다."}
+                </div>
+              </div>
+
+              <div className="border border-[#D8D4CC] bg-white p-3">
+                <div className="text-[0.65rem] font-semibold uppercase text-[#5A6065]">
+                  tokenAddress
+                </div>
+                <div className="mt-1 flex flex-wrap items-center gap-2 break-all">
+                  <span>{audit.tokenAddress}</span>
+                  {tokenExplorerUrl && (
+                    <a
+                      href={tokenExplorerUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="rounded-[2px] border border-[#111315] bg-[#EFECE6] px-1.5 py-0.5 text-[0.65rem] font-semibold text-[#111315] hover:bg-[#111315] hover:text-white"
+                    >
+                      Etherscan &#8599;
+                    </a>
+                  )}
+                </div>
+              </div>
+
+              <div className="border border-[#D8D4CC] bg-white p-3">
+                <div className="text-[0.65rem] font-semibold uppercase text-[#5A6065]">
+                  chainId / blockNumber / mismatchCount
+                </div>
+                <div className="mt-1 font-bold">
+                  {audit.chainId} / #{audit.snapshotBlockNumber ?? 1} /{" "}
+                  {audit.mismatchCount}건
+                </div>
+              </div>
+
+              {verification && (
+                <>
+                  <div className="border border-[#D8D4CC] bg-white p-3">
+                    <div className="text-[0.65rem] font-semibold uppercase text-[#5A6065]">
+                      auditor (msg.sender)
+                    </div>
+                    <div className="mt-1 break-all">{verification.auditor}</div>
+                  </div>
+                  <div className="border border-[#D8D4CC] bg-white p-3">
+                    <div className="text-[0.65rem] font-semibold uppercase text-[#5A6065]">
+                      anchoredAt (block.timestamp)
+                    </div>
+                    <div className="mt-1">
+                      {verification.anchoredAtTimestamp} (
+                      {new Date(
+                        verification.anchoredAtTimestamp * 1000
+                      ).toISOString()}
+                      )
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {feedback && (
+          <div className="border-t border-[#166534] bg-[#EAF3EC] px-6 py-3 font-mono text-xs font-medium text-[#166534]">
+            [NOTARY NOTICE] {feedback}
+          </div>
+        )}
+      </section>
+
+      {/* =================================================================== */}
+      {/* Printable / PDF Compliance Evidence Report View                     */}
+      {/* =================================================================== */}
+      {showPrintReport && (
+        <section className="border-2 border-[#111315] bg-white p-8 text-[#111315]">
+          <div className="flex flex-wrap items-start justify-between gap-4 border-b-2 border-[#111315] pb-4">
+            <div>
+              <div className="font-mono text-xs font-bold uppercase tracking-[0.14em] text-[#5A6065]">
+                BLI LegalTech &amp; RegTech Compliance Audit Evidence Report
+              </div>
+              <h2 className="font-editorial mt-1 text-2xl font-bold text-[#111315]">
                 스마트계약·공시자료(백서) 정합성 점검 증빙 리포트
               </h2>
-              <p className="mt-1 text-xs text-slate-600">
+              <p className="mt-1 text-xs text-[#5A6065]">
                 본 문서는 위법 여부의 자동 판정이나 법률 자문이 아니며, 공시 백서 원문(Claim)과 온체인 스마트계약 설정(Fact) 간의 1:1 사실 대조 및 법무 검토 증빙서입니다.
               </p>
             </div>
-            <div className="text-right font-mono text-xs text-slate-700">
+            <div className="text-right font-mono text-xs text-[#111315]">
               <div>Case ID: {audit.id}</div>
               <div>Token: {audit.tokenSymbol}</div>
               <div>Chain ID: {audit.chainId}</div>
@@ -454,13 +522,12 @@ export function ReviewWorkspace({
             </div>
           </div>
 
-          <div className="mt-4 grid grid-cols-1 gap-3 rounded-lg bg-slate-100 p-4 text-xs sm:grid-cols-2">
+          <div className="mt-4 grid grid-cols-1 gap-3 border border-[#111315] bg-[#FAF9F5] p-4 text-xs sm:grid-cols-2">
             <div>
               <strong>점검 건명:</strong> {audit.title}
             </div>
             <div>
-              <strong>발행 프로젝트:</strong> {audit.projectName} (
-              {audit.tokenSymbol})
+              <strong>발행 프로젝트:</strong> {audit.projectName} ({audit.tokenSymbol})
             </div>
             <div className="font-mono">
               <strong>대상 컨트랙트:</strong> {audit.tokenAddress}{" "}
@@ -469,7 +536,7 @@ export function ReviewWorkspace({
                   href={tokenExplorerUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-indigo-700 underline"
+                  className="underline"
                 >
                   [Sepolia Etherscan]
                 </a>
@@ -486,7 +553,7 @@ export function ReviewWorkspace({
                   href={registryExplorerUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-indigo-700 underline"
+                  className="underline"
                 >
                   [Sepolia Etherscan]
                 </a>
@@ -499,7 +566,7 @@ export function ReviewWorkspace({
                   href={txExplorerUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-indigo-700 underline"
+                  className="underline"
                 >
                   [Sepolia Tx]
                 </a>
@@ -513,31 +580,31 @@ export function ReviewWorkspace({
           </div>
 
           <div className="mt-5">
-            <h3 className="text-sm font-bold text-slate-900">
+            <h3 className="font-editorial text-base font-bold text-[#111315]">
               1. 법무·컴플라이언스 종합 검토 의견 ({reviewerName})
             </h3>
-            <p className="mt-1.5 rounded border border-slate-300 bg-slate-50 p-3 text-xs leading-relaxed text-slate-800">
+            <p className="mt-1.5 border border-[#D8D4CC] bg-[#FAF9F5] p-3 text-xs leading-relaxed text-[#111315]">
               {overallSummary || "등록된 종합 검토 의견이 없습니다."}
             </p>
           </div>
 
           <div className="mt-5">
-            <h3 className="text-sm font-bold text-slate-900">
+            <h3 className="font-editorial text-base font-bold text-[#111315]">
               2. 5대 핵심 공시 항목 vs 온체인 실제 상태 1:1 대조 결과표
             </h3>
             <div className="mt-2 overflow-x-auto">
-              <table className="w-full border-collapse border border-slate-300 text-left text-xs">
-                <thead className="bg-slate-200 text-slate-900">
+              <table className="w-full border-collapse border border-[#111315] text-left text-xs">
+                <thead className="bg-[#EFECE6] text-[#111315]">
                   <tr>
-                    <th className="border border-slate-300 p-2">점검 항목</th>
-                    <th className="border border-slate-300 p-2">
+                    <th className="border border-[#111315] p-2">점검 항목</th>
+                    <th className="border border-[#111315] p-2">
                       백서 공시 주장 (Claim)
                     </th>
-                    <th className="border border-slate-300 p-2">
+                    <th className="border border-[#111315] p-2">
                       온체인 실제 값 (On-Chain Fact)
                     </th>
-                    <th className="border border-slate-300 p-2">최종 판정</th>
-                    <th className="border border-slate-300 p-2">
+                    <th className="border border-[#111315] p-2">최종 판정</th>
+                    <th className="border border-[#111315] p-2">
                       법무 검토 메모 (Reviewer Note)
                     </th>
                   </tr>
@@ -545,25 +612,25 @@ export function ReviewWorkspace({
                 <tbody>
                   {items.map((item) => (
                     <tr key={item.itemKey} className="align-top">
-                      <td className="border border-slate-300 p-2 font-semibold">
+                      <td className="border border-[#111315] p-2 font-semibold">
                         {item.titleKo}
-                        <div className="mt-0.5 font-mono text-[0.65rem] text-slate-500">
+                        <div className="mt-0.5 font-mono text-[0.65rem] text-[#5A6065]">
                           {item.sectionRef}
                         </div>
                       </td>
-                      <td className="border border-slate-300 p-2">
+                      <td className="border border-[#111315] p-2">
                         {item.disclosedClaim}
                       </td>
-                      <td className="border border-slate-300 p-2 font-mono text-[0.6875rem]">
+                      <td className="border border-[#111315] p-2 font-mono text-[0.6875rem]">
                         {item.onchainState}
-                        <div className="mt-1 text-[0.65rem] text-slate-500">
+                        <div className="mt-1 text-[0.65rem] text-[#5A6065]">
                           근거: {item.evidenceFunctionOrSlot}
                         </div>
                       </td>
-                      <td className="border border-slate-300 p-2 font-mono font-bold">
+                      <td className="border border-[#111315] p-2 font-mono font-bold">
                         {item.status}
                       </td>
-                      <td className="border border-slate-300 p-2">
+                      <td className="border border-[#111315] p-2">
                         {item.reviewerNote || "-"}
                       </td>
                     </tr>
@@ -573,55 +640,11 @@ export function ReviewWorkspace({
             </div>
           </div>
 
-          {breachSimulations.length > 0 && (
-            <div className="mt-5">
-              <h3 className="text-sm font-bold text-slate-900">
-                3. 온체인 공시 위반 행위 재현 시뮬레이션 (Adversarial Breach Simulation Proof)
-              </h3>
-              <div className="mt-2 overflow-x-auto">
-                <table className="w-full border-collapse border border-slate-300 text-left text-xs">
-                  <thead className="bg-slate-200 text-slate-900">
-                    <tr>
-                      <th className="border border-slate-300 p-2">재현 시나리오</th>
-                      <th className="border border-slate-300 p-2">실행 트랜잭션</th>
-                      <th className="border border-slate-300 p-2">실행 전 → 실행 후 상태</th>
-                      <th className="border border-slate-300 p-2">방어/위반 결과</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {breachSimulations.map((sim) => (
-                      <tr key={sim.scenarioId} className="align-top">
-                        <td className="border border-slate-300 p-2 font-semibold">
-                          {sim.titleKo}
-                        </td>
-                        <td className="border border-slate-300 p-2 font-mono text-[0.6875rem]">
-                          [{sim.targetFunction}] {sim.adversarialActionKo}
-                          <div className="mt-0.5 text-[0.65rem] text-slate-500">
-                            Gas: {sim.gasUsed} | Calldata: {sim.calldata.slice(0, 26)}...
-                          </div>
-                        </td>
-                        <td className="border border-slate-300 p-2 font-mono text-[0.6875rem]">
-                          <div>Before: {sim.beforeState}</div>
-                          <div className="mt-0.5 font-semibold">
-                            After: {sim.afterState}
-                          </div>
-                        </td>
-                        <td className="border border-slate-300 p-2 font-mono font-bold">
-                          {sim.badgeText}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
-
           <div className="mt-5">
-            <h3 className="text-sm font-bold text-slate-900">
-              4. 법무 시정요구서(Legal Cure Notice) 및 Solidity 방어 패치 명세
+            <h3 className="font-editorial text-base font-bold text-[#111315]">
+              3. 법무 시정요구서(Legal Cure Notice) 및 Solidity 방어 패치 명세
             </h3>
-            <pre className="mt-2 whitespace-pre-wrap rounded border border-slate-300 bg-slate-50 p-3 font-sans text-[0.7rem] leading-relaxed text-slate-800">
+            <pre className="mt-2 whitespace-pre-wrap border border-[#111315] bg-[#FAF9F5] p-3 font-sans text-[0.7rem] leading-relaxed text-[#111315]">
               {legalCureNotice.fullNoticeTextKo}
             </pre>
           </div>
@@ -629,256 +652,288 @@ export function ReviewWorkspace({
       )}
 
       {/* =================================================================== */}
-      {/* Dedicated Panel: Legal Cure Notice & Solidity Code Remediation Diff */}
+      {/* Formal Legal Cure Notice & Solidity Redline Comparison Table        */}
       {/* =================================================================== */}
-      <div className="rounded-xl border border-indigo-500/40 bg-slate-900/95 p-6 shadow-lg">
-        <div className="flex flex-wrap items-start justify-between gap-4 border-b border-slate-800 pb-4">
+      <section className="border-2 border-[#111315] bg-white">
+        <div className="flex flex-wrap items-start justify-between gap-4 border-b-2 border-[#111315] bg-[#EFECE6] px-6 py-4">
           <div className="space-y-1">
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-indigo-300">
-              <Code2 className="h-4 w-4 text-indigo-400" />
-              법무 시정요구서(Legal Cure Notice) &amp; Solidity 방어 패치(Code Remediation Diff)
+            <div className="font-mono text-[0.6875rem] font-bold uppercase tracking-[0.14em] text-[#5A6065]">
+              SECTION III // OFFICIAL LEGAL CURE NOTICE &amp; REDLINE REMEDIATION SCHEDULE
             </div>
-            <h3 className="text-base font-bold text-white">
-              공시·스마트계약 불일치 소명 요구 공문 초안 및 코드/백서 양방향 시정 가이드
+            <h3 className="font-editorial text-xl font-bold text-[#111315]">
+              법무 시정요구서(Legal Cure Notice) &amp; Solidity 방어 패치(Code Remediation Diff)
             </h3>
-            <p className="text-xs text-slate-400">
-              검출된 불일치(<code>MISMATCH</code>) 및 행위 재현 시뮬레이션(
-              <code>BREACH_SUCCEEDED</code>) 증거와 한·EU·미 3대 관할권 법조문을 인용해 발행사 앞 발송할 공식 소명·시정요구서 초안과 Solidity 스마트계약 패치 코드를 자동 생성합니다.
+            <p className="text-xs text-[#5A6065]">
+              검출된 불일치(<code>MISMATCH</code>) 및 행위 재현 시뮬레이션(<code>BREACH_SUCCEEDED</code>) 증거와 한·EU·미 3대 관할권 법조문을 인용해 발행사 앞 발송할 공식 소명·시정요구서 초안과 Solidity 스마트계약 Redline 패치 대조표를 생성합니다.
             </p>
           </div>
 
           <button
             type="button"
             onClick={handleCopyCureNotice}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-indigo-400/40 bg-indigo-600/25 px-3.5 py-2 text-xs font-semibold text-indigo-200 hover:bg-indigo-600/40"
+            className="rounded-[2px] border border-[#0F172A] bg-[#0F172A] px-4 py-2 font-mono text-xs font-semibold text-white transition-colors hover:bg-[#1E293B]"
           >
-            <Copy className="h-3.5 w-3.5" />
             {copiedCureNotice
               ? "시정요구서 전문 복사됨!"
               : "법무 시정요구서(Markdown) 전문 복사"}
           </button>
         </div>
 
-        {/* Formal Legal Cure Notice Markdown Box */}
-        <div className="mt-4 rounded-lg border border-slate-800 bg-slate-950 p-4">
-          <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-xs">
-            <span className="font-mono font-bold text-amber-300">
-              문서번호: {legalCureNotice.documentNumber} | 수신: {legalCureNotice.recipientProject}
+        {/* Official Legal Cure Notice Memorandum Sheet */}
+        <div className="border-b-2 border-[#111315] bg-[#FAF9F5] p-6">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-[#111315] pb-2 font-mono text-xs">
+            <span className="font-bold text-[#111315]">
+              MEMORANDUM NO: {legalCureNotice.documentNumber} // TO: {legalCureNotice.recipientProject}
             </span>
-            <span className="font-mono text-slate-400">
-              발신일: {legalCureNotice.issuedDateIso} | 검토역: {reviewerName}
+            <span className="text-[#5A6065]">
+              DATE: {legalCureNotice.issuedDateIso} // COUNSEL: {reviewerName}
             </span>
           </div>
-          <pre className="max-h-72 overflow-y-auto whitespace-pre-wrap rounded border border-slate-800/90 bg-slate-900/90 p-3.5 font-sans text-xs leading-relaxed text-slate-200">
+          <pre className="max-h-80 overflow-y-auto whitespace-pre-wrap border border-[#D8D4CC] bg-white p-5 font-sans text-xs leading-relaxed text-[#111315]">
             {legalCureNotice.fullNoticeTextKo}
           </pre>
         </div>
 
-        {/* Side-by-Side Solidity Remediation Diff & Whitepaper Redline per Item */}
-        <div className="mt-5 space-y-4">
-          <div className="flex items-center gap-2 text-xs font-semibold text-emerald-300">
-            <Flame className="h-4 w-4 text-amber-400" />
-            <span>
-              항목별 Solidity 취약 코드(<code>- BLIX</code>) vs 공시 준수 방어 코드(
-              <code>+ BLIC Patch</code>) 및 백서 정정(Redline) 명세
+        {/* Redline Comparison Table: Vulnerable Solidity (- BLIX) vs Remediated Patch (+ BLIC) */}
+        <div className="p-6">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+            <div className="font-mono text-xs font-bold uppercase tracking-[0.1em] text-[#111315]">
+              REDLINE COMPARISON SCHEDULE // VULNERABLE SOLIDITY (- BLIX) VS. REMEDIATED PATCH (+ BLIC) &amp; WHITEPAPER REDLINE
+            </div>
+            <span className="font-mono text-[0.6875rem] text-[#5A6065]">
+              5 MANDATORY CLAUSES REDLINE TABLE
             </span>
           </div>
 
-          {items.map((item) => {
-            const spec = CODE_REMEDIATION_SPECS[item.itemKey];
-            if (!spec) return null;
+          <div className="overflow-x-auto border border-[#111315]">
+            <table className="w-full border-collapse text-left">
+              <thead>
+                <tr className="border-b border-[#111315] bg-[#EFECE6] font-mono text-[0.6875rem] font-bold uppercase tracking-[0.08em] text-[#111315]">
+                  <th className="border-r border-[#D8D4CC] px-4 py-3">
+                    조항 및 취약점 진단 (Clause &amp; Diagnosis)
+                  </th>
+                  <th className="border-r border-[#D8D4CC] px-4 py-3 text-[#991B1B]">
+                    - 취약 코드 (Vulnerable Solidity)
+                  </th>
+                  <th className="border-r border-[#D8D4CC] px-4 py-3 text-[#166534]">
+                    + 공시 준수 방어 패치 (Remediated Solidity)
+                  </th>
+                  <th className="px-4 py-3">
+                    양방향 시정 권고안 (Option A: 코드 패치 / Option B: 백서 정정)
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#111315]">
+                {items.map((item, idx) => {
+                  const spec = CODE_REMEDIATION_SPECS[item.itemKey];
+                  if (!spec) return null;
+                  const clauseNum = String(idx + 1).padStart(2, "0");
+
+                  return (
+                    <tr key={`remediation-${item.itemKey}`} className="align-top bg-white">
+                      {/* Col 1: Clause & Diagnosis */}
+                      <td className="border-r border-[#D8D4CC] p-4 lg:w-1/5">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="font-mono text-xs font-bold text-[#111315]">
+                            § {clauseNum} [{item.itemKey}]
+                          </span>
+                          <ComparisonStatusBadge status={item.status} />
+                        </div>
+                        <div className="font-editorial mt-1.5 text-base font-bold text-[#111315]">
+                          {spec.titleKo}
+                        </div>
+                        <p className="mt-2 border-l-2 border-[#991B1B] pl-2.5 text-xs leading-relaxed text-[#5A6065]">
+                          <strong className="text-[#991B1B]">취약점 진단:</strong>{" "}
+                          {spec.vulnerabilitySummaryKo}
+                        </p>
+                      </td>
+
+                      {/* Col 2: Vulnerable Code (- Redline) */}
+                      <td className="border-r border-[#D8D4CC] bg-[#FDECEC]/35 p-4 lg:w-[27%]">
+                        <div className="mb-1.5 font-mono text-[0.65rem] font-bold text-[#991B1B]">
+                          - {spec.vulnerableContractLabel}
+                        </div>
+                        <pre className="overflow-x-auto border border-[#991B1B]/40 bg-white p-2.5 font-mono text-[0.6875rem] leading-relaxed text-[#991B1B]">
+                          {spec.vulnerableSolidityCode}
+                        </pre>
+                      </td>
+
+                      {/* Col 3: Remediated Code (+ Redline) */}
+                      <td className="border-r border-[#D8D4CC] bg-[#EAF3EC]/35 p-4 lg:w-[27%]">
+                        <div className="mb-1.5 font-mono text-[0.65rem] font-bold text-[#166534]">
+                          + {spec.remediatedContractLabel}
+                        </div>
+                        <pre className="overflow-x-auto border border-[#166534]/40 bg-white p-2.5 font-mono text-[0.6875rem] leading-relaxed text-[#166534]">
+                          {spec.remediatedSolidityCode}
+                        </pre>
+                      </td>
+
+                      {/* Col 4: Dual Remediation Options */}
+                      <td className="space-y-2.5 p-4 text-xs lg:w-[26%]">
+                        <div className="border border-[#166534]/50 bg-[#EAF3EC]/30 p-2.5">
+                          <div className="font-mono text-[0.65rem] font-bold uppercase text-[#166534]">
+                            [OPTION A] 스마트계약 재배포 / 권한 소각
+                          </div>
+                          <p className="mt-1 text-[0.72rem] leading-relaxed text-[#111315]">
+                            {spec.whitepaperRedline.optionACodeEnforcedText}
+                          </p>
+                        </div>
+
+                        <div className="border border-[#D8D4CC] bg-[#FAF9F5] p-2.5">
+                          <div className="font-mono text-[0.65rem] font-bold uppercase text-[#92400E]">
+                            [OPTION B] 백서 공시 문구 정정 (Redline)
+                          </div>
+                          <p className="mt-1 text-[0.72rem] leading-relaxed text-[#111315]">
+                            {spec.whitepaperRedline.optionBDisclosureRiskRedline}
+                          </p>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      {/* =================================================================== */}
+      {/* Section IV: Clause-by-Clause Final Legal Sign-Off Ledger            */}
+      {/* =================================================================== */}
+      <section className="border border-[#111315] bg-white">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#111315] bg-[#EFECE6] px-6 py-3.5">
+          <div className="font-mono text-xs font-bold uppercase tracking-[0.12em] text-[#111315]">
+            SECTION IV // CLAUSE-BY-CLAUSE LEGAL SIGN-OFF &amp; REVIEWER NOTES (§ 01 — § 05)
+          </div>
+          <span className="font-mono text-[0.6875rem] text-[#5A6065]">
+            HUMAN-IN-THE-LOOP FINAL DETERMINATION
+          </span>
+        </div>
+
+        <div className="divide-y divide-[#111315]">
+          {items.map((item, idx) => {
+            const legalMapping = LEGAL_STATUTE_MAP[item.itemKey];
+            const clauseNum = String(idx + 1).padStart(2, "0");
+
             return (
-              <div
-                key={`remediation-${item.itemKey}`}
-                className="rounded-lg border border-slate-800 bg-slate-950/90 p-4"
-              >
-                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
-                  <div>
-                    <span className="font-mono text-xs font-bold text-indigo-300">
-                      [{item.itemKey}]
-                    </span>{" "}
-                    <span className="text-sm font-bold text-white">
-                      {spec.titleKo}
+              <div key={item.itemKey} className="p-6">
+                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#D8D4CC] pb-3">
+                  <div className="flex flex-wrap items-baseline gap-2.5">
+                    <span className="font-mono text-xs font-bold tracking-[0.08em] text-[#111315]">
+                      CLAUSE § {clauseNum} [{item.itemKey}]
                     </span>
+                    <h3 className="font-editorial text-lg font-bold text-[#111315]">
+                      {item.titleKo}
+                    </h3>
                   </div>
-                  <ComparisonStatusBadge status={item.status} />
+
+                  <div className="flex items-center gap-3">
+                    <ComparisonStatusBadge status={item.status} />
+                    <label
+                      htmlFor={`status-${item.itemKey}`}
+                      className="sr-only"
+                    >
+                      최종 상태 변경
+                    </label>
+                    <select
+                      id={`status-${item.itemKey}`}
+                      value={item.status}
+                      onChange={(e) =>
+                        updateItemReview(
+                          item.itemKey,
+                          "status",
+                          e.target.value as AuditComparisonStatus
+                        )
+                      }
+                      className="rounded-[2px] border border-[#111315] bg-[#FAF9F5] px-3 py-1.5 font-mono text-xs font-semibold text-[#111315] focus:bg-white focus:outline-none"
+                    >
+                      <option value="MATCH">MATCH (일치 확정)</option>
+                      <option value="MISMATCH">MISMATCH (불일치 확정)</option>
+                      <option value="NEEDS_HUMAN_REVIEW">
+                        NEEDS_HUMAN_REVIEW (추가 소명/검토 필요)
+                      </option>
+                      <option value="PENDING">PENDING (대기)</option>
+                    </select>
+                  </div>
                 </div>
 
-                <p className="mt-2 text-xs text-rose-200/90">
-                  <strong className="text-rose-300">핵심 취약점 진단:</strong>{" "}
-                  {spec.vulnerabilitySummaryKo}
-                </p>
-
-                <div className="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-2">
-                  <div className="rounded border border-rose-500/30 bg-rose-950/20 p-3">
-                    <div className="mb-1.5 font-mono text-[0.6875rem] font-bold text-rose-300">
-                      - {spec.vulnerableContractLabel}
+                <div className="mt-4 grid grid-cols-1 gap-4 text-xs sm:grid-cols-2">
+                  <div className="border border-[#D8D4CC] bg-[#FAF9F5] p-3.5">
+                    <div className="font-mono text-[0.6875rem] font-bold uppercase text-[#5A6065]">
+                      백서 공시 주장 ({item.sectionRef})
                     </div>
-                    <pre className="overflow-x-auto font-mono text-[0.6875rem] leading-relaxed text-rose-200">
-                      {spec.vulnerableSolidityCode}
-                    </pre>
+                    <p className="mt-1.5 font-medium leading-relaxed text-[#111315]">
+                      {item.disclosedClaim}
+                    </p>
                   </div>
-
-                  <div className="rounded border border-emerald-500/30 bg-emerald-950/20 p-3">
-                    <div className="mb-1.5 font-mono text-[0.6875rem] font-bold text-emerald-300">
-                      + {spec.remediatedContractLabel}
+                  <div className="border border-[#D8D4CC] bg-[#FAF9F5] p-3.5">
+                    <div className="font-mono text-[0.6875rem] font-bold uppercase text-[#5A6065]">
+                      온체인 실제 값 ({item.evidenceFunctionOrSlot})
                     </div>
-                    <pre className="overflow-x-auto font-mono text-[0.6875rem] leading-relaxed text-emerald-200">
-                      {spec.remediatedSolidityCode}
-                    </pre>
+                    <p className="mt-1.5 font-mono leading-relaxed text-[#111315]">
+                      {item.onchainState}
+                    </p>
                   </div>
                 </div>
 
-                <div className="mt-3 grid grid-cols-1 gap-2.5 text-xs md:grid-cols-2">
-                  <div className="rounded border border-slate-800 bg-slate-900/80 p-2.5">
-                    <div className="font-semibold text-emerald-300">
-                      시정 방안 A — 스마트계약 재배포 / 권한 소각 (Code Remediation)
+                {legalMapping && (
+                  <div className="mt-3 border border-[#D8D4CC] bg-white p-3">
+                    <div className="font-mono text-[0.6875rem] font-bold uppercase tracking-[0.06em] text-[#5A6065]">
+                      적용 법조문 및 거래소 심사 기준 (KR / EU / US)
                     </div>
-                    <p className="mt-1 text-[0.72rem] leading-relaxed text-slate-300">
-                      {spec.whitepaperRedline.optionACodeEnforcedText}
-                    </p>
-                  </div>
-                  <div className="rounded border border-slate-800 bg-slate-900/80 p-2.5">
-                    <div className="font-semibold text-sky-300">
-                      시정 방안 B — 백서 공시 문구 정정 공고 (Whitepaper Redline)
+                    <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-3">
+                      {Object.values(legalMapping.statutes).map((cit) => (
+                        <div
+                          key={cit.jurisdiction}
+                          className="border border-[#D8D4CC] bg-[#FAF9F5] p-2.5 text-[0.6875rem]"
+                        >
+                          <div className="font-semibold text-[#111315]">
+                            {cit.flag} [{cit.jurisdictionLabelKo}] {cit.statuteTitle}
+                          </div>
+                          <div className="mt-0.5 font-mono font-bold text-[#92400E]">
+                            {cit.articleRef}
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                    <p className="mt-1 text-[0.72rem] leading-relaxed text-slate-300">
-                      {spec.whitepaperRedline.optionBDisclosureRiskRedline}
-                    </p>
                   </div>
+                )}
+
+                <div className="mt-4">
+                  <label
+                    htmlFor={`note-${item.itemKey}`}
+                    className="block font-mono text-[0.6875rem] font-bold uppercase tracking-[0.08em] text-[#111315]"
+                  >
+                    법무·컴플라이언스 담당자 검토 메모 (reviewerNote)
+                  </label>
+                  <textarea
+                    id={`note-${item.itemKey}`}
+                    rows={2}
+                    value={item.reviewerNote}
+                    onChange={(e) =>
+                      updateItemReview(item.itemKey, "reviewerNote", e.target.value)
+                    }
+                    placeholder="소명 요청 사항, 온체인 함수 위험도, 오프체인 증빙 대조 결과 등을 기록하세요."
+                    className="mt-1.5 w-full rounded-[2px] border border-[#111315] bg-[#FAF9F5] p-3 text-xs leading-relaxed text-[#111315] focus:bg-white focus:outline-none"
+                  />
                 </div>
               </div>
             );
           })}
         </div>
-      </div>
-
-      {/* Item-by-Item Legal Review & Sign-off */}
-      <div className="space-y-4">
-        {items.map((item) => {
-          const legalMapping = LEGAL_STATUTE_MAP[item.itemKey];
-          return (
-            <div
-              key={item.itemKey}
-              className="rounded-xl border border-slate-800 bg-slate-900/80 p-5"
-            >
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
-                <div>
-                  <span className="font-mono text-xs font-semibold text-blue-400">
-                    [{item.itemKey}]
-                  </span>
-                  <h3 className="text-base font-bold text-white">
-                    {item.titleKo}
-                  </h3>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <ComparisonStatusBadge status={item.status} />
-                  <label
-                    htmlFor={`status-${item.itemKey}`}
-                    className="sr-only"
-                  >
-                    최종 상태 변경
-                  </label>
-                  <select
-                    id={`status-${item.itemKey}`}
-                    value={item.status}
-                    onChange={(e) =>
-                      updateItemReview(
-                        item.itemKey,
-                        "status",
-                        e.target.value as AuditComparisonStatus
-                      )
-                    }
-                    className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs font-semibold text-white focus:border-blue-500 focus:outline-none"
-                  >
-                    <option value="MATCH">MATCH (일치 확정)</option>
-                    <option value="MISMATCH">MISMATCH (불일치 확정)</option>
-                    <option value="NEEDS_HUMAN_REVIEW">
-                      NEEDS_HUMAN_REVIEW (추가 소명/검토 필요)
-                    </option>
-                    <option value="PENDING">PENDING (대기)</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="mt-3 grid grid-cols-1 gap-3 text-xs sm:grid-cols-2">
-                <div className="rounded-lg bg-slate-950/70 p-3">
-                  <div className="font-semibold text-sky-300">
-                    백서 공시 주장 ({item.sectionRef})
-                  </div>
-                  <p className="mt-1 text-slate-200">{item.disclosedClaim}</p>
-                </div>
-                <div className="rounded-lg bg-slate-950/70 p-3">
-                  <div className="font-semibold text-indigo-300">
-                    온체인 실제 값 ({item.evidenceFunctionOrSlot})
-                  </div>
-                  <p className="mt-1 font-mono text-slate-200">
-                    {item.onchainState}
-                  </p>
-                </div>
-              </div>
-
-              {legalMapping && (
-                <div className="mt-3 rounded-lg border border-slate-800/90 bg-slate-950/80 p-3">
-                  <div className="flex items-center gap-1.5 text-[0.7rem] font-semibold text-amber-300">
-                    <Scale className="h-3.5 w-3.5 text-amber-400" />
-                    <span>적용 법조문 및 거래소 심사 기준 (KR / EU / US)</span>
-                  </div>
-                  <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-3">
-                    {Object.values(legalMapping.statutes).map((cit) => (
-                      <div
-                        key={cit.jurisdiction}
-                        className="rounded border border-slate-800 bg-slate-900/70 p-2 text-[0.6875rem]"
-                      >
-                        <div className="font-semibold text-indigo-200">
-                          {cit.flag} [{cit.jurisdictionLabelKo}] {cit.statuteTitle}
-                        </div>
-                        <div className="mt-0.5 font-mono text-amber-300">
-                          {cit.articleRef}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              <div className="mt-3">
-                <label
-                  htmlFor={`note-${item.itemKey}`}
-                  className="block text-xs font-semibold text-amber-300"
-                >
-                  법무·컴플라이언스 담당자 검토 메모 (reviewerNote)
-                </label>
-                <textarea
-                  id={`note-${item.itemKey}`}
-                  rows={2}
-                  value={item.reviewerNote}
-                  onChange={(e) =>
-                    updateItemReview(item.itemKey, "reviewerNote", e.target.value)
-                  }
-                  placeholder="소명 요청 사항, 온체인 함수 위험도, 오프체인 증빙 대조 결과 등을 기록하세요."
-                  className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white focus:border-blue-500 focus:outline-none"
-                />
-              </div>
-            </div>
-          );
-        })}
-      </div>
+      </section>
 
       {/* Bottom Navigation */}
-      <div className="flex flex-wrap items-center justify-between gap-4 border-t border-slate-800 pt-4">
+      <div className="flex flex-wrap items-center justify-between gap-4 border border-[#111315] bg-[#EFECE6] px-6 py-4">
         <Link
           href={`/audits/${audit.id}/compare`}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-slate-700 px-4 py-2 text-xs font-medium text-slate-300 hover:bg-slate-800"
+          className="rounded-[2px] border border-[#111315] bg-white px-4 py-2 font-mono text-xs font-semibold text-[#111315] transition-colors hover:bg-[#F7F6F2]"
         >
-          <ArrowLeft className="h-3.5 w-3.5" />
-          이전 단계: Chainlink CRE 대조 (/compare)
+          &larr; 이전 단계: Chainlink CRE 대조 (/compare)
         </Link>
 
-        <div className="flex items-center gap-2 text-xs text-slate-400">
-          <ShieldAlert className="h-4 w-4 text-amber-400" />
-          <span>모든 변경사항은 SQLite DB(prisma/dev.db)에 영구 보존됩니다.</span>
+        <div className="font-mono text-xs text-[#5A6065]">
+          ARCHIVAL PERSISTENCE: 모든 변경사항은 SQLite DB(prisma/dev.db)에 영구 보존됩니다.
         </div>
       </div>
     </div>

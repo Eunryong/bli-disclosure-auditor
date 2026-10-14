@@ -8,68 +8,71 @@ export function ComparisonStatusBadge({
   switch (status) {
     case "MATCH":
       return (
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-500/15 px-2.5 py-0.5 text-xs font-semibold text-emerald-300">
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-          MATCH (일치)
+        <span className="inline-flex items-center gap-1.5 rounded-[2px] border border-[#166534]/40 bg-[#EAF3EC] px-2 py-0.5 font-mono text-[0.6875rem] font-semibold tracking-tight text-[#166534]">
+          <span className="h-1.5 w-1.5 bg-[#166534]" />
+          MATCH · 일치
         </span>
       );
     case "MISMATCH":
       return (
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-rose-500/40 bg-rose-500/15 px-2.5 py-0.5 text-xs font-semibold text-rose-300">
-          <span className="h-1.5 w-1.5 rounded-full bg-rose-400" />
-          MISMATCH (불일치)
+        <span className="inline-flex items-center gap-1.5 rounded-[2px] border border-[#991B1B]/40 bg-[#FDECEC] px-2 py-0.5 font-mono text-[0.6875rem] font-semibold tracking-tight text-[#991B1B]">
+          <span className="h-1.5 w-1.5 bg-[#991B1B]" />
+          MISMATCH · 불일치
         </span>
       );
     case "NEEDS_HUMAN_REVIEW":
       return (
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/40 bg-amber-500/15 px-2.5 py-0.5 text-xs font-semibold text-amber-300">
-          <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
-          NEEDS_HUMAN_REVIEW (법무검토 필요)
+        <span className="inline-flex items-center gap-1.5 rounded-[2px] border border-[#92400E]/40 bg-[#FEF3C7] px-2 py-0.5 font-mono text-[0.6875rem] font-semibold tracking-tight text-[#92400E]">
+          <span className="h-1.5 w-1.5 bg-[#92400E]" />
+          NEEDS_HUMAN_REVIEW · 법무검토
         </span>
       );
     default:
       return (
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-600 bg-slate-800/80 px-2.5 py-0.5 text-xs font-semibold text-slate-300">
-          <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
-          PENDING (대기)
+        <span className="inline-flex items-center gap-1.5 rounded-[2px] border border-[#D8D4CC] bg-[#EFECE6] px-2 py-0.5 font-mono text-[0.6875rem] font-semibold tracking-tight text-[#5A6065]">
+          <span className="h-1.5 w-1.5 bg-[#5A6065]" />
+          PENDING · 대기
         </span>
       );
   }
 }
 
 export function StageBadge({ stage }: { stage: AuditStage }) {
-  const map: Record<
-    AuditStage,
-    { label: string; className: string }
-  > = {
+  const map: Record<AuditStage, { code: string; label: string; className: string }> = {
     CREATED: {
-      label: "1단계: 등록 완료",
-      className: "border-slate-600 bg-slate-800 text-slate-300",
+      code: "STG-01",
+      label: "접수 완료",
+      className: "border-[#D8D4CC] bg-[#EFECE6] text-[#5A6065]",
     },
     EXTRACTED: {
-      label: "2단계: 공시항목 추출됨",
-      className: "border-sky-500/40 bg-sky-500/15 text-sky-300",
+      code: "STG-02",
+      label: "조항 발췌됨",
+      className: "border-[#D8D4CC] bg-white text-[#111315]",
     },
     COMPARED: {
-      label: "3단계: CRE 온체인 대조됨",
-      className: "border-indigo-500/40 bg-indigo-500/15 text-indigo-300",
+      code: "STG-03",
+      label: "CRE 대조 완료",
+      className: "border-[#0F172A]/40 bg-[#EFECE6] text-[#0F172A]",
     },
     REVIEWED: {
-      label: "4단계: 법무검토 완료",
-      className: "border-purple-500/40 bg-purple-500/15 text-purple-300",
+      code: "STG-04",
+      label: "법무 심사 완료",
+      className: "border-[#0F172A] bg-white text-[#0F172A]",
     },
     ANCHORED: {
-      label: "최종: 온체인 해시 앵커링됨",
-      className: "border-emerald-500/40 bg-emerald-500/15 text-emerald-300",
+      code: "NOTARIZED",
+      label: "온체인 공증 완료",
+      className: "border-[#166534]/50 bg-[#EAF3EC] text-[#166534]",
     },
   };
 
   const item = map[stage] ?? map.CREATED;
   return (
     <span
-      className={`inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-medium ${item.className}`}
+      className={`inline-flex items-center gap-1.5 rounded-[2px] border px-2 py-0.5 font-mono text-[0.6875rem] font-semibold tracking-tight ${item.className}`}
     >
-      {item.label}
+      <span>[{item.code}]</span>
+      <span className="font-sans">{item.label}</span>
     </span>
   );
 }
