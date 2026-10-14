@@ -273,6 +273,54 @@ export function CompareWorkspace({
           </div>
         </div>
 
+        {/* Google Gemini AI CRE Reasoning Telemetry Strip */}
+        {(creTrace?.geminiTelemetry?.step3 || audit.geminiTelemetry?.compare) && (
+          <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[#111315] bg-[#EFECE6] px-5 py-2 font-mono text-[0.7rem] text-[#111315]">
+            {(() => {
+              const gm =
+                creTrace?.geminiTelemetry?.step3 ||
+                audit.geminiTelemetry?.compare!;
+              return (
+                <>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <span
+                      className={`rounded-[2px] border px-2 py-0.5 font-bold ${
+                        gm.liveApiCalled
+                          ? "border-[#166534] bg-[#EAF3EC] text-[#166534]"
+                          : "border-[#9A3412] bg-[#FEF5EC] text-[#9A3412]"
+                      }`}
+                    >
+                      {gm.liveApiCalled
+                        ? "CRE + GEMINI AI LIVE REASONING"
+                        : "CRE + GEMINI DETERMINISTIC ENGINE"}
+                    </span>
+                    <span>
+                      MODEL: <strong>{gm.model}</strong>
+                    </span>
+                    <span className="text-[#D8D4CC]">|</span>
+                    <span>
+                      LATENCY: <strong>{gm.latencyMs} ms</strong>
+                    </span>
+                    <span className="text-[#D8D4CC]">|</span>
+                    <span>
+                      TOKENS:{" "}
+                      <strong>
+                        {gm.totalTokens} (prompt {gm.promptTokens} + completion{" "}
+                        {gm.completionTokens})
+                      </strong>
+                    </span>
+                  </div>
+                  {gm.fallbackReason && (
+                    <span className="text-[0.65rem] text-[#9A3412]">
+                      {gm.fallbackReason}
+                    </span>
+                  )}
+                </>
+              );
+            })()}
+          </div>
+        )}
+
         {/* Optional ABI eth_call Raw Trace Inspector Table */}
         {showRawTraces && callTraces.length > 0 && (
           <div className="border-t border-[#111315] bg-white p-5">

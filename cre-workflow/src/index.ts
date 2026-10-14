@@ -18,6 +18,7 @@ import {
   compareDisclosedItemsWithOnchainSnapshot,
   type ItemComparisonOutput,
 } from "@/lib/comparator";
+import { synthesizeCreComparisonRationalesWithGemini } from "@/lib/llm";
 import type {
   AuditCheckItemDTO,
   AuditComparisonStatus,
@@ -288,13 +289,14 @@ export async function executeCreAuditWorkflow(
   steps.push({
     stepNumber: 1,
     stepId: "step_1_offchain_disclosure_fetch",
-    title: "[Step 1: Trigger & Off-chain Disclosure Fetch]",
-    capability: "chainlink.capabilities.http_client@1.0.0 + llm_extractor",
+    title: "[Step 1: Trigger & Off-chain Disclosure Fetch (Google Gemini AI)]",
+    capability:
+      "chainlink.capabilities.http_client@1.0.0 + google_gemini_llm_extractor",
     status: "SUCCESS",
     startedAt: step1StartedIso,
     completedAt: new Date(step1End).toISOString(),
     durationMs: step1End - step1Start,
-    summary: `Fetched SHA-256 documentHash (${params.documentHash.slice(0, 14)}...) & extracted 5 structured disclosure claims via ${freshExtraction.engine} engine.`,
+    summary: `Fetched SHA-256 documentHash (${params.documentHash.slice(0, 14)}...) & extracted 5 structured disclosure claims via ${freshExtraction.engine} (${freshExtraction.geminiTelemetry.model}, ${freshExtraction.geminiTelemetry.latencyMs}ms).`,
     inputPayload: {
       triggerType: "cre.triggers.http_webhook@1.0.0",
       auditCaseId: params.auditCaseId,
@@ -305,6 +307,7 @@ export async function executeCreAuditWorkflow(
     outputPayload: {
       documentHash: params.documentHash,
       extractionEngine: freshExtraction.engine,
+      geminiTelemetry: freshExtraction.geminiTelemetry,
       claimCount: disclosedClaimsSummary.length,
       disclosedClaims: disclosedClaimsSummary,
     },
@@ -387,11 +390,42 @@ export async function executeCreAuditWorkflow(
   const step3Start = Date.now();
   const step3StartedIso = new Date(step3Start).toISOString();
 
-  const comparisons = compareDisclosedItemsWithOnchainSnapshot(
+  const rawComparisons = compareDisclosedItemsWithOnchainSnapshot(
     enrichedCheckItems,
     snapshot,
     params.whitepaperText
   );
+
+  // Synthesize legal/regulatory discrepancy rationales via Google Gemini AI
+  const step3Gemini = await synthesizeCreComparisonRationalesWithGemini({
+    tokenSymbol: snapshot.symbol,
+    tokenAddress: snapshot.tokenAddress,
+    blockNumber: snapshot.blockNumber,
+    items: rawComparisons.map((c) => {
+      const checkItem = enrichedCheckItems.find((i) => i.itemKey === c.itemKey);
+      return {
+        itemKey: c.itemKey,
+        disclosedClaim: checkItem?.disclosedClaim || "",
+        sourceQuote: checkItem?.sourceQuote || "",
+        onchainState: c.onchainState,
+        status: c.status,
+        severity: c.severity,
+        defaultRationale: c.rationale,
+      };
+    }),
+    breachSimulations: snapshot.breachSimulations,
+  });
+
+  const comparisons: ItemComparisonOutput[] = rawComparisons.map((comp) => {
+    const aiRationale = step3Gemini.rationalesByKey[comp.itemKey];
+    if (aiRationale && String(aiRationale).trim().length > 0) {
+      return {
+        ...comp,
+        rationale: String(aiRationale).trim(),
+      };
+    }
+    return comp;
+  });
 
   const mismatchCount = comparisons.filter((c) => c.status === "MISMATCH").length;
   const needsReviewCount = comparisons.filter(
@@ -420,17 +454,20 @@ export async function executeCreAuditWorkflow(
   steps.push({
     stepNumber: 3,
     stepId: "step_3_don_consensus_eval",
-    title: "[Step 3: DON Consensus & Discrepancy Evaluation]",
-    capability: "chainlink.capabilities.ocr3_consensus@1.0.0",
+    title:
+      "[Step 3: DON Consensus & Gemini AI Discrepancy Evaluation]",
+    capability:
+      "chainlink.capabilities.ocr3_consensus@1.0.0 + google_gemini_legal_reasoning",
     status: "SUCCESS",
     startedAt: step3StartedIso,
     completedAt: new Date(step3End).toISOString(),
     durationMs: step3End - step3Start,
-    summary: `DON (${consensus.quorumReached}/${consensus.nodeCount} nodes, ${consensus.protocol}) reached consensus: ${overallStatus} (MATCH=${matchCount}, MISMATCH=${mismatchCount}, NEEDS_HUMAN_REVIEW=${needsReviewCount}) | reportHash=${reportHash.slice(0, 14)}...`,
+    summary: `DON (${consensus.quorumReached}/${consensus.nodeCount} nodes, ${consensus.protocol}) + Gemini AI (${step3Gemini.telemetry.model}, ${step3Gemini.telemetry.latencyMs}ms) reached consensus: ${overallStatus} (MATCH=${matchCount}, MISMATCH=${mismatchCount}, NEEDS_HUMAN_REVIEW=${needsReviewCount}) | reportHash=${reportHash.slice(0, 14)}...`,
     inputPayload: {
       donId: consensus.donId,
       protocol: consensus.protocol,
       quorumRequired: consensus.quorumRequired,
+      geminiModel: step3Gemini.telemetry.model,
       evaluatedItemKeys: comparisons.map((c) => c.itemKey),
     },
     outputPayload: {
@@ -440,6 +477,7 @@ export async function executeCreAuditWorkflow(
         mismatchCount,
         needsReviewCount,
       },
+      geminiReasoningTelemetry: step3Gemini.telemetry,
       consensusDigest: consensus.consensusDigest,
       reportHash,
       itemVerdicts: comparisons.map((c) => ({
@@ -447,6 +485,7 @@ export async function executeCreAuditWorkflow(
         status: c.status,
         severity: c.severity,
         onchainState: c.onchainState,
+        rationale: c.rationale,
       })),
       nodeSignatures: consensus.nodeSignatures,
     },
@@ -566,6 +605,10 @@ export async function executeCreAuditWorkflow(
       reportHash,
     },
     breachSimulations: snapshot.breachSimulations,
+    geminiTelemetry: {
+      step1: freshExtraction.geminiTelemetry,
+      step3: step3Gemini.telemetry,
+    },
     totalDurationMs,
     executedAt: new Date().toISOString(),
     steps,

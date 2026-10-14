@@ -375,6 +375,16 @@ export async function runOnchainComparisonForAuditCase(
       ...snapshot,
       creWorkflowTrace: trace,
       anchorVerification: existingSnapshotObj.anchorVerification || undefined,
+      aiCureNoticeText: existingSnapshotObj.aiCureNoticeText || undefined,
+      geminiTelemetry: {
+        ...(existingSnapshotObj.geminiTelemetry || {}),
+        ...(trace.geminiTelemetry?.step1
+          ? { extract: trace.geminiTelemetry.step1 }
+          : {}),
+        ...(trace.geminiTelemetry?.step3
+          ? { compare: trace.geminiTelemetry.step3 }
+          : {}),
+      },
     },
     null,
     2

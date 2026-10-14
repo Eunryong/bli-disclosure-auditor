@@ -21,6 +21,7 @@ export async function POST(
 
     let items: UpdateExtractedItemInput[];
     let extractionEngine: string = "manual-edit";
+    let geminiTelemetry = undefined;
 
     if (body.mode === "auto") {
       const result = await extractFiveCoreItemsFromWhitepaper(
@@ -28,6 +29,7 @@ export async function POST(
       );
       items = result.items;
       extractionEngine = result.engine;
+      geminiTelemetry = result.geminiTelemetry;
     } else if (Array.isArray(body.items)) {
       items = body.items.map((raw: any) => ({
         itemKey: raw.itemKey as AuditCheckItemKey,
@@ -43,10 +45,11 @@ export async function POST(
       );
     }
 
-    const updated = await saveExtractedClaims(id, items);
+    const updated = await saveExtractedClaims(id, items, geminiTelemetry);
     return NextResponse.json({
       audit: updated,
       extractionEngine,
+      geminiTelemetry,
     });
   } catch (error: any) {
     return NextResponse.json(

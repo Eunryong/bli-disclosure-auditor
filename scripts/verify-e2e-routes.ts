@@ -27,6 +27,8 @@ import {
 import { POST as postExtractHandler } from "../src/app/api/audits/[id]/extract/route";
 import { POST as postCompareHandler } from "../src/app/api/audits/[id]/compare/route";
 import { POST as postReviewHandler } from "../src/app/api/audits/[id]/review/route";
+import { POST as postReviewAiDraftHandler } from "../src/app/api/audits/[id]/review/ai-draft/route";
+import { GET as getGeminiSettingsHandler } from "../src/app/api/settings/gemini/route";
 
 import { prisma } from "../src/lib/prisma";
 
@@ -58,13 +60,13 @@ function renderWithAppRouter(
 
 async function main() {
   console.log("================================================================================");
-  console.log("🚀 [Step 4 E2E Verification] 5 Multi-Page Routes & API Runtime Verification");
+  console.log("🚀 [Step 4 E2E Verification] 5 Multi-Page Routes & Gemini AI Pipeline Verification");
   console.log("================================================================================\n");
 
   // ---------------------------------------------------------------------------
-  // 0. Root Route (`/`) -> Redirects to `/audits`
+  // 0. Root Route (`/`) -> Redirects to `/audits` + `GET /api/settings/gemini`
   // ---------------------------------------------------------------------------
-  console.log("▶ [0/5] Verifying Root Route (`GET /`) -> Redirects to `/audits`...");
+  console.log("▶ [0/5] Verifying Root Route (`GET /`) & Gemini Settings API (`GET /api/settings/gemini`)...");
   let redirectTarget = "";
   try {
     HomePage();
@@ -78,7 +80,13 @@ async function main() {
     }
   }
   assert.equal(redirectTarget, "/audits", "Root page `/` must redirect to `/audits`");
-  console.log("  ✅ `GET /` cleanly redirects to `/audits` (NEXT_REDIRECT verified)\n");
+
+  const geminiSettingsRes = await getGeminiSettingsHandler();
+  assert.equal(geminiSettingsRes.status, 200, "GET /api/settings/gemini must return 200");
+  const geminiSettingsJson = await geminiSettingsRes.json();
+  assert.equal(typeof geminiSettingsJson.configured, "boolean", "configured boolean must be returned");
+  assert.ok(geminiSettingsJson.model, "Gemini model name must be returned");
+  console.log(`  ✅ \`GET /\` cleanly redirects to \`/audits\` & \`GET /api/settings/gemini\` verified (model=${geminiSettingsJson.model})\n`);
 
   // ---------------------------------------------------------------------------
   // 1. Page 1: `GET /audits`, `GET /api/audits`, `GET /api/samples`
@@ -157,8 +165,8 @@ async function main() {
   // ---------------------------------------------------------------------------
   // 3. Page 3: `GET /audits/[id]/extract` & `POST /api/audits/[id]/extract`
   // ---------------------------------------------------------------------------
-  console.log("▶ [3/5] Verifying Route 3: `GET /audits/[id]/extract` & `POST /api/audits/[id]/extract`...");
-  // 3a. Auto-extract 5 items from whitepaper
+  console.log("▶ [3/5] Verifying Route 3: `GET /audits/[id]/extract` & `POST /api/audits/[id]/extract` (Gemini AI Step 1)...");
+  // 3a. Auto-extract 5 items from whitepaper via Gemini AI / fallback
   const autoExtractReq = new NextRequest(`http://localhost:3300/api/audits/${createdId}/extract`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -170,6 +178,7 @@ async function main() {
   assert.equal(autoExtractRes.status, 200, "POST /api/audits/[id]/extract (auto) must return 200");
   const autoExtractData = await autoExtractRes.json();
   assert.equal(autoExtractData.audit.stage, "EXTRACTED", "Stage must transition to EXTRACTED");
+  assert.ok(autoExtractData.geminiTelemetry, "Extract response must include geminiTelemetry");
 
   // 3b. Manual adjustment save on `/audits/[id]/extract`
   const manualItems = autoExtractData.audit.checkItems.map((item: any) =>
@@ -211,20 +220,20 @@ async function main() {
   });
   const extractPageHtml = renderWithAppRouter(extractPageTree);
   assert.ok(
-    extractPageHtml.includes("Auto-Extract 5 Core Claims (AI/Rule)"),
+    extractPageHtml.includes("Extract 5 Core Claims with Google Gemini AI"),
     "Extract action button must render in English default"
   );
   assert.ok(
     extractPageHtml.includes("[Verified by Legal Counsel against Original Whitepaper]"),
     "Saved manual edit must render in SSR HTML"
   );
-  console.log(`  ✅ \`POST /api/audits/[id]/extract\` auto-extraction & manual override saved to SQLite`);
+  console.log(`  ✅ \`POST /api/audits/[id]/extract\` Gemini AI extraction & manual override saved to SQLite`);
   console.log(`  ✅ \`GET /audits/[id]/extract\` SSR HTML rendered (${extractPageHtml.length.toLocaleString()} bytes)\n`);
 
   // ---------------------------------------------------------------------------
   // 4. Page 4: `GET /audits/[id]/compare` & `POST /api/audits/[id]/compare`
   // ---------------------------------------------------------------------------
-  console.log("▶ [4/5] Verifying Route 4: `GET /audits/[id]/compare` & `POST /api/audits/[id]/compare` (Chainlink CRE)...");
+  console.log("▶ [4/5] Verifying Route 4: `GET /audits/[id]/compare` & `POST /api/audits/[id]/compare` (Chainlink CRE + Gemini AI)...");
   const compareReq = new NextRequest(`http://localhost:3300/api/audits/${createdId}/compare`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -240,6 +249,10 @@ async function main() {
   assert.equal(compareData.audit.mismatchCount, 4, "BLIX must detect 4 MISMATCH items");
   assert.equal(compareData.audit.needsReviewCount, 1, "BLIX must detect 1 NEEDS_HUMAN_REVIEW item");
   assert.ok(compareData.audit.creWorkflowTrace, "CRE Workflow Trace must be generated and stored");
+  assert.ok(
+    compareData.audit.creWorkflowTrace.geminiTelemetry,
+    "CRE Workflow Trace must include geminiTelemetry"
+  );
   assert.equal(
     compareData.audit.creWorkflowTrace.steps.length,
     4,
@@ -283,26 +296,39 @@ async function main() {
     "DON Consensus Digest must render on /compare"
   );
   console.log(
-    `  ✅ \`POST /api/audits/[id]/compare\` executed Chainlink CRE 4-step workflow + 4 Counterfactual Breach Simulations (Run ID: ${compareData.audit.creWorkflowRunId})`
+    `  ✅ \`POST /api/audits/[id]/compare\` executed Chainlink CRE 4-step workflow + Gemini AI reasoning + 4 Breach Simulations (Run ID: ${compareData.audit.creWorkflowRunId})`
   );
   console.log(`  ✅ \`GET /audits/[id]/compare\` SSR HTML rendered (${comparePageHtml.length.toLocaleString()} bytes) with CRE trace, 16 EVM reads, 4 Breach Proofs & KR/EU/US statutes\n`);
 
   // ---------------------------------------------------------------------------
-  // 5. Page 5: `GET /audits/[id]/review` & `POST /api/audits/[id]/review`
+  // 5. Page 5: `GET /audits/[id]/review`, `POST /api/audits/[id]/review/ai-draft` & `POST /api/audits/[id]/review`
   // ---------------------------------------------------------------------------
-  console.log("▶ [5/5] Verifying Route 5: `GET /audits/[id]/review` & `POST /api/audits/[id]/review` (Anchor & Report)...");
+  console.log("▶ [5/5] Verifying Route 5: `GET /audits/[id]/review`, `POST /api/audits/[id]/review/ai-draft` & `POST /api/audits/[id]/review`...");
+  // 5a. Generate Legal Opinion & Cure Notice with Gemini AI (`POST /api/audits/[id]/review/ai-draft`)
+  const aiDraftReq = new NextRequest(`http://localhost:3300/api/audits/${createdId}/review/ai-draft`, {
+    method: "POST",
+  });
+  const aiDraftRes = await postReviewAiDraftHandler(aiDraftReq, {
+    params: Promise.resolve({ id: createdId }),
+  });
+  assert.equal(aiDraftRes.status, 200, "POST /api/audits/[id]/review/ai-draft must return 200");
+  const aiDraftData = await aiDraftRes.json();
+  assert.ok(aiDraftData.audit.overallSummary, "Gemini AI draft must populate overallSummary");
+  assert.ok(aiDraftData.audit.aiCureNoticeText, "Gemini AI draft must populate aiCureNoticeText");
+  assert.ok(aiDraftData.geminiTelemetry, "Gemini AI draft must return geminiTelemetry");
+
+  // 5b. Anchor on AuditRegistry (`POST /api/audits/[id]/review`)
   const reviewReq = new NextRequest(`http://localhost:3300/api/audits/${createdId}/review`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       reviewerName: "Senior Legal Counsel (E2E Verification)",
-      overallSummary:
-        "Following comparison between BLIX whitepaper claims and MismatchedToken on-chain state, 4 critical mismatches (MISMATCH) and 1 human review item (NEEDS_HUMAN_REVIEW) are finalized and anchored on AuditRegistry.",
+      overallSummary: aiDraftData.audit.overallSummary,
       anchorAction: true,
-      items: compareData.audit.checkItems.map((item: any) => ({
+      items: aiDraftData.audit.checkItems.map((item: any) => ({
         itemKey: item.itemKey,
         status: item.status,
-        reviewerNote: `[Legal Sign-Off Complete] ${item.titleEn}: On-chain evidence (${item.evidenceFunctionOrSlot}) verified.`,
+        reviewerNote: item.reviewerNote,
       })),
     }),
   });
@@ -328,6 +354,10 @@ async function main() {
   });
   const reviewPageHtml = renderWithAppRouter(reviewPageTree);
   assert.ok(
+    reviewPageHtml.includes("Generate Legal Opinion &amp; Cure Notice with Gemini AI"),
+    "Gemini AI Legal Opinion button must render on /review"
+  );
+  assert.ok(
     reviewPageHtml.includes("verifyAnchor() === true (On-Chain Verified)"),
     "On-chain verifyAnchor() badge must render on /review"
   );
@@ -343,6 +373,9 @@ async function main() {
     reviewPageHtml.includes("Formal Legal Cure Notice") &&
       reviewPageHtml.includes("Solidity Defense Patch (Code Remediation Diff)"),
     "Legal Cure Notice & Solidity Code Remediation Diff panel must render on /review"
+  );
+  console.log(
+    `  ✅ \`POST /api/audits/[id]/review/ai-draft\` synthesized Legal Opinion, 5 Clause Notes & Cure Notice via Gemini AI`
   );
   console.log(
     `  ✅ \`POST /api/audits/[id]/review\` anchored on AuditRegistry (tx: ${reviewData.audit.anchorTxHash.slice(0, 22)}..., verifyAnchor=true)`

@@ -304,6 +304,22 @@ export interface LegalCureNoticeDraft {
   fullNoticeTextKo: string;
 }
 
+export interface GeminiCallMetadata {
+  model: string;
+  promptTokens: number;
+  completionTokens: number;
+  totalTokens: number;
+  latencyMs: number;
+  liveApiCalled: boolean;
+  invokedAt: string;
+  task:
+    | "step_1_extract"
+    | "step_2_cre_compare"
+    | "step_3_legal_review"
+    | "connection_test";
+  fallbackReason?: string;
+}
+
 export interface CreWorkflowExecutionTrace {
   workflowRunId: string;
   workflowName: string;
@@ -333,6 +349,10 @@ export interface CreWorkflowExecutionTrace {
     reportHash: string;
   };
   breachSimulations?: CounterfactualBreachSimulation[];
+  geminiTelemetry?: {
+    step1?: GeminiCallMetadata;
+    step3?: GeminiCallMetadata;
+  };
   totalDurationMs: number;
   executedAt: string;
   steps: CreWorkflowStepTrace[];
@@ -355,6 +375,12 @@ export interface AuditCaseDTO {
   creWorkflowRunId: string | null;
   creWorkflowTrace?: CreWorkflowExecutionTrace | null;
   breachSimulations?: CounterfactualBreachSimulation[] | null;
+  geminiTelemetry?: {
+    extract?: GeminiCallMetadata;
+    compare?: GeminiCallMetadata;
+    review?: GeminiCallMetadata;
+  } | null;
+  aiCureNoticeText?: string | null;
   mismatchCount: number;
   needsReviewCount: number;
   matchCount: number;

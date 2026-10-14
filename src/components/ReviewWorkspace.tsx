@@ -8,6 +8,7 @@ import type {
   AuditCheckItemDTO,
   AuditComparisonStatus,
   CounterfactualBreachSimulation,
+  GeminiCallMetadata,
 } from "@/types/audit";
 import { ComparisonStatusBadge } from "@/components/StatusBadge";
 import { getEtherscanAddressUrl, getEtherscanTxUrl } from "@/lib/etherscan";
@@ -36,6 +37,14 @@ export function ReviewWorkspace({
   const [items, setItems] = useState<AuditCheckItemDTO[]>(
     initialAudit.checkItems || []
   );
+  const [aiCureNoticeText, setAiCureNoticeText] = useState<string | null>(
+    initialAudit.aiCureNoticeText || null
+  );
+  const [geminiTelemetry, setGeminiTelemetry] =
+    useState<GeminiCallMetadata | null>(
+      initialAudit.geminiTelemetry?.review || null
+    );
+  const [draftingAi, setDraftingAi] = useState(false);
   const [saving, setSaving] = useState(false);
   const [anchoring, setAnchoring] = useState(false);
   const [showPrintReport, setShowPrintReport] = useState(false);
@@ -80,6 +89,9 @@ export function ReviewWorkspace({
     breachSimulations,
   });
 
+  const effectiveCureNoticeText =
+    aiCureNoticeText || legalCureNotice.fullNoticeTextKo;
+
   function updateItemReview(
     itemKey: string,
     field: "status" | "reviewerNote",
@@ -99,11 +111,70 @@ export function ReviewWorkspace({
 
   async function handleCopyCureNotice() {
     try {
-      await navigator.clipboard.writeText(legalCureNotice.fullNoticeTextKo);
+      await navigator.clipboard.writeText(effectiveCureNoticeText);
       setCopiedCureNotice(true);
       setTimeout(() => setCopiedCureNotice(false), 2500);
     } catch {
       // ignore clipboard errors
+    }
+  }
+
+  async function handleGenerateAiDraft() {
+    try {
+      setDraftingAi(true);
+      setFeedback(null);
+      const res = await fetch(`/api/audits/${audit.id}/review/ai-draft`, {
+        method: "POST",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(
+          data.error ||
+            t(
+              "Failed to generate Gemini AI Legal Opinion & Cure Notice.",
+              "Gemini AI 법무 의견서 생성에 실패했습니다."
+            )
+        );
+      }
+
+      if (data.audit) {
+        setAudit(data.audit);
+        setOverallSummary(data.audit.overallSummary || "");
+        setItems(data.audit.checkItems || []);
+        if (data.audit.aiCureNoticeText) {
+          setAiCureNoticeText(data.audit.aiCureNoticeText);
+        }
+        if (data.audit.geminiTelemetry?.review) {
+          setGeminiTelemetry(data.audit.geminiTelemetry.review);
+        }
+      }
+      if (data.geminiTelemetry) {
+        setGeminiTelemetry(data.geminiTelemetry);
+      }
+
+      const meta: GeminiCallMetadata | undefined =
+        data.geminiTelemetry || data.audit?.geminiTelemetry?.review;
+      setFeedback(
+        t(
+          `Gemini AI Legal Opinion, 5 Clause Reviewer Notes & Formal Cure Notice synthesized and saved (${
+            meta?.model || "gemini-2.5-flash"
+          } // ${meta?.latencyMs ?? 0}ms // ${meta?.totalTokens ?? 0} tokens).`,
+          `Gemini AI 종합 법무 의견, 5개 조항 검토 메모 및 시정요구서가 생성·저장되었습니다 (${
+            meta?.model || "gemini-2.5-flash"
+          } // ${meta?.latencyMs ?? 0}ms // ${meta?.totalTokens ?? 0} tokens).`
+        )
+      );
+      router.refresh();
+    } catch (err: any) {
+      setFeedback(
+        err?.message ||
+          t(
+            "An error occurred during Gemini AI legal draft synthesis.",
+            "Gemini AI 법무 초안 생성 중 오류가 발생했습니다."
+          )
+      );
+    } finally {
+      setDraftingAi(false);
     }
   }
 
@@ -207,7 +278,11 @@ export function ReviewWorkspace({
       counterfactualBreachSimulations: breachSimulations,
       legalStatuteMappings: LEGAL_STATUTE_MAP,
       codeRemediationSpecs: CODE_REMEDIATION_SPECS,
-      legalCureNoticeDraft: legalCureNotice,
+      legalCureNoticeDraft: {
+        ...legalCureNotice,
+        fullNoticeTextKo: effectiveCureNoticeText,
+      },
+      geminiTelemetry: audit.geminiTelemetry,
       onchainSnapshot: parsedSnapshot,
       checkItems: items,
     };
@@ -259,6 +334,22 @@ export function ReviewWorkspace({
           <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
+              disabled={draftingAi || saving || anchoring}
+              onClick={handleGenerateAiDraft}
+              className="rounded-[2px] border border-[#0F172A] bg-[#0F172A] px-4 py-2 font-mono text-xs font-semibold text-white transition-colors hover:bg-[#1E293B] disabled:opacity-50"
+            >
+              {draftingAi
+                ? t(
+                    "Synthesizing Legal Opinion with Gemini AI...",
+                    "Gemini AI 법무 의견서 생성 중..."
+                  )
+                : t(
+                    "Generate Legal Opinion & Cure Notice with Gemini AI",
+                    "Gemini AI 법무 의견서·시정요구서 자동 작성"
+                  )}
+            </button>
+            <button
+              type="button"
               disabled={saving || anchoring}
               onClick={() => handleSaveReview(false)}
               className="rounded-[2px] border border-[#111315] bg-white px-3.5 py-2 font-mono text-xs font-semibold text-[#111315] transition-colors hover:bg-[#F7F6F2] disabled:opacity-50"
@@ -283,7 +374,7 @@ export function ReviewWorkspace({
             <button
               type="button"
               onClick={handleExportJsonReport}
-              className="rounded-[2px] border border-[#0F172A] bg-[#0F172A] px-3.5 py-2 font-mono text-xs font-semibold text-white transition-colors hover:bg-[#1E293B]"
+              className="rounded-[2px] border border-[#111315] bg-[#FAF9F5] px-3.5 py-2 font-mono text-xs font-semibold text-[#111315] transition-colors hover:bg-[#EFECE6]"
             >
               {t("Download Evidence Package (JSON)", "증빙 패키지(JSON) 다운로드")}
             </button>
@@ -304,6 +395,69 @@ export function ReviewWorkspace({
               {t("Print / Save PDF", "PDF / 인쇄")}
             </button>
           </div>
+        </div>
+
+        {/* Gemini AI Legal Review Telemetry Strip */}
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#111315] bg-[#FAF9F5] px-6 py-2.5 font-mono text-[0.6875rem]">
+          <div className="flex flex-wrap items-center gap-2 text-[#111315]">
+            <span
+              className={`inline-block h-2 w-2 rounded-full ${
+                geminiTelemetry?.liveApiCalled
+                  ? "bg-[#166534]"
+                  : "bg-[#92400E]"
+              }`}
+            />
+            <span className="font-bold uppercase tracking-[0.08em]">
+              {t(
+                "GEMINI AI LEGAL COUNSEL ENGINE:",
+                "GEMINI AI 법무 추론 엔진:"
+              )}
+            </span>
+            {geminiTelemetry ? (
+              <>
+                <span className="rounded-[2px] border border-[#111315] bg-white px-1.5 py-0.5 font-bold">
+                  {geminiTelemetry.model}
+                </span>
+                <span className="text-[#5A6065]">
+                  {geminiTelemetry.liveApiCalled
+                    ? t(
+                        "LIVE_GEMINI_API (KR VAUPA / EU MiCA / US SEC Synthesis)",
+                        "LIVE_GEMINI_API (한·EU·미 3대 관할권 실호출 작성)"
+                      )
+                    : t(
+                        "DETERMINISTIC_LEGAL_TEMPLATE (Configure GEMINI_API_KEY in header for live LLM)",
+                        "DETERMINISTIC_LEGAL_TEMPLATE (실시간 LLM 호출은 상단 헤더에 키 등록)"
+                      )}
+                </span>
+              </>
+            ) : (
+              <span className="text-[#5A6065]">
+                {t(
+                  "Click 'Generate Legal Opinion & Cure Notice with Gemini AI' above to synthesize executive opinion, 5 clause notes & formal Cure Notice.",
+                  "상단 'Gemini AI 법무 의견서·시정요구서 자동 작성' 버튼을 클릭하면 종합 의견·5개 조항 메모·시정요구서가 즉시 생성됩니다."
+                )}
+              </span>
+            )}
+          </div>
+
+          {geminiTelemetry && (
+            <div className="flex flex-wrap items-center gap-3 text-[#5A6065]">
+              <span>
+                LATENCY:{" "}
+                <strong className="text-[#111315]">
+                  {geminiTelemetry.latencyMs}ms
+                </strong>
+              </span>
+              <span>
+                TOKENS:{" "}
+                <strong className="text-[#111315]">
+                  {geminiTelemetry.totalTokens}
+                </strong>{" "}
+                (in: {geminiTelemetry.promptTokens} / out:{" "}
+                {geminiTelemetry.completionTokens})
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Counsel Sign-Off & Seal Block */}
@@ -745,7 +899,7 @@ export function ReviewWorkspace({
               )}
             </h3>
             <pre className="mt-2 whitespace-pre-wrap border border-[#111315] bg-[#FAF9F5] p-3 font-sans text-[0.7rem] leading-relaxed text-[#111315]">
-              {legalCureNotice.fullNoticeTextKo}
+              {effectiveCureNoticeText}
             </pre>
           </div>
         </section>
@@ -774,18 +928,33 @@ export function ReviewWorkspace({
             </p>
           </div>
 
-          <button
-            type="button"
-            onClick={handleCopyCureNotice}
-            className="rounded-[2px] border border-[#0F172A] bg-[#0F172A] px-4 py-2 font-mono text-xs font-semibold text-white transition-colors hover:bg-[#1E293B]"
-          >
-            {copiedCureNotice
-              ? t("Legal Cure Notice Copied!", "시정요구서 전문 복사됨!")
-              : t(
-                  "Copy Legal Cure Notice (Markdown)",
-                  "법무 시정요구서(Markdown) 전문 복사"
-                )}
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              disabled={draftingAi || saving || anchoring}
+              onClick={handleGenerateAiDraft}
+              className="rounded-[2px] border border-[#111315] bg-white px-3.5 py-2 font-mono text-xs font-semibold text-[#111315] transition-colors hover:bg-[#FAF9F5] disabled:opacity-50"
+            >
+              {draftingAi
+                ? t("Synthesizing...", "생성 중...")
+                : t(
+                    "Synthesize Cure Notice with Gemini AI",
+                    "Gemini AI 시정요구서 재작성"
+                  )}
+            </button>
+            <button
+              type="button"
+              onClick={handleCopyCureNotice}
+              className="rounded-[2px] border border-[#0F172A] bg-[#0F172A] px-4 py-2 font-mono text-xs font-semibold text-white transition-colors hover:bg-[#1E293B]"
+            >
+              {copiedCureNotice
+                ? t("Legal Cure Notice Copied!", "시정요구서 전문 복사됨!")
+                : t(
+                    "Copy Legal Cure Notice (Markdown)",
+                    "법무 시정요구서(Markdown) 전문 복사"
+                  )}
+            </button>
+          </div>
         </div>
 
         {/* Official Legal Cure Notice Memorandum Sheet */}
@@ -799,7 +968,7 @@ export function ReviewWorkspace({
             </span>
           </div>
           <pre className="max-h-80 overflow-y-auto whitespace-pre-wrap border border-[#D8D4CC] bg-white p-5 font-sans text-xs leading-relaxed text-[#111315]">
-            {legalCureNotice.fullNoticeTextKo}
+            {effectiveCureNoticeText}
           </pre>
         </div>
 

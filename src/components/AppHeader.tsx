@@ -1,12 +1,99 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLanguage } from "@/lib/i18n";
 
+interface GeminiConfigStatus {
+  hasApiKey: boolean;
+  maskedKey: string;
+  model: string;
+  fallbackModel: string;
+}
+
 export function AppHeader() {
   const pathname = usePathname();
   const { lang, setLang, t } = useLanguage();
+
+  const [geminiStatus, setGeminiStatus] = useState<GeminiConfigStatus | null>(
+    null
+  );
+  const [modalOpen, setModalOpen] = useState(false);
+  const [apiKeyInput, setApiKeyInput] = useState("");
+  const [modelInput, setModelInput] = useState("gemini-2.5-flash");
+  const [savingKey, setSavingKey] = useState(false);
+  const [testResult, setTestResult] = useState<{
+    ok: boolean;
+    telemetry?: {
+      model: string;
+      latencyMs: number;
+      promptTokens: number;
+      completionTokens: number;
+      totalTokens: number;
+      liveApiCalled: boolean;
+    };
+    error?: string;
+  } | null>(null);
+
+  useEffect(() => {
+    fetch("/api/settings/gemini")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data && typeof data.hasApiKey === "boolean") {
+          setGeminiStatus(data);
+          if (data.model) setModelInput(data.model);
+        }
+      })
+      .catch(() => {
+        // ignore
+      });
+  }, []);
+
+  async function handleSaveAndTest(testOnly = false) {
+    try {
+      setSavingKey(true);
+      setTestResult(null);
+      const res = await fetch("/api/settings/gemini", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          apiKey: apiKeyInput.trim() ? apiKeyInput.trim() : undefined,
+          model: modelInput,
+          testOnly,
+          testConnection: true,
+        }),
+      });
+      const data = await res.json();
+      if (!testOnly && data && typeof data.hasApiKey === "boolean") {
+        setGeminiStatus({
+          hasApiKey: data.hasApiKey,
+          maskedKey: data.maskedKey,
+          model: data.model,
+          fallbackModel: data.fallbackModel,
+        });
+        setApiKeyInput("");
+      }
+      if (data?.testResult) {
+        setTestResult(data.testResult);
+      } else if (!data?.hasApiKey && !apiKeyInput.trim()) {
+        setTestResult({
+          ok: false,
+          error: t(
+            "Please enter a valid GEMINI_API_KEY first.",
+            "먼저 유효한 GEMINI_API_KEY를 입력해 주세요."
+          ),
+        });
+      }
+    } catch (err: any) {
+      setTestResult({
+        ok: false,
+        error: err?.message || "Failed to connect to /api/settings/gemini",
+      });
+    } finally {
+      setSavingKey(false);
+    }
+  }
 
   return (
     <header className="border-b border-[#111315] bg-[#FFFFFF]">
@@ -19,6 +106,8 @@ export function AppHeader() {
             </span>
             <span className="text-[#D8D4CC]">|</span>
             <span>ORCHESTRATOR: CHAINLINK CRE (OCR3-BFT)</span>
+            <span className="text-[#D8D4CC]">|</span>
+            <span>AI ENGINE: GOOGLE GEMINI ({geminiStatus?.model || "gemini-2.5-flash"})</span>
             <span className="text-[#D8D4CC]">|</span>
             <span>JURISDICTIONS: KR · EU (MiCA) · US (SEC)</span>
           </div>
@@ -54,8 +143,8 @@ export function AppHeader() {
             </div>
             <p className="mt-0.5 font-mono text-[0.6875rem] tracking-tight text-[#5A6065]">
               {t(
-                "ON-CHAIN FORENSIC & LEGAL COMPLIANCE LEDGER · CHAINLINK CRE ORCHESTRATION",
-                "DISCLOSURE VS. SMART CONTRACT MISMATCH AUDITOR · ON-CHAIN FORENSIC & LEGAL WORKSPACE"
+                "ON-CHAIN FORENSIC & LEGAL COMPLIANCE LEDGER · CHAINLINK CRE + GOOGLE GEMINI AI",
+                "DISCLOSURE VS. SMART CONTRACT MISMATCH AUDITOR · CHAINLINK CRE + GOOGLE GEMINI AI"
               )}
             </p>
           </Link>
@@ -87,6 +176,34 @@ export function AppHeader() {
             <span className="font-mono text-[0.6875rem] text-[#D8D4CC]">+</span>
             {t("New Audit Docket (/audits/new)", "새 점검 건 생성 (/audits/new)")}
           </Link>
+
+          {/* [Gemini AI Status / Key Setup] Button */}
+          <button
+            type="button"
+            onClick={() => setModalOpen(true)}
+            className={`inline-flex items-center gap-2 rounded-[2px] border px-3 py-2 font-mono text-[0.7rem] font-semibold transition ${
+              geminiStatus?.hasApiKey
+                ? "border-[#166534] bg-[#EAF3EC] text-[#166534] hover:bg-[#166534] hover:text-white"
+                : "border-[#9A3412] bg-[#FEF5EC] text-[#9A3412] hover:bg-[#9A3412] hover:text-white"
+            }`}
+          >
+            <span
+              className={`inline-block h-2 w-2 rounded-full ${
+                geminiStatus?.hasApiKey ? "bg-[#166534]" : "bg-[#9A3412]"
+              }`}
+            />
+            <span>
+              {geminiStatus?.hasApiKey
+                ? t(
+                    `Gemini AI: LIVE (${geminiStatus.model})`,
+                    `Gemini AI: 활성 (${geminiStatus.model})`
+                  )
+                : t(
+                    "Gemini AI Status / Key Setup",
+                    "Gemini AI 상태 / API 키 설정"
+                  )}
+            </span>
+          </button>
 
           {/* EN | KO Language Toggle */}
           <div
@@ -122,6 +239,172 @@ export function AppHeader() {
           </div>
         </nav>
       </div>
+
+      {/* Gemini API Key Setup & Connection Test Modal */}
+      {modalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-xl border-2 border-[#111315] bg-[#FFFFFF] shadow-lg">
+            <div className="flex items-center justify-between border-b border-[#111315] bg-[#EFECE6] px-5 py-3.5">
+              <div>
+                <div className="font-mono text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-[#5A6065]">
+                  GOOGLE GEMINI AI // INFERENCE CONFIGURATION
+                </div>
+                <h2 className="font-editorial text-lg font-bold text-[#111315]">
+                  {t(
+                    "Google Gemini API Key & Model Setup",
+                    "Google Gemini API 키 설정 및 연동 테스트"
+                  )}
+                </h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => setModalOpen(false)}
+                className="rounded-[2px] border border-[#111315] bg-white px-2.5 py-1 font-mono text-xs font-bold text-[#111315] hover:bg-[#111315] hover:text-white"
+              >
+                ✕ {t("Close", "닫기")}
+              </button>
+            </div>
+
+            <div className="space-y-4 p-5">
+              <div className="border border-[#D8D4CC] bg-[#FAF9F5] p-3.5 text-xs">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <span className="font-mono font-semibold text-[#111315]">
+                    {t("Current .env Status:", "현재 .env 설정 상태:")}
+                  </span>
+                  {geminiStatus?.hasApiKey ? (
+                    <span className="rounded-[2px] border border-[#166534] bg-[#EAF3EC] px-2 py-0.5 font-mono text-[0.6875rem] font-bold text-[#166534]">
+                      ACTIVE KEY: {geminiStatus.maskedKey} ({geminiStatus.model})
+                    </span>
+                  ) : (
+                    <span className="rounded-[2px] border border-[#9A3412] bg-[#FEF5EC] px-2 py-0.5 font-mono text-[0.6875rem] font-bold text-[#9A3412]">
+                      {t(
+                        "GEMINI_API_KEY Not Configured",
+                        "GEMINI_API_KEY 미설정"
+                      )}
+                    </span>
+                  )}
+                </div>
+                <p className="mt-2 leading-relaxed text-[#5A6065]">
+                  {t(
+                    "Google Gemini AI powers Step 1 (Whitepaper 5-Clause Extraction), Step 2 (Chainlink CRE Legal Discrepancy Reasoning), and Step 3 (Executive Legal Opinion & Formal Cure Notice Generation). Saving here writes directly to your local .env file.",
+                    "Google Gemini AI는 Step 1(백서 5대 조항 추출), Step 2(Chainlink CRE 온체인·공시 불일치 법률 추론), Step 3(법무 종합 의견서 및 시정요구서 초안 생성) 전 과정에 사용됩니다. 여기서 저장하면 로컬 .env 파일에 즉시 반영됩니다."
+                  )}
+                </p>
+              </div>
+
+              <div>
+                <label
+                  htmlFor="gemini-api-key-input"
+                  className="block font-mono text-[0.6875rem] font-semibold uppercase tracking-[0.1em] text-[#111315]"
+                >
+                  GEMINI_API_KEY{" "}
+                  {geminiStatus?.hasApiKey && (
+                    <span className="font-normal text-[#5A6065]">
+                      ({t("Leave blank to keep current key", "비워두면 현재 저장된 키 유지")}:{" "}
+                      {geminiStatus.maskedKey})
+                    </span>
+                  )}
+                </label>
+                <input
+                  id="gemini-api-key-input"
+                  type="password"
+                  value={apiKeyInput}
+                  onChange={(e) => setApiKeyInput(e.target.value)}
+                  placeholder="AIzaSy..."
+                  className="mt-1.5 w-full rounded-[2px] border border-[#111315] bg-[#FAF9F5] px-3 py-2 font-mono text-xs text-[#111315] focus:bg-white focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="gemini-model-select"
+                  className="block font-mono text-[0.6875rem] font-semibold uppercase tracking-[0.1em] text-[#111315]"
+                >
+                  GEMINI_MODEL ({t("Primary Inference Model", "기본 추론 모델")})
+                </label>
+                <select
+                  id="gemini-model-select"
+                  value={modelInput}
+                  onChange={(e) => setModelInput(e.target.value)}
+                  className="mt-1.5 w-full rounded-[2px] border border-[#111315] bg-white px-3 py-2 font-mono text-xs text-[#111315] focus:outline-none"
+                >
+                  <option value="gemini-2.5-flash">
+                    gemini-2.5-flash (Recommended — Fast &amp; High Legal Accuracy)
+                  </option>
+                  <option value="gemini-2.0-flash">
+                    gemini-2.0-flash (Fallback Model)
+                  </option>
+                  <option value="gemini-2.5-pro">
+                    gemini-2.5-pro (Deep Reasoning)
+                  </option>
+                </select>
+              </div>
+
+              {testResult && (
+                <div
+                  className={`border p-3 font-mono text-xs ${
+                    testResult.ok
+                      ? "border-[#166534] bg-[#EAF3EC] text-[#166534]"
+                      : "border-[#991B1B] bg-[#FDF2F2] text-[#991B1B]"
+                  }`}
+                >
+                  <div className="font-bold">
+                    {testResult.ok
+                      ? t(
+                          "✓ Live Google Gemini API Connection Verified!",
+                          "✓ Google Gemini API 실시간 연결 검증 성공!"
+                        )
+                      : t(
+                          "✕ Gemini API Connection Failed",
+                          "✕ Gemini API 연결 실패"
+                        )}
+                  </div>
+                  {testResult.telemetry && (
+                    <div className="mt-1 text-[0.6875rem]">
+                      Model: <strong>{testResult.telemetry.model}</strong> | Latency:{" "}
+                      <strong>{testResult.telemetry.latencyMs} ms</strong> | Tokens:{" "}
+                      <strong>
+                        {testResult.telemetry.totalTokens} (prompt{" "}
+                        {testResult.telemetry.promptTokens} + completion{" "}
+                        {testResult.telemetry.completionTokens})
+                      </strong>
+                    </div>
+                  )}
+                  {testResult.error && (
+                    <div className="mt-1 text-[0.6875rem]">{testResult.error}</div>
+                  )}
+                </div>
+              )}
+
+              <div className="flex flex-wrap items-center justify-end gap-2 border-t border-[#D8D4CC] pt-4">
+                <button
+                  type="button"
+                  disabled={savingKey}
+                  onClick={() => handleSaveAndTest(true)}
+                  className="rounded-[2px] border border-[#111315] bg-[#EFECE6] px-3.5 py-2 font-mono text-xs font-semibold text-[#111315] hover:bg-[#111315] hover:text-white disabled:opacity-50"
+                >
+                  {savingKey
+                    ? t("Testing...", "테스트 중...")
+                    : t("Test Connection Only", "연결 테스트만 실행")}
+                </button>
+                <button
+                  type="button"
+                  disabled={savingKey}
+                  onClick={() => handleSaveAndTest(false)}
+                  className="rounded-[2px] border border-[#0F172A] bg-[#0F172A] px-4 py-2 font-mono text-xs font-semibold text-white hover:bg-[#1E293B] disabled:opacity-50"
+                >
+                  {savingKey
+                    ? t("Saving & Testing...", "저장 및 테스트 중...")
+                    : t(
+                        "Save to .env & Test Live Gemini API",
+                        ".env에 저장 및 실시간 Gemini API 테스트"
+                      )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

@@ -3,7 +3,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import type { AuditCaseDTO, AuditCheckItemDTO } from "@/types/audit";
+import type {
+  AuditCaseDTO,
+  AuditCheckItemDTO,
+  GeminiCallMetadata,
+} from "@/types/audit";
 import { useLanguage } from "@/lib/i18n";
 
 export function ExtractWorkspace({ initialAudit }: { initialAudit: AuditCaseDTO }) {
@@ -13,6 +17,10 @@ export function ExtractWorkspace({ initialAudit }: { initialAudit: AuditCaseDTO 
   const [items, setItems] = useState<AuditCheckItemDTO[]>(
     initialAudit.checkItems || []
   );
+  const [geminiTelemetry, setGeminiTelemetry] =
+    useState<GeminiCallMetadata | null>(
+      initialAudit.geminiTelemetry?.extract || null
+    );
   const [saving, setSaving] = useState(false);
   const [extracting, setExtracting] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
@@ -47,11 +55,21 @@ export function ExtractWorkspace({ initialAudit }: { initialAudit: AuditCaseDTO 
       }
       setAudit(data.audit);
       setItems(data.audit.checkItems || []);
+      const telemetry: GeminiCallMetadata | null =
+        data.geminiTelemetry || data.audit?.geminiTelemetry?.extract || null;
+      if (telemetry) {
+        setGeminiTelemetry(telemetry);
+      }
       setFeedback(
-        t(
-          "Extracted all 5 core disclosure items (disclosedClaim, sourceQuote, sectionRef) from the whitepaper and saved to SQLite.",
-          "백서 원문에서 5대 핵심 항목(공시 주장·근거 문구·조항 위치)을 추출하여 SQLite DB에 저장했습니다."
-        )
+        telemetry?.liveApiCalled
+          ? t(
+              `Google Gemini AI (${telemetry.model}) extracted all 5 core disclosure clauses in ${telemetry.latencyMs} ms (${telemetry.totalTokens} tokens) and saved to SQLite.`,
+              `Google Gemini AI (${telemetry.model})가 백서 원문에서 5대 핵심 조항을 추출(${telemetry.latencyMs} ms, ${telemetry.totalTokens} tokens)하여 SQLite DB에 저장했습니다.`
+            )
+          : t(
+              "Extracted all 5 core disclosure items from the whitepaper and saved to SQLite. (Configure GEMINI_API_KEY in the top header for live Gemini LLM inference.)",
+              "백서 원문에서 5대 핵심 항목을 추출하여 SQLite DB에 저장했습니다. (상단 헤더에서 GEMINI_API_KEY를 설정하면 실시간 Gemini 추론이 작동합니다.)"
+            )
       );
       router.refresh();
     } catch (err: any) {
@@ -119,7 +137,7 @@ export function ExtractWorkspace({ initialAudit }: { initialAudit: AuditCaseDTO 
         <div className="flex flex-wrap items-center justify-between gap-4 px-5 py-4">
           <div className="space-y-1">
             <div className="font-mono text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-[#5A6065]">
-              DESK 01 // CLAUSE EXTRACTION &amp; CITATION INDEXING
+              DESK 01 // GOOGLE GEMINI AI CLAUSE EXTRACTION &amp; CITATION INDEXING
             </div>
             <p className="text-xs text-[#111315]">
               {lang === "en" ? (
@@ -167,10 +185,13 @@ export function ExtractWorkspace({ initialAudit }: { initialAudit: AuditCaseDTO 
               className="rounded-[2px] border border-[#111315] bg-[#EFECE6] px-3.5 py-2 font-mono text-xs font-semibold text-[#111315] transition-colors hover:bg-[#111315] hover:text-white disabled:opacity-50"
             >
               {extracting
-                ? t("Extracting Claims...", "AI/규칙 추출 중...")
+                ? t(
+                    "Running Google Gemini AI Extraction...",
+                    "Google Gemini AI 백서 조항 추출 중..."
+                  )
                 : t(
-                    "Auto-Extract 5 Core Claims (AI/Rule)",
-                    "백서 5대 핵심 항목 AI 자동 추출"
+                    "Extract 5 Core Claims with Google Gemini AI",
+                    "백서 5대 핵심 항목 AI 자동 추출 (Google Gemini)"
                   )}
             </button>
             <button
@@ -194,6 +215,46 @@ export function ExtractWorkspace({ initialAudit }: { initialAudit: AuditCaseDTO 
             </button>
           </div>
         </div>
+
+        {/* Google Gemini AI Invocation Telemetry Strip */}
+        {geminiTelemetry && (
+          <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[#111315] bg-[#FAF9F5] px-5 py-2 font-mono text-[0.7rem] text-[#111315]">
+            <div className="flex flex-wrap items-center gap-3">
+              <span
+                className={`rounded-[2px] border px-2 py-0.5 font-bold ${
+                  geminiTelemetry.liveApiCalled
+                    ? "border-[#166534] bg-[#EAF3EC] text-[#166534]"
+                    : "border-[#9A3412] bg-[#FEF5EC] text-[#9A3412]"
+                }`}
+              >
+                {geminiTelemetry.liveApiCalled
+                  ? "GEMINI AI LIVE INFERENCE"
+                  : "GEMINI FALLBACK PARSER"}
+              </span>
+              <span>
+                MODEL: <strong>{geminiTelemetry.model}</strong>
+              </span>
+              <span className="text-[#D8D4CC]">|</span>
+              <span>
+                LATENCY: <strong>{geminiTelemetry.latencyMs} ms</strong>
+              </span>
+              <span className="text-[#D8D4CC]">|</span>
+              <span>
+                TOKENS:{" "}
+                <strong>
+                  {geminiTelemetry.totalTokens} (prompt{" "}
+                  {geminiTelemetry.promptTokens} + completion{" "}
+                  {geminiTelemetry.completionTokens})
+                </strong>
+              </span>
+            </div>
+            {geminiTelemetry.fallbackReason && (
+              <span className="text-[0.65rem] text-[#9A3412]">
+                {geminiTelemetry.fallbackReason}
+              </span>
+            )}
+          </div>
+        )}
 
         {feedback && (
           <div className="border-t border-[#166534] bg-[#EAF3EC] px-5 py-2.5 font-mono text-xs font-medium text-[#166534]">

@@ -17,6 +17,7 @@ import {
   type CounterfactualBreachSimulation,
   type CreateAuditCaseInput,
   type CreWorkflowExecutionTrace,
+  type GeminiCallMetadata,
   type OnchainAnchorVerification,
   type UpdateExtractedItemInput,
   type UpdateReviewItemInput,
@@ -32,6 +33,13 @@ export function serializeAuditCase(record: any): AuditCaseDTO {
   let creWorkflowTrace: CreWorkflowExecutionTrace | null = null;
   let breachSimulations: CounterfactualBreachSimulation[] | undefined =
     undefined;
+  let geminiTelemetry: {
+    extract?: GeminiCallMetadata;
+    compare?: GeminiCallMetadata;
+    review?: GeminiCallMetadata;
+  } | null = null;
+  let aiCureNoticeText: string | null = null;
+
   if (record.onchainSnapshotJson) {
     try {
       const parsed = JSON.parse(record.onchainSnapshotJson);
@@ -48,6 +56,12 @@ export function serializeAuditCase(record: any): AuditCaseDTO {
         Array.isArray(parsed.creWorkflowTrace.breachSimulations)
       ) {
         breachSimulations = parsed.creWorkflowTrace.breachSimulations;
+      }
+      if (parsed && parsed.geminiTelemetry) {
+        geminiTelemetry = parsed.geminiTelemetry;
+      }
+      if (parsed && typeof parsed.aiCureNoticeText === "string") {
+        aiCureNoticeText = parsed.aiCureNoticeText;
       }
     } catch {
       // ignore malformed json
@@ -71,6 +85,8 @@ export function serializeAuditCase(record: any): AuditCaseDTO {
     creWorkflowRunId: record.creWorkflowRunId,
     creWorkflowTrace,
     breachSimulations,
+    geminiTelemetry,
+    aiCureNoticeText,
     mismatchCount: record.mismatchCount,
     needsReviewCount: record.needsReviewCount,
     matchCount: record.matchCount,
@@ -200,7 +216,8 @@ export async function createAuditCase(
  */
 export async function saveExtractedClaims(
   auditCaseId: string,
-  items: UpdateExtractedItemInput[]
+  items: UpdateExtractedItemInput[],
+  extractTelemetry?: GeminiCallMetadata
 ): Promise<AuditCaseDTO | null> {
   const existing = await prisma.auditCase.findUnique({
     where: { id: auditCaseId },
@@ -239,9 +256,29 @@ export async function saveExtractedClaims(
   const nextStage =
     existing.stage === "CREATED" ? "EXTRACTED" : existing.stage;
 
+  let snapshotObj: Record<string, any> = {};
+  if (existing.onchainSnapshotJson) {
+    try {
+      snapshotObj = JSON.parse(existing.onchainSnapshotJson);
+    } catch {
+      snapshotObj = {};
+    }
+  }
+  if (extractTelemetry) {
+    snapshotObj.geminiTelemetry = {
+      ...(snapshotObj.geminiTelemetry || {}),
+      extract: extractTelemetry,
+    };
+  }
+
   await prisma.auditCase.update({
     where: { id: auditCaseId },
-    data: { stage: nextStage },
+    data: {
+      stage: nextStage,
+      ...(extractTelemetry
+        ? { onchainSnapshotJson: JSON.stringify(snapshotObj, null, 2) }
+        : {}),
+    },
   });
 
   return getAuditCaseById(auditCaseId);

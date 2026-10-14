@@ -2,8 +2,10 @@ import {
   AUDIT_CHECK_ITEM_KEYS,
   type AuditCheckItemKey,
   type DisclosedClaimStructured,
+  type GeminiCallMetadata,
   type UpdateExtractedItemInput,
 } from "@/types/audit";
+import { extractWhitepaperClaimsWithGemini } from "@/lib/llm";
 
 export interface ExtractedClaimItem extends UpdateExtractedItemInput {
   disclosedData: DisclosedClaimStructured;
@@ -387,80 +389,42 @@ export function extractClaimsWithRuleParser(
 export async function extractFiveCoreItemsFromWhitepaper(
   whitepaperText: string
 ): Promise<{
-  engine: "OPENAI_LLM_PLUS_RULE" | "DETERMINISTIC_RULE_PARSER";
+  engine: "GOOGLE_GEMINI_LLM" | "DETERMINISTIC_RULE_PARSER";
   items: ExtractedClaimItem[];
+  geminiTelemetry: GeminiCallMetadata;
 }> {
   const ruleItems = extractClaimsWithRuleParser(whitepaperText);
-  const apiKey = process.env.OPENAI_API_KEY?.trim();
+  const geminiRes = await extractWhitepaperClaimsWithGemini(whitepaperText);
 
-  if (!apiKey) {
+  if (!geminiRes.ok || !geminiRes.items) {
     return {
       engine: "DETERMINISTIC_RULE_PARSER",
       items: ruleItems,
+      geminiTelemetry: geminiRes.telemetry,
     };
   }
 
-  try {
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: process.env.OPENAI_MODEL || "gpt-4o-mini",
-        temperature: 0,
-        response_format: { type: "json_object" },
-        messages: [
-          {
-            role: "system",
-            content:
-              "You extract the 5 core token disclosure claims from a whitepaper markdown into JSON with key 'items' matching itemKeys: maxSupplyAndMintability, transferFee, transferRestrictions, teamLockup, upgradeability.",
-          },
-          {
-            role: "user",
-            content: whitepaperText,
-          },
-        ],
-      }),
-    });
-
-    if (!response.ok) {
-      return { engine: "DETERMINISTIC_RULE_PARSER", items: ruleItems };
-    }
-
-    const json = await response.json();
-    const content = json.choices?.[0]?.message?.content;
-    if (!content) {
-      return { engine: "DETERMINISTIC_RULE_PARSER", items: ruleItems };
-    }
-
-    const parsed = JSON.parse(content);
-    if (!Array.isArray(parsed.items)) {
-      return { engine: "DETERMINISTIC_RULE_PARSER", items: ruleItems };
-    }
-
-    const merged = ruleItems.map((fallback) => {
-      const found = parsed.items.find(
-        (x: any) => x.itemKey === fallback.itemKey
-      );
-      if (!found) return fallback;
-      return {
-        ...fallback,
-        disclosedClaim: found.disclosedClaim || fallback.disclosedClaim,
-        sourceQuote: found.sourceQuote || fallback.sourceQuote,
-        sectionRef: found.sectionRef || fallback.sectionRef,
-      };
-    });
-
-    return {
-      engine: "OPENAI_LLM_PLUS_RULE",
-      items: merged,
+  const merged: ExtractedClaimItem[] = ruleItems.map((fallback) => {
+    const found = geminiRes.items!.find((x) => x.itemKey === fallback.itemKey);
+    if (!found) return fallback;
+    const mergedStructured: DisclosedClaimStructured = {
+      ...fallback.disclosedData,
+      ...(found.structured || {}),
     };
-  } catch {
     return {
-      engine: "DETERMINISTIC_RULE_PARSER",
-      items: ruleItems,
+      itemKey: fallback.itemKey,
+      disclosedClaim: found.disclosedClaim || fallback.disclosedClaim,
+      sourceQuote: found.sourceQuote || fallback.sourceQuote,
+      sectionRef: found.sectionRef || fallback.sectionRef,
+      disclosedData: mergedStructured,
+      disclosedDataJson: JSON.stringify(mergedStructured),
     };
-  }
+  });
+
+  return {
+    engine: "GOOGLE_GEMINI_LLM",
+    items: merged,
+    geminiTelemetry: geminiRes.telemetry,
+  };
 }
+
