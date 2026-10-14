@@ -1,0 +1,728 @@
+{
+  "simulationSuite": "BLI Legal Tech Hackathon 2 — Chainlink CRE Workflow Simulation",
+  "workflowName": "bli-disclosure-smart-contract-mismatch-auditor",
+  "workflowVersion": "1.0.0",
+  "manifestPath": "cre-workflow/workflow.yaml",
+  "configPath": "cre-workflow/config.json",
+  "cliBinaryDetected": false,
+  "runtimeEngine": "chainlink-cre-local-simulator",
+  "executedAt": "2026-10-14T07:36:30.734Z",
+  "totalDurationMs": 93,
+  "casesSimulated": 2,
+  "runs": [
+    {
+      "auditCaseId": "audit-compliant-blic",
+      "projectName": "BLI LegalTech Foundation",
+      "tokenSymbol": "BLIC",
+      "tokenAddress": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      "documentHash": "0xa8dd5df5bc2992a26d006c948d0b7e6ef581130e84ea182e1f028e9f18910c45",
+      "workflowRunId": "cre-blic-b7849208-0fdc594c",
+      "overallStatus": "MATCH",
+      "counts": {
+        "matchCount": 5,
+        "mismatchCount": 0,
+        "needsReviewCount": 0
+      },
+      "reportHash": "0x30fcda5ecd83ad909286cd073b27e8d5b2277d08b83e1fc2d57070fab68adaab",
+      "consensusDigest": "0x0fdc594c392af7393c47ffe634f8ac0d5f6ded985c4d41569a8051373b9166f3",
+      "anchorTxHash": "0x460bf7225aed7f77c6f967a29a12e3533ba6190fdb97e0e6eb128225e9f7ed04",
+      "verifyAnchorVerified": true,
+      "trace": {
+        "workflowRunId": "cre-blic-b7849208-0fdc594c",
+        "workflowName": "bli-disclosure-smart-contract-mismatch-auditor",
+        "workflowVersion": "1.0.0",
+        "manifestPath": "cre-workflow/workflow.yaml",
+        "cliBinaryDetected": false,
+        "runtimeEngine": "chainlink-cre-local-simulator",
+        "auditCaseId": "audit-compliant-blic",
+        "tokenSymbol": "BLIC",
+        "tokenAddress": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+        "chainId": 31337,
+        "chainName": "Local Embedded EVM (Chain ID: 31337)",
+        "snapshotBlockNumber": 7849208,
+        "documentHash": "0xa8dd5df5bc2992a26d006c948d0b7e6ef581130e84ea182e1f028e9f18910c45",
+        "overallStatus": "MATCH",
+        "counts": {
+          "matchCount": 5,
+          "mismatchCount": 0,
+          "needsReviewCount": 0
+        },
+        "consensus": {
+          "donId": "don-bli-legaltech-cre-01",
+          "protocol": "OCR3-BFT",
+          "nodeCount": 4,
+          "quorumRequired": 3,
+          "quorumReached": 4,
+          "consensusDigest": "0x0fdc594c392af7393c47ffe634f8ac0d5f6ded985c4d41569a8051373b9166f3",
+          "reportHash": "0x30fcda5ecd83ad909286cd073b27e8d5b2277d08b83e1fc2d57070fab68adaab",
+          "nodeSignatures": [
+            {
+              "nodeId": "cre-node-01.chainlink.don",
+              "operator": "BLI RegTech Oracle Node #1",
+              "signerAddress": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+              "observationHash": "0x03a96df8f5be863f147d133a7967031841785bda8b9b559f953a09ea9e8b8ec7",
+              "signature": "0xbf450d3ca589dc38ed09a66c36f75cc8e3acfc59b6dbbeff1437001c910fbaafb0c1c1b06ee087ea2c0aee51f2ca0e24c764daeb11fcb3f5c16e8e8145afa4411b"
+            },
+            {
+              "nodeId": "cre-node-02.chainlink.don",
+              "operator": "BLI RegTech Oracle Node #2",
+              "signerAddress": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+              "observationHash": "0xb085002302ee3ead3da76ced8360d8be93b1026e683ba512a3d74cc128e10fda",
+              "signature": "0x778ed33b1d329be962f73e8087d8c02982daa5adbc51b3248a33a22e5c40ff4cedaa2c17fd606d2fd9f8adb7bf75949a16a5830db857a8a42e97b863fe4ba2401c"
+            },
+            {
+              "nodeId": "cre-node-03.chainlink.don",
+              "operator": "BLI RegTech Oracle Node #3",
+              "signerAddress": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+              "observationHash": "0x187cdeabb0fc6656b2aaf6aa90be703fd82225454ae92cf42f694290424594a4",
+              "signature": "0x340b1bd9349ad9e28c5631ffeb24b6aa0877034db4b81ffff00cb42fef16e3eca740c799f7d238d973e2e48dde9aa4d894ca76072a0b3c8a35d118e26d13091c1b"
+            },
+            {
+              "nodeId": "cre-node-04.chainlink.don",
+              "operator": "BLI RegTech Oracle Node #4",
+              "signerAddress": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+              "observationHash": "0xed7dced02877500d7486df7d1d1db3c74a38612ffd06056079e020a2f412bc48",
+              "signature": "0x8d23d4c47484c9053be62bcc798a09b51b0824e9c5ccd6ebcb90e2f0f001844117456de1dbb7989b2c3310f6e05a09daaa05f28a640562879215bf86ba1068ef1c"
+            }
+          ]
+        },
+        "auditRegistryPayload": {
+          "auditRegistryAddress": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+          "functionSignature": "recordAudit(bytes32,address,uint256,uint256,uint8,bytes32)",
+          "recordAuditCalldata": "0x97cdb786a8dd5df5bc2992a26d006c948d0b7e6ef581130e84ea182e1f028e9f18910c450000000000000000000000005fbdb2315678afecb367f032d93f642f64180aa30000000000000000000000000000000000000000000000000000000000007a69000000000000000000000000000000000000000000000000000000000077c4f8000000000000000000000000000000000000000000000000000000000000000030fcda5ecd83ad909286cd073b27e8d5b2277d08b83e1fc2d57070fab68adaab",
+          "verifyAnchorCalldata": "0x681aa94aa8dd5df5bc2992a26d006c948d0b7e6ef581130e84ea182e1f028e9f18910c450000000000000000000000005fbdb2315678afecb367f032d93f642f64180aa330fcda5ecd83ad909286cd073b27e8d5b2277d08b83e1fc2d57070fab68adaab",
+          "reportHash": "0x30fcda5ecd83ad909286cd073b27e8d5b2277d08b83e1fc2d57070fab68adaab"
+        },
+        "totalDurationMs": 34,
+        "executedAt": "2026-10-14T07:36:30.775Z",
+        "steps": [
+          {
+            "stepNumber": 1,
+            "stepId": "step_1_offchain_disclosure_fetch",
+            "title": "[Step 1: Trigger & Off-chain Disclosure Fetch]",
+            "capability": "chainlink.capabilities.http_client@1.0.0 + llm_extractor",
+            "status": "SUCCESS",
+            "startedAt": "2026-10-14T07:36:30.746Z",
+            "completedAt": "2026-10-14T07:36:30.754Z",
+            "durationMs": 8,
+            "summary": "Fetched SHA-256 documentHash (0xa8dd5df5bc29...) & extracted 5 structured disclosure claims via deterministic-rule-parser engine.",
+            "inputPayload": {
+              "triggerType": "cre.triggers.http_webhook@1.0.0",
+              "auditCaseId": "audit-compliant-blic",
+              "tokenSymbol": "BLIC",
+              "endpoint": "/api/audits/audit-compliant-blic/extract",
+              "whitepaperCharLength": 1759
+            },
+            "outputPayload": {
+              "documentHash": "0xa8dd5df5bc2992a26d006c948d0b7e6ef581130e84ea182e1f028e9f18910c45",
+              "extractionEngine": "deterministic-rule-parser",
+              "claimCount": 5,
+              "disclosedClaims": [
+                {
+                  "itemKey": "maxSupplyAndMintability",
+                  "sectionRef": "제1조 제1항~제3항",
+                  "disclosedClaim": "최대 총발행량 100,000,000 BLIC 고정(Fixed Cap) 및 최초 발행 이후 추가 발행(mint) 불가, 소유자 권한 영구 포기(address(0))",
+                  "structured": {
+                    "maxSupply": "100000000",
+                    "mintable": false,
+                    "ownerRenounced": true
+                  }
+                },
+                {
+                  "itemKey": "transferFee",
+                  "sectionRef": "제2조 제1항~제2항",
+                  "disclosedClaim": "전송 수수료율 1.00% (100 bps) 고정 및 배포 이후 수수료율 임의 인상 불가(feeMutable = false)",
+                  "structured": {
+                    "transferFeeBps": 100,
+                    "maxTransferFeeBps": 100,
+                    "feeMutable": false
+                  }
+                },
+                {
+                  "itemKey": "transferRestrictions",
+                  "sectionRef": "제3조 제1항~제2항",
+                  "disclosedClaim": "거래 일시정지(pause) 및 특정 지갑 동결(blacklist) 기능 일체 없음 (pausable = false, blacklistable = false)",
+                  "structured": {
+                    "pausable": false,
+                    "blacklistable": false
+                  }
+                },
+                {
+                  "itemKey": "teamLockup",
+                  "sectionRef": "제4조 제1항~제2항",
+                  "disclosedClaim": "팀 할당 물량 20,000,000 BLIC (지갑: 0x70997970C51812dc3A010C7d01b50e0d17dc79C8) — 2028-01-01 00:00:00 UTC (timestamp: 1830297600)까지 온체인 강제 락업",
+                  "structured": {
+                    "teamWallet": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+                    "teamAllocation": "20000000",
+                    "teamLockupActive": true,
+                    "teamLockupReleaseTimestamp": 1830297600,
+                    "teamLockupReleaseDateIso": "2028-01-01T00:00:00.000Z"
+                  }
+                },
+                {
+                  "itemKey": "upgradeability",
+                  "sectionRef": "제5조 제1항~제2항",
+                  "disclosedClaim": "프록시 임의 업그레이드 불가(Non-upgradeable) 및 다중서명(Multi-sig)·타임락 거버넌스 관리, 단일 EOA 단독 통제 배제",
+                  "structured": {
+                    "upgradeable": false,
+                    "governanceType": "MULTISIG_TIMELOCK"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "stepNumber": 2,
+            "stepId": "step_2_onchain_evm_read",
+            "title": "[Step 2: On-chain EVM State Inspection]",
+            "capability": "chainlink.capabilities.evm_read@1.0.0",
+            "status": "SUCCESS",
+            "startedAt": "2026-10-14T07:36:30.754Z",
+            "completedAt": "2026-10-14T07:36:30.769Z",
+            "durationMs": 15,
+            "summary": "Executed 22 ABI eth_call reads + EIP-1967 slot inspection on BLIC (0x5FbDB2315678afecb367f032d93F642f64180aa3) at Block #7849208.",
+            "inputPayload": {
+              "chainId": 31337,
+              "chainName": "Local Embedded EVM (Chain ID: 31337)",
+              "executionMode": "EMBEDDED_EVM",
+              "tokenAddress": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+              "eip1967ImplementationSlot": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+              "viewFunctionsQueried": [
+                "name()",
+                "symbol()",
+                "decimals()",
+                "totalSupply()",
+                "maxSupply()",
+                "MAX_SUPPLY()",
+                "mintable()",
+                "owner()",
+                "transferFeeBps()",
+                "maxTransferFeeBps()",
+                "feeMutable()",
+                "feeCollector()",
+                "paused()",
+                "pausable()",
+                "blacklistable()",
+                "teamWallet()",
+                "teamAllocation()",
+                "teamLockupActive()",
+                "teamLockupReleaseTimestamp()",
+                "upgradeable()",
+                "adminAddress()",
+                "logicImplementation()"
+              ]
+            },
+            "outputPayload": {
+              "blockNumber": 7849208,
+              "name": "BLI Compliant Utility Token",
+              "symbol": "BLIC",
+              "totalSupplyFormatted": "100000000",
+              "maxSupplyFormatted": "100000000",
+              "mintable": false,
+              "owner": "0x0000000000000000000000000000000000000000",
+              "ownerIsContract": false,
+              "transferFeeBps": 100,
+              "maxTransferFeeBps": 100,
+              "feeMutable": false,
+              "paused": false,
+              "pausable": false,
+              "blacklistable": false,
+              "teamWallet": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+              "teamAllocationFormatted": "20000000",
+              "teamLockupActive": true,
+              "teamLockupReleaseTimestamp": 1830297600,
+              "upgradeable": false,
+              "adminAddress": "0x0000000000000000000000000000000000000000",
+              "adminIsContract": false,
+              "logicImplementation": "0x0000000000000000000000000000000000000000",
+              "eip1967SlotValue": "0x0000000000000000000000000000000000000000000000000000000000000000",
+              "rawCallCount": 22
+            }
+          },
+          {
+            "stepNumber": 3,
+            "stepId": "step_3_don_consensus_eval",
+            "title": "[Step 3: DON Consensus & Discrepancy Evaluation]",
+            "capability": "chainlink.capabilities.ocr3_consensus@1.0.0",
+            "status": "SUCCESS",
+            "startedAt": "2026-10-14T07:36:30.769Z",
+            "completedAt": "2026-10-14T07:36:30.774Z",
+            "durationMs": 5,
+            "summary": "DON (4/4 nodes, OCR3-BFT) reached consensus: MATCH (MATCH=5, MISMATCH=0, NEEDS_HUMAN_REVIEW=0) | reportHash=0x30fcda5ecd83...",
+            "inputPayload": {
+              "donId": "don-bli-legaltech-cre-01",
+              "protocol": "OCR3-BFT",
+              "quorumRequired": 3,
+              "evaluatedItemKeys": [
+                "maxSupplyAndMintability",
+                "transferFee",
+                "transferRestrictions",
+                "teamLockup",
+                "upgradeability"
+              ]
+            },
+            "outputPayload": {
+              "overallStatus": "MATCH",
+              "counts": {
+                "matchCount": 5,
+                "mismatchCount": 0,
+                "needsReviewCount": 0
+              },
+              "consensusDigest": "0x0fdc594c392af7393c47ffe634f8ac0d5f6ded985c4d41569a8051373b9166f3",
+              "reportHash": "0x30fcda5ecd83ad909286cd073b27e8d5b2277d08b83e1fc2d57070fab68adaab",
+              "itemVerdicts": [
+                {
+                  "itemKey": "maxSupplyAndMintability",
+                  "status": "MATCH",
+                  "severity": "INFO",
+                  "onchainState": "totalSupply() = 100,000,000 BLIC | MAX_SUPPLY() = 100,000,000 BLIC | mintable() = false | owner() = 0x0000...0000 (Renounced 0x0)"
+                },
+                {
+                  "itemKey": "transferFee",
+                  "status": "MATCH",
+                  "severity": "INFO",
+                  "onchainState": "transferFeeBps() = 100 (1.00%) | maxTransferFeeBps() = 100 (1.00%) | feeMutable() = false"
+                },
+                {
+                  "itemKey": "transferRestrictions",
+                  "status": "MATCH",
+                  "severity": "INFO",
+                  "onchainState": "paused() = false | pausable() = false | blacklistable() = false | owner() = 0x0000...0000"
+                },
+                {
+                  "itemKey": "teamLockup",
+                  "status": "MATCH",
+                  "severity": "INFO",
+                  "onchainState": "teamWallet() = 0x7099...79C8 | teamLockupActive() = true | teamLockupReleaseTimestamp() = 1830297600 (2028-01-01T00:00:00.000Z)"
+                },
+                {
+                  "itemKey": "upgradeability",
+                  "status": "MATCH",
+                  "severity": "INFO",
+                  "onchainState": "upgradeable() = false | logicImplementation() = 0x0000...0000 | adminAddress() = 0x0000...0000 (0x0 없음) | owner() = 0x0000...0000 | EIP-1967 = 0x0000...0000"
+                }
+              ],
+              "nodeSignatures": [
+                {
+                  "nodeId": "cre-node-01.chainlink.don",
+                  "operator": "BLI RegTech Oracle Node #1",
+                  "signerAddress": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+                  "observationHash": "0x03a96df8f5be863f147d133a7967031841785bda8b9b559f953a09ea9e8b8ec7",
+                  "signature": "0xbf450d3ca589dc38ed09a66c36f75cc8e3acfc59b6dbbeff1437001c910fbaafb0c1c1b06ee087ea2c0aee51f2ca0e24c764daeb11fcb3f5c16e8e8145afa4411b"
+                },
+                {
+                  "nodeId": "cre-node-02.chainlink.don",
+                  "operator": "BLI RegTech Oracle Node #2",
+                  "signerAddress": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+                  "observationHash": "0xb085002302ee3ead3da76ced8360d8be93b1026e683ba512a3d74cc128e10fda",
+                  "signature": "0x778ed33b1d329be962f73e8087d8c02982daa5adbc51b3248a33a22e5c40ff4cedaa2c17fd606d2fd9f8adb7bf75949a16a5830db857a8a42e97b863fe4ba2401c"
+                },
+                {
+                  "nodeId": "cre-node-03.chainlink.don",
+                  "operator": "BLI RegTech Oracle Node #3",
+                  "signerAddress": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+                  "observationHash": "0x187cdeabb0fc6656b2aaf6aa90be703fd82225454ae92cf42f694290424594a4",
+                  "signature": "0x340b1bd9349ad9e28c5631ffeb24b6aa0877034db4b81ffff00cb42fef16e3eca740c799f7d238d973e2e48dde9aa4d894ca76072a0b3c8a35d118e26d13091c1b"
+                },
+                {
+                  "nodeId": "cre-node-04.chainlink.don",
+                  "operator": "BLI RegTech Oracle Node #4",
+                  "signerAddress": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+                  "observationHash": "0xed7dced02877500d7486df7d1d1db3c74a38612ffd06056079e020a2f412bc48",
+                  "signature": "0x8d23d4c47484c9053be62bcc798a09b51b0824e9c5ccd6ebcb90e2f0f001844117456de1dbb7989b2c3310f6e05a09daaa05f28a640562879215bf86ba1068ef1c"
+                }
+              ]
+            }
+          },
+          {
+            "stepNumber": 4,
+            "stepId": "step_4_audit_registry_write",
+            "title": "[Step 4: On-chain AuditRegistry Write / Verification Readiness]",
+            "capability": "chainlink.capabilities.evm_write@1.0.0",
+            "status": "SUCCESS",
+            "startedAt": "2026-10-14T07:36:30.769Z",
+            "completedAt": "2026-10-14T07:36:30.775Z",
+            "durationMs": 6,
+            "summary": "Anchored to AuditRegistry (0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0) in tx 0x460bf7225aed... & verified on-chain (verified=true).",
+            "inputPayload": {
+              "auditRegistryAddress": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+              "documentHash": "0xa8dd5df5bc2992a26d006c948d0b7e6ef581130e84ea182e1f028e9f18910c45",
+              "tokenAddress": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+              "chainId": 31337,
+              "blockNumber": 7849208,
+              "mismatchCount": 0,
+              "reportHash": "0x30fcda5ecd83ad909286cd073b27e8d5b2277d08b83e1fc2d57070fab68adaab",
+              "executeOnchainAnchor": true
+            },
+            "outputPayload": {
+              "auditRegistryAddress": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+              "functionSignature": "recordAudit(bytes32,address,uint256,uint256,uint8,bytes32)",
+              "recordAuditCalldata": "0x97cdb786a8dd5df5bc2992a26d006c948d0b7e6ef581130e84ea182e1f028e9f18910c450000000000000000000000005fbdb2315678afecb367f032d93f642f64180aa30000000000000000000000000000000000000000000000000000000000007a69000000000000000000000000000000000000000000000000000000000077c4f8000000000000000000000000000000000000000000000000000000000000000030fcda5ecd83ad909286cd073b27e8d5b2277d08b83e1fc2d57070fab68adaab",
+              "verifyAnchorCalldata": "0x681aa94aa8dd5df5bc2992a26d006c948d0b7e6ef581130e84ea182e1f028e9f18910c450000000000000000000000005fbdb2315678afecb367f032d93f642f64180aa330fcda5ecd83ad909286cd073b27e8d5b2277d08b83e1fc2d57070fab68adaab",
+              "anchoredOnchain": true,
+              "anchorTxHash": "0x460bf7225aed7f77c6f967a29a12e3533ba6190fdb97e0e6eb128225e9f7ed04",
+              "verifyAnchorPassed": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "auditCaseId": "audit-mismatched-blix",
+      "projectName": "BLI Alpha Labs Ltd.",
+      "tokenSymbol": "BLIX",
+      "tokenAddress": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+      "documentHash": "0xfbd4ed81d14a57c2f4b6cd55b637d0cea8196fa153894e461da6d465fb0277d8",
+      "workflowRunId": "cre-blix-b7849209-5fa30c25",
+      "overallStatus": "MISMATCH",
+      "counts": {
+        "matchCount": 0,
+        "mismatchCount": 4,
+        "needsReviewCount": 1
+      },
+      "reportHash": "0x4e440667f613a8a4cec1598557d76c9b3940fa27f35816d0f4746a076d3f65ec",
+      "consensusDigest": "0x5fa30c2588602222412644f53edcab696b48e7c220ec6fc6db4450576e37b7dd",
+      "anchorTxHash": "0x12f8cdc2b29f4124e2b86734c205b3d6f9c1f46b6a4b2f780133c7b2aa12bff0",
+      "verifyAnchorVerified": true,
+      "trace": {
+        "workflowRunId": "cre-blix-b7849209-5fa30c25",
+        "workflowName": "bli-disclosure-smart-contract-mismatch-auditor",
+        "workflowVersion": "1.0.0",
+        "manifestPath": "cre-workflow/workflow.yaml",
+        "cliBinaryDetected": false,
+        "runtimeEngine": "chainlink-cre-local-simulator",
+        "auditCaseId": "audit-mismatched-blix",
+        "tokenSymbol": "BLIX",
+        "tokenAddress": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+        "chainId": 31337,
+        "chainName": "Local Embedded EVM (Chain ID: 31337)",
+        "snapshotBlockNumber": 7849209,
+        "documentHash": "0xfbd4ed81d14a57c2f4b6cd55b637d0cea8196fa153894e461da6d465fb0277d8",
+        "overallStatus": "MISMATCH",
+        "counts": {
+          "matchCount": 0,
+          "mismatchCount": 4,
+          "needsReviewCount": 1
+        },
+        "consensus": {
+          "donId": "don-bli-legaltech-cre-01",
+          "protocol": "OCR3-BFT",
+          "nodeCount": 4,
+          "quorumRequired": 3,
+          "quorumReached": 4,
+          "consensusDigest": "0x5fa30c2588602222412644f53edcab696b48e7c220ec6fc6db4450576e37b7dd",
+          "reportHash": "0x4e440667f613a8a4cec1598557d76c9b3940fa27f35816d0f4746a076d3f65ec",
+          "nodeSignatures": [
+            {
+              "nodeId": "cre-node-01.chainlink.don",
+              "operator": "BLI RegTech Oracle Node #1",
+              "signerAddress": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+              "observationHash": "0x77bb91c71b85d092c7c9c5dde063b484d507ad8573f62c322a41007f625e9c63",
+              "signature": "0x17b113c9a69b44740e9959f46b8a4704c945180422304a487275114df9777b5ae792f14fa0715b4b93f7aeb488e2452ed0df567743efc103ecb3ebf70742ced61b"
+            },
+            {
+              "nodeId": "cre-node-02.chainlink.don",
+              "operator": "BLI RegTech Oracle Node #2",
+              "signerAddress": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+              "observationHash": "0xa37dc9cca632c7d57fa6733f9ab08d6937e07dfa9e56556048d348988af889c5",
+              "signature": "0xd4a959d5b2c505bb3867f7341d1487bafc4500f290c7f07881126c0aae879cd764ffae0dbf5571ee7eca29a60ce58c17bdf2d44fc00c619963e2476098f090101c"
+            },
+            {
+              "nodeId": "cre-node-03.chainlink.don",
+              "operator": "BLI RegTech Oracle Node #3",
+              "signerAddress": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+              "observationHash": "0x185c740eae833685bd7657a24dcc853923e0aec25e36b3122556dba5b6ebdea6",
+              "signature": "0xd32e58510a48df35b4619711a718cb85f4e53dc00e603e0dbf4ddbe62573a42a79267bd11a3bb0b3eb9504bc24f4a8baa9954d793c14bd4357712094053b897e1b"
+            },
+            {
+              "nodeId": "cre-node-04.chainlink.don",
+              "operator": "BLI RegTech Oracle Node #4",
+              "signerAddress": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+              "observationHash": "0x6bb663baaae910f939374cde44d6f10929ced73f05d9e52bfaeb1422c6d3ddb1",
+              "signature": "0x932a0322ad0ddb50392077f11e6662da97da20259b6bf14491e72a05e1978824368c421a4fce02a3ae589ec612367865d1f82cd9acf70a1a1936c6fab16dc44b1c"
+            }
+          ]
+        },
+        "auditRegistryPayload": {
+          "auditRegistryAddress": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+          "functionSignature": "recordAudit(bytes32,address,uint256,uint256,uint8,bytes32)",
+          "recordAuditCalldata": "0x97cdb786fbd4ed81d14a57c2f4b6cd55b637d0cea8196fa153894e461da6d465fb0277d8000000000000000000000000e7f1725e7734ce288f8367e1bb143e90bb3f05120000000000000000000000000000000000000000000000000000000000007a69000000000000000000000000000000000000000000000000000000000077c4f900000000000000000000000000000000000000000000000000000000000000044e440667f613a8a4cec1598557d76c9b3940fa27f35816d0f4746a076d3f65ec",
+          "verifyAnchorCalldata": "0x681aa94afbd4ed81d14a57c2f4b6cd55b637d0cea8196fa153894e461da6d465fb0277d8000000000000000000000000e7f1725e7734ce288f8367e1bb143e90bb3f05124e440667f613a8a4cec1598557d76c9b3940fa27f35816d0f4746a076d3f65ec",
+          "reportHash": "0x4e440667f613a8a4cec1598557d76c9b3940fa27f35816d0f4746a076d3f65ec"
+        },
+        "totalDurationMs": 21,
+        "executedAt": "2026-10-14T07:36:30.813Z",
+        "steps": [
+          {
+            "stepNumber": 1,
+            "stepId": "step_1_offchain_disclosure_fetch",
+            "title": "[Step 1: Trigger & Off-chain Disclosure Fetch]",
+            "capability": "chainlink.capabilities.http_client@1.0.0 + llm_extractor",
+            "status": "SUCCESS",
+            "startedAt": "2026-10-14T07:36:30.802Z",
+            "completedAt": "2026-10-14T07:36:30.806Z",
+            "durationMs": 4,
+            "summary": "Fetched SHA-256 documentHash (0xfbd4ed81d14a...) & extracted 5 structured disclosure claims via deterministic-rule-parser engine.",
+            "inputPayload": {
+              "triggerType": "cre.triggers.http_webhook@1.0.0",
+              "auditCaseId": "audit-mismatched-blix",
+              "tokenSymbol": "BLIX",
+              "endpoint": "/api/audits/audit-mismatched-blix/extract",
+              "whitepaperCharLength": 1252
+            },
+            "outputPayload": {
+              "documentHash": "0xfbd4ed81d14a57c2f4b6cd55b637d0cea8196fa153894e461da6d465fb0277d8",
+              "extractionEngine": "deterministic-rule-parser",
+              "claimCount": 5,
+              "disclosedClaims": [
+                {
+                  "itemKey": "maxSupplyAndMintability",
+                  "sectionRef": "제1조 제1항~제2항",
+                  "disclosedClaim": "최대 총발행량 100,000,000 BLIX 고정(Fixed Cap) 및 최초 발행 이후 추가 발행(mint) 불가",
+                  "structured": {
+                    "maxSupply": "100000000",
+                    "mintable": false,
+                    "ownerRenounced": false
+                  }
+                },
+                {
+                  "itemKey": "transferFee",
+                  "sectionRef": "제2조 제1항~제2항",
+                  "disclosedClaim": "전송 수수료율 1.00% (100 bps) 고정 및 배포 이후 수수료율 임의 인상 불가(feeMutable = false)",
+                  "structured": {
+                    "transferFeeBps": 100,
+                    "maxTransferFeeBps": 100,
+                    "feeMutable": false
+                  }
+                },
+                {
+                  "itemKey": "transferRestrictions",
+                  "sectionRef": "제3조 제1항~제2항",
+                  "disclosedClaim": "거래 일시정지(pause) 및 특정 지갑 동결(blacklist) 기능 일체 없음 (pausable = false, blacklistable = false)",
+                  "structured": {
+                    "pausable": false,
+                    "blacklistable": false
+                  }
+                },
+                {
+                  "itemKey": "teamLockup",
+                  "sectionRef": "제4조 제1항~제2항",
+                  "disclosedClaim": "팀 할당 물량 20,000,000 BLIX (지갑: 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC) — 2028-01-01 00:00:00 UTC (timestamp: 1830297600)까지 온체인 강제 락업",
+                  "structured": {
+                    "teamWallet": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+                    "teamAllocation": "20000000",
+                    "teamLockupActive": true,
+                    "teamLockupReleaseTimestamp": 1830297600,
+                    "teamLockupReleaseDateIso": "2028-01-01T00:00:00.000Z"
+                  }
+                },
+                {
+                  "itemKey": "upgradeability",
+                  "sectionRef": "제5조 제1항~제2항",
+                  "disclosedClaim": "프록시 임의 업그레이드 불가(Non-upgradeable) 및 다중서명(Multi-sig)·타임락 거버넌스 관리, 단일 EOA 단독 통제 배제",
+                  "structured": {
+                    "upgradeable": false,
+                    "governanceType": "MULTISIG_TIMELOCK"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "stepNumber": 2,
+            "stepId": "step_2_onchain_evm_read",
+            "title": "[Step 2: On-chain EVM State Inspection]",
+            "capability": "chainlink.capabilities.evm_read@1.0.0",
+            "status": "SUCCESS",
+            "startedAt": "2026-10-14T07:36:30.802Z",
+            "completedAt": "2026-10-14T07:36:30.810Z",
+            "durationMs": 8,
+            "summary": "Executed 22 ABI eth_call reads + EIP-1967 slot inspection on BLIX (0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512) at Block #7849209.",
+            "inputPayload": {
+              "chainId": 31337,
+              "chainName": "Local Embedded EVM (Chain ID: 31337)",
+              "executionMode": "EMBEDDED_EVM",
+              "tokenAddress": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+              "eip1967ImplementationSlot": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+              "viewFunctionsQueried": [
+                "name()",
+                "symbol()",
+                "decimals()",
+                "totalSupply()",
+                "maxSupply()",
+                "MAX_SUPPLY()",
+                "mintable()",
+                "owner()",
+                "transferFeeBps()",
+                "maxTransferFeeBps()",
+                "feeMutable()",
+                "feeCollector()",
+                "paused()",
+                "pausable()",
+                "blacklistable()",
+                "teamWallet()",
+                "teamAllocation()",
+                "teamLockupActive()",
+                "teamLockupReleaseTimestamp()",
+                "upgradeable()",
+                "adminAddress()",
+                "logicImplementation()"
+              ]
+            },
+            "outputPayload": {
+              "blockNumber": 7849209,
+              "name": "BLI Alpha Protocol Token",
+              "symbol": "BLIX",
+              "totalSupplyFormatted": "100000000",
+              "maxSupplyFormatted": "UNLIMITED (type(uint256).max)",
+              "mintable": true,
+              "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "ownerIsContract": false,
+              "transferFeeBps": 500,
+              "maxTransferFeeBps": 10000,
+              "feeMutable": true,
+              "paused": false,
+              "pausable": true,
+              "blacklistable": true,
+              "teamWallet": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+              "teamAllocationFormatted": "20000000",
+              "teamLockupActive": false,
+              "teamLockupReleaseTimestamp": 0,
+              "upgradeable": true,
+              "adminAddress": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "adminIsContract": false,
+              "logicImplementation": "0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF",
+              "eip1967SlotValue": "0x0000000000000000000000000000000000000000000000000000000000000000",
+              "rawCallCount": 22
+            }
+          },
+          {
+            "stepNumber": 3,
+            "stepId": "step_3_don_consensus_eval",
+            "title": "[Step 3: DON Consensus & Discrepancy Evaluation]",
+            "capability": "chainlink.capabilities.ocr3_consensus@1.0.0",
+            "status": "SUCCESS",
+            "startedAt": "2026-10-14T07:36:30.809Z",
+            "completedAt": "2026-10-14T07:36:30.814Z",
+            "durationMs": 5,
+            "summary": "DON (4/4 nodes, OCR3-BFT) reached consensus: MISMATCH (MATCH=0, MISMATCH=4, NEEDS_HUMAN_REVIEW=1) | reportHash=0x4e440667f613...",
+            "inputPayload": {
+              "donId": "don-bli-legaltech-cre-01",
+              "protocol": "OCR3-BFT",
+              "quorumRequired": 3,
+              "evaluatedItemKeys": [
+                "maxSupplyAndMintability",
+                "transferFee",
+                "transferRestrictions",
+                "teamLockup",
+                "upgradeability"
+              ]
+            },
+            "outputPayload": {
+              "overallStatus": "MISMATCH",
+              "counts": {
+                "matchCount": 0,
+                "mismatchCount": 4,
+                "needsReviewCount": 1
+              },
+              "consensusDigest": "0x5fa30c2588602222412644f53edcab696b48e7c220ec6fc6db4450576e37b7dd",
+              "reportHash": "0x4e440667f613a8a4cec1598557d76c9b3940fa27f35816d0f4746a076d3f65ec",
+              "itemVerdicts": [
+                {
+                  "itemKey": "maxSupplyAndMintability",
+                  "status": "MISMATCH",
+                  "severity": "CRITICAL",
+                  "onchainState": "totalSupply() = 100,000,000 BLIX | MAX_SUPPLY() = type(uint256).max (무제한) | mintable() = true | owner() = 0xf39F...2266 (단일 EOA)"
+                },
+                {
+                  "itemKey": "transferFee",
+                  "status": "MISMATCH",
+                  "severity": "HIGH",
+                  "onchainState": "transferFeeBps() = 500 (5.00%) | maxTransferFeeBps() = 10000 (100.00%) | feeMutable() = true"
+                },
+                {
+                  "itemKey": "transferRestrictions",
+                  "status": "MISMATCH",
+                  "severity": "HIGH",
+                  "onchainState": "paused() = false | pausable() = true | blacklistable() = true | owner() = 0xf39F...2266"
+                },
+                {
+                  "itemKey": "teamLockup",
+                  "status": "MISMATCH",
+                  "severity": "CRITICAL",
+                  "onchainState": "teamWallet() = 0x3C44...93BC | teamLockupActive() = false | teamLockupReleaseTimestamp() = 0 (미설정(0))"
+                },
+                {
+                  "itemKey": "upgradeability",
+                  "status": "NEEDS_HUMAN_REVIEW",
+                  "severity": "HIGH",
+                  "onchainState": "upgradeable() = true | logicImplementation() = 0xDeaD...beeF | adminAddress() = 0xf39F...2266 (단일 EOA) | owner() = 0xf39F...2266 | EIP-1967 = 0xDeaD...beeF"
+                }
+              ],
+              "nodeSignatures": [
+                {
+                  "nodeId": "cre-node-01.chainlink.don",
+                  "operator": "BLI RegTech Oracle Node #1",
+                  "signerAddress": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+                  "observationHash": "0x77bb91c71b85d092c7c9c5dde063b484d507ad8573f62c322a41007f625e9c63",
+                  "signature": "0x17b113c9a69b44740e9959f46b8a4704c945180422304a487275114df9777b5ae792f14fa0715b4b93f7aeb488e2452ed0df567743efc103ecb3ebf70742ced61b"
+                },
+                {
+                  "nodeId": "cre-node-02.chainlink.don",
+                  "operator": "BLI RegTech Oracle Node #2",
+                  "signerAddress": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+                  "observationHash": "0xa37dc9cca632c7d57fa6733f9ab08d6937e07dfa9e56556048d348988af889c5",
+                  "signature": "0xd4a959d5b2c505bb3867f7341d1487bafc4500f290c7f07881126c0aae879cd764ffae0dbf5571ee7eca29a60ce58c17bdf2d44fc00c619963e2476098f090101c"
+                },
+                {
+                  "nodeId": "cre-node-03.chainlink.don",
+                  "operator": "BLI RegTech Oracle Node #3",
+                  "signerAddress": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+                  "observationHash": "0x185c740eae833685bd7657a24dcc853923e0aec25e36b3122556dba5b6ebdea6",
+                  "signature": "0xd32e58510a48df35b4619711a718cb85f4e53dc00e603e0dbf4ddbe62573a42a79267bd11a3bb0b3eb9504bc24f4a8baa9954d793c14bd4357712094053b897e1b"
+                },
+                {
+                  "nodeId": "cre-node-04.chainlink.don",
+                  "operator": "BLI RegTech Oracle Node #4",
+                  "signerAddress": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+                  "observationHash": "0x6bb663baaae910f939374cde44d6f10929ced73f05d9e52bfaeb1422c6d3ddb1",
+                  "signature": "0x932a0322ad0ddb50392077f11e6662da97da20259b6bf14491e72a05e1978824368c421a4fce02a3ae589ec612367865d1f82cd9acf70a1a1936c6fab16dc44b1c"
+                }
+              ]
+            }
+          },
+          {
+            "stepNumber": 4,
+            "stepId": "step_4_audit_registry_write",
+            "title": "[Step 4: On-chain AuditRegistry Write / Verification Readiness]",
+            "capability": "chainlink.capabilities.evm_write@1.0.0",
+            "status": "SUCCESS",
+            "startedAt": "2026-10-14T07:36:30.809Z",
+            "completedAt": "2026-10-14T07:36:30.813Z",
+            "durationMs": 4,
+            "summary": "Anchored to AuditRegistry (0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0) in tx 0x12f8cdc2b29f... & verified on-chain (verified=true).",
+            "inputPayload": {
+              "auditRegistryAddress": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+              "documentHash": "0xfbd4ed81d14a57c2f4b6cd55b637d0cea8196fa153894e461da6d465fb0277d8",
+              "tokenAddress": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+              "chainId": 31337,
+              "blockNumber": 7849209,
+              "mismatchCount": 4,
+              "reportHash": "0x4e440667f613a8a4cec1598557d76c9b3940fa27f35816d0f4746a076d3f65ec",
+              "executeOnchainAnchor": true
+            },
+            "outputPayload": {
+              "auditRegistryAddress": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+              "functionSignature": "recordAudit(bytes32,address,uint256,uint256,uint8,bytes32)",
+              "recordAuditCalldata": "0x97cdb786fbd4ed81d14a57c2f4b6cd55b637d0cea8196fa153894e461da6d465fb0277d8000000000000000000000000e7f1725e7734ce288f8367e1bb143e90bb3f05120000000000000000000000000000000000000000000000000000000000007a69000000000000000000000000000000000000000000000000000000000077c4f900000000000000000000000000000000000000000000000000000000000000044e440667f613a8a4cec1598557d76c9b3940fa27f35816d0f4746a076d3f65ec",
+              "verifyAnchorCalldata": "0x681aa94afbd4ed81d14a57c2f4b6cd55b637d0cea8196fa153894e461da6d465fb0277d8000000000000000000000000e7f1725e7734ce288f8367e1bb143e90bb3f05124e440667f613a8a4cec1598557d76c9b3940fa27f35816d0f4746a076d3f65ec",
+              "anchoredOnchain": true,
+              "anchorTxHash": "0x12f8cdc2b29f4124e2b86734c205b3d6f9c1f46b6a4b2f780133c7b2aa12bff0",
+              "verifyAnchorPassed": true
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

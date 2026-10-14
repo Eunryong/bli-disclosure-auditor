@@ -1,0 +1,52 @@
+{
+  "workflowName": "bli-disclosure-smart-contract-mismatch-auditor",
+  "workflowVersion": "1.0.0",
+  "don": {
+    "donId": "don-bli-legaltech-cre-01",
+    "protocol": "OCR3-BFT",
+    "nodeCount": 4,
+    "quorumThreshold": 3,
+    "nodes": [
+      {
+        "nodeId": "cre-node-01.chainlink.don",
+        "operator": "BLI RegTech Oracle Node #1",
+        "signerAddress": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "nodeId": "cre-node-02.chainlink.don",
+        "operator": "BLI RegTech Oracle Node #2",
+        "signerAddress": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
+      },
+      {
+        "nodeId": "cre-node-03.chainlink.don",
+        "operator": "BLI RegTech Oracle Node #3",
+        "signerAddress": "0x90F79bf6EB2c4f870365E785982E1f101E93b906"
+      },
+      {
+        "nodeId": "cre-node-04.chainlink.don",
+        "operator": "BLI RegTech Oracle Node #4",
+        "signerAddress": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65"
+      }
+    ]
+  },
+  "evm": {
+    "chainId": 31337,
+    "chainName": "Local Embedded EVM / Sepolia Compatible (Chain ID: 31337)",
+    "eip1967ImplementationSlot": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+    "contracts": {
+      "compliantTokenAddress": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      "mismatchedTokenAddress": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+      "auditRegistryAddress": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"
+    }
+  },
+  "offchain": {
+    "disclosureApiPath": "/api/audits/{id}/extract",
+    "mandatoryCheckItems": [
+      "maxSupplyAndMintability",
+      "transferFee",
+      "transferRestrictions",
+      "teamLockup",
+      "upgradeability"
+    ]
+  }
+}

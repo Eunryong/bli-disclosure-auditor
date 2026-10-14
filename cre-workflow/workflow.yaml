@@ -1,0 +1,93 @@
+# Chainlink Runtime Environment (CRE) Workflow Manifest
+# Project: Disclosure vs. Smart Contract Mismatch Auditor (BLI Legal Tech Hackathon 2)
+# Track: LegalTech & RegTech | Bounty: Chainlink CRE (Best workflow with CRE)
+
+apiVersion: cre.chain.link/v1alpha1
+kind: Workflow
+metadata:
+  name: bli-disclosure-smart-contract-mismatch-auditor
+  version: "1.0.0"
+  owner: "bli-legaltech-compliance-don"
+  description: >
+    Orchestrates off-chain disclosure (whitepaper) claim extraction via HTTP/LLM capabilities,
+    on-chain EVM smart contract inspection across 16 view functions and EIP-1967 storage slots,
+    4-node OCR3 BFT DON consensus on disclosure-vs-contract discrepancies, and AuditRegistry.sol
+    cryptographic hash anchoring verification.
+
+spec:
+  entrypoint: "./src/index.ts"
+  configPath: "./config.json"
+
+  triggers:
+    - id: disclosure_audit_http_trigger
+      type: capabilities.http.Trigger@1.0.0
+      config:
+        path: "/api/audits/{id}/compare"
+        method: "POST"
+        authMode: "DON_SIGNED_OR_INTERNAL"
+
+  steps:
+    - id: step_1_offchain_disclosure_fetch
+      name: "[Step 1: Trigger & Off-chain Disclosure Fetch]"
+      capability: capabilities.http.Client@1.0.0 + capabilities.llm.StructuredExtractor@1.0.0
+      inputs:
+        auditCaseId: "$(trigger.payload.auditCaseId)"
+        whitepaperSha256: "$(trigger.payload.documentHash)"
+      outputs:
+        documentHash: "bytes32"
+        disclosedClaims: "DisclosedClaimItem[5]"
+
+    - id: step_2_onchain_evm_read
+      name: "[Step 2: On-chain EVM State Inspection]"
+      capability: capabilities.evm.ReadContract@1.0.0
+      dependsOn:
+        - step_1_offchain_disclosure_fetch
+      config:
+        chainId: 31337
+        multicallViewFunctions:
+          - "name()"
+          - "symbol()"
+          - "decimals()"
+          - "totalSupply()"
+          - "MAX_SUPPLY()"
+          - "mintable()"
+          - "owner()"
+          - "transferFeeBps()"
+          - "maxTransferFeeBps()"
+          - "feeMutable()"
+          - "feeCollector()"
+          - "paused()"
+          - "pausable()"
+          - "blacklistable()"
+          - "teamWallet()"
+          - "teamAllocation()"
+          - "teamLockupActive()"
+          - "teamLockupReleaseTimestamp()"
+          - "upgradeable()"
+          - "adminAddress()"
+          - "logicImplementation()"
+        storageSlots:
+          - name: "EIP1967_IMPLEMENTATION_SLOT"
+            slot: "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc"
+
+    - id: step_3_don_consensus_eval
+      name: "[Step 3: DON Consensus & Discrepancy Evaluation]"
+      capability: capabilities.consensus.OCR3ReportAggregation@1.0.0
+      dependsOn:
+        - step_1_offchain_disclosure_fetch
+        - step_2_onchain_evm_read
+      config:
+        aggregationMethod: "BFT_EXACT_MATCH_QUORUM"
+        donNodeCount: 4
+        quorumThreshold: 3
+        hashAlgorithm: "SHA256_AND_KECCAK256"
+
+    - id: step_4_audit_registry_write
+      name: "[Step 4: On-chain AuditRegistry Write / Verification Readiness]"
+      capability: capabilities.evm.WriteContract@1.0.0
+      dependsOn:
+        - step_3_don_consensus_eval
+      config:
+        targetContract: "$(config.evm.contracts.auditRegistryAddress)"
+        writeFunction: "recordAudit(bytes32,address,uint256,uint256,uint8,bytes32)"
+        verifyFunction: "verifyAnchor(bytes32,address,bytes32)"
