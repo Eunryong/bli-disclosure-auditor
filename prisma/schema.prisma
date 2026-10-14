@@ -1,0 +1,87 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model AuditCase {
+  id                   String           @id @default(cuid())
+  title                String
+  projectName          String
+  tokenSymbol          String           @default("")
+  whitepaperFileName   String
+  whitepaperText       String
+  documentHash         String           // SHA-256 hex (0x-prefixed bytes32 compatible)
+  tokenAddress         String           // Target smart contract address
+  chainId              Int              // e.g. 11155111 (Sepolia) or 31337 (Local/Anvil)
+  chainName            String           @default("Ethereum Sepolia")
+  stage                String           @default("CREATED") // CREATED | EXTRACTED | COMPARED | REVIEWED | ANCHORED
+  snapshotBlockNumber  Int?             // Block number captured during CRE workflow comparison
+  onchainSnapshotJson  String?          // Raw JSON snapshot returned by Chainlink CRE / RPC reader
+  creWorkflowRunId     String?          // Chainlink CRE execution run identifier
+  mismatchCount        Int              @default(0)
+  needsReviewCount     Int              @default(0)
+  matchCount           Int              @default(0)
+  overallStatus        String           @default("PENDING") // PENDING | MATCH | MISMATCH | NEEDS_HUMAN_REVIEW
+  overallSummary       String?          // Overall legal/compliance review summary
+  reviewerName         String?          // Compliance officer or legal counsel name
+  reportHash           String?          // SHA-256 / Keccak-256 hash of the finalized audit report (0x-prefixed bytes32)
+  auditRegistryAddress String?          // Deployed AuditRegistry contract address
+  anchorTxHash         String?          // On-chain transaction hash from AuditRegistry.recordAudit()
+  anchoredAt           DateTime?
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+
+  checkItems           AuditCheckItem[]
+
+  @@index([stage])
+  @@index([tokenAddress])
+}
+
+model AuditCheckItem {
+  id                     String    @id @default(cuid())
+  auditCaseId            String
+  auditCase              AuditCase @relation(fields: [auditCaseId], references: [id], onDelete: Cascade)
+
+  // One of the 5 core check keys:
+  // 1) maxSupplyAndMintability
+  // 2) transferFee
+  // 3) transferRestrictions
+  // 4) teamLockup
+  // 5) upgradeability
+  itemKey                String
+  displayOrder           Int       @default(1)
+  titleKo                String
+  titleEn                String
+
+  // Disclosed Claim (extracted from whitepaper/disclosure doc)
+  disclosedClaim         String    @default("")
+  sourceQuote            String    @default("")
+  sectionRef             String    @default("")
+  disclosedDataJson      String?   // Structured JSON representation of disclosed claim parameters
+
+  // On-Chain Fact (queried via Chainlink CRE / RPC at snapshotBlockNumber)
+  onchainState           String    @default("")
+  evidenceFunctionOrSlot String    @default("")
+  onchainDataJson        String?   // Structured JSON representation of on-chain state values
+
+  // Comparison Result
+  // MATCH | MISMATCH | NEEDS_HUMAN_REVIEW | PENDING
+  status                 String    @default("PENDING")
+  severity               String    @default("INFO") // INFO | LOW | MEDIUM | HIGH | CRITICAL
+  rationale              String    @default("")
+
+  // Human Legal/Compliance Reviewer Sign-off
+  reviewerNote           String    @default("")
+  reviewedBy             String?
+  reviewedAt             DateTime?
+
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+
+  @@unique([auditCaseId, itemKey])
+  @@index([auditCaseId])
+}

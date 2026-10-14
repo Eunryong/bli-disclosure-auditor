@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+
+# Next.js build output
+.next/
+out/
+
+# Environment variables & private keys (NEVER commit)
+.env
+.env.*
+!.env.example
+
+# SQLite database & temporary files
+prisma/*.db
+prisma/*.db-journal
+prisma/*.db-shm
+prisma/*.db-wal
+
+# OS & Editor
+.DS_Store
+*.tsbuildinfo
