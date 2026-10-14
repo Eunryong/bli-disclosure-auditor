@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+@layer base {
+  html {
+    font-size: 100%;
+    line-height: 1.5;
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: #090d16;
+    color: #f1f5f9;
+    line-height: 1.5;
+    text-align: start;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  h1,
+  h2,
+  h3,
+  th {
+    text-wrap: balance;
+  }
+
+  p,
+  blockquote,
+  li {
+    text-wrap: pretty;
+  }
+
+  code,
+  pre,
+  .mono-hash {
+    overflow-wrap: break-word;
+    word-break: break-all;
+  }
+
+  input:user-invalid,
+  textarea:user-invalid,
+  select:user-invalid {
+    border-color: #ef4444;
+  }
+}
