@@ -12,14 +12,22 @@ import {
   Terminal,
   Code2,
   ShieldCheck,
+  ShieldAlert,
+  Scale,
+  Flame,
   Layers,
   ChevronDown,
   ChevronUp,
   ExternalLink,
 } from "lucide-react";
-import type { AuditCaseDTO, CreWorkflowExecutionTrace } from "@/types/audit";
+import type {
+  AuditCaseDTO,
+  CounterfactualBreachSimulation,
+  CreWorkflowExecutionTrace,
+} from "@/types/audit";
 import { ComparisonStatusBadge } from "@/components/StatusBadge";
 import { getEtherscanAddressUrl, getEtherscanTxUrl } from "@/lib/etherscan";
+import { LEGAL_STATUTE_MAP } from "@/lib/legal-knowledge";
 
 export function CompareWorkspace({
   initialAudit,
@@ -60,6 +68,16 @@ export function CompareWorkspace({
 
   const creTrace: CreWorkflowExecutionTrace | null =
     audit.creWorkflowTrace || parsedSnapshot?.creWorkflowTrace || null;
+
+  const breachSimulations: CounterfactualBreachSimulation[] = Array.isArray(
+    audit.breachSimulations
+  )
+    ? audit.breachSimulations
+    : Array.isArray(parsedSnapshot?.breachSimulations)
+    ? parsedSnapshot.breachSimulations
+    : Array.isArray(creTrace?.breachSimulations)
+    ? creTrace.breachSimulations
+    : [];
 
   async function handleRunCreCompare() {
     try {
@@ -422,78 +440,264 @@ export function CompareWorkspace({
         )}
       </div>
 
-      {/* 1:1 Comparison Cards for the 5 Core Items */}
-      <div className="space-y-4">
-        {items.map((item) => (
-          <div
-            key={item.itemKey}
-            className={`rounded-xl border p-5 ${
-              item.status === "MISMATCH"
-                ? "border-rose-500/40 bg-rose-950/15"
-                : item.status === "NEEDS_HUMAN_REVIEW"
-                ? "border-amber-500/40 bg-amber-950/15"
-                : item.status === "MATCH"
-                ? "border-emerald-500/30 bg-slate-900/80"
-                : "border-slate-800 bg-slate-900/80"
-            }`}
-          >
-            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800/80 pb-3">
-              <div>
-                <span className="font-mono text-xs font-semibold text-blue-400">
-                  [{item.itemKey}]
-                </span>
-                <h3 className="text-base font-bold text-white">
-                  {item.titleKo}
-                </h3>
+      {/* =================================================================== */}
+      {/* Dedicated Panel: Counterfactual Breach Simulation Proof             */}
+      {/* =================================================================== */}
+      {breachSimulations.length > 0 && (
+        <div className="rounded-xl border border-amber-500/40 bg-slate-900/95 p-5 shadow-lg">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-4">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-amber-300">
+                <Flame className="h-4 w-4 text-amber-400" />
+                온체인 공시 위반 행위 재현 결과 (Adversarial Breach Simulation Proof)
               </div>
-              <div className="flex items-center gap-2">
-                <span className="rounded bg-slate-800 px-2 py-0.5 font-mono text-xs text-slate-300">
-                  Severity: {item.severity}
-                </span>
-                <ComparisonStatusBadge status={item.status} />
-              </div>
+              <p className="text-xs text-slate-300">
+                단순 <code>view</code> 변수 조회를 넘어, 복제된 EVM 샌드박스 상태(
+                <code>evm.runCall</code>)에서 백서 공시 약속을 위반하는 4대 악의적 트랜잭션(무단 발행·기습 수수료 50% 인상·투자자 지갑 동결·팀 물량 조기 유출)을 직접 실행해 스마트계약 코드가 이를 실제로 차단(
+                <code>DEFENDED / BLOCKED_BY_CODE</code>)하는지 혹은 위반이 성공(
+                <code>BREACH_SUCCEEDED</code>)하는지 실증합니다.
+              </p>
             </div>
-
-            <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
-              {/* Left: Disclosed Claim from Whitepaper */}
-              <div className="rounded-lg border border-slate-800 bg-slate-950/80 p-4">
-                <div className="flex items-center justify-between text-xs font-semibold text-sky-300">
-                  <span>공시 백서 주장 (Disclosed Claim)</span>
-                  <span className="font-mono text-slate-400">
-                    {item.sectionRef || "조항 미기재"}
-                  </span>
-                </div>
-                <p className="mt-2 text-sm font-medium text-white">
-                  {item.disclosedClaim || "추출된 공시 주장이 없습니다."}
-                </p>
-                {item.sourceQuote && (
-                  <blockquote className="mt-2 border-l-2 border-sky-500/50 pl-3 text-xs italic text-slate-400">
-                    &ldquo;{item.sourceQuote}&rdquo;
-                  </blockquote>
-                )}
-              </div>
-
-              {/* Right: On-chain State from Smart Contract */}
-              <div className="rounded-lg border border-slate-800 bg-slate-950/80 p-4">
-                <div className="flex items-center justify-between text-xs font-semibold text-indigo-300">
-                  <span>온체인 실제 상태 (On-Chain Fact)</span>
-                  <span className="inline-flex items-center gap-1 font-mono text-[0.6875rem] text-slate-400">
-                    <Terminal className="h-3 w-3" />
-                    {item.evidenceFunctionOrSlot}
-                  </span>
-                </div>
-                <p className="mt-2 font-mono text-xs leading-relaxed text-slate-100">
-                  {item.onchainState ||
-                    "아직 온체인 상태 스냅샷이 수집되지 않았습니다."}
-                </p>
-                <div className="mt-3 border-t border-slate-800/80 pt-2 text-xs text-slate-300">
-                  <strong className="text-slate-100">대조 판정 근거(Rationale):</strong>{" "}
-                  {item.rationale || "CRE 대조 실행 후 판정 근거가 생성됩니다."}
-                </div>
-              </div>
+            <div className="flex items-center gap-2 text-xs font-mono">
+              <span className="rounded-md border border-emerald-500/40 bg-emerald-950/50 px-2.5 py-1 font-bold text-emerald-300">
+                DEFENDED:{" "}
+                {
+                  breachSimulations.filter((b) => b.outcome === "DEFENDED")
+                    .length
+                }
+                건
+              </span>
+              <span className="rounded-md border border-rose-500/40 bg-rose-950/50 px-2.5 py-1 font-bold text-rose-300">
+                BREACH_SUCCEEDED:{" "}
+                {
+                  breachSimulations.filter(
+                    (b) => b.outcome === "BREACH_SUCCEEDED"
+                  ).length
+                }
+                건
+              </span>
             </div>
           </div>
-        ))}
+
+          <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
+            {breachSimulations.map((sim) => {
+              const isBreached = sim.outcome === "BREACH_SUCCEEDED";
+              return (
+                <div
+                  key={sim.scenarioId}
+                  className={`rounded-xl border p-4 ${
+                    isBreached
+                      ? "border-rose-500/50 bg-rose-950/20"
+                      : "border-emerald-500/40 bg-emerald-950/15"
+                  }`}
+                >
+                  <div className="flex flex-wrap items-start justify-between gap-2 border-b border-slate-800/80 pb-2.5">
+                    <div>
+                      <span className="font-mono text-[0.6875rem] font-semibold text-amber-300">
+                        {sim.titleEn}
+                      </span>
+                      <h4 className="text-sm font-bold text-white">
+                        {sim.titleKo}
+                      </h4>
+                    </div>
+                    {isBreached ? (
+                      <span className="inline-flex items-center gap-1 rounded-full border border-rose-500/50 bg-rose-500/20 px-2.5 py-0.5 font-mono text-[0.6875rem] font-bold text-rose-300">
+                        <ShieldAlert className="h-3.5 w-3.5" />
+                        BREACH_SUCCEEDED (위반 성공)
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/50 bg-emerald-500/20 px-2.5 py-0.5 font-mono text-[0.6875rem] font-bold text-emerald-300">
+                        <ShieldCheck className="h-3.5 w-3.5" />
+                        DEFENDED / BLOCKED_BY_CODE
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="mt-3 space-y-2 text-xs">
+                    <div className="rounded bg-slate-950/80 p-2.5">
+                      <div className="text-[0.6875rem] font-semibold text-sky-300">
+                        백서 공시 약속 (Disclosed Promise)
+                      </div>
+                      <div className="mt-0.5 text-slate-200">
+                        {sim.whitepaperPromiseKo}
+                      </div>
+                    </div>
+
+                    <div className="rounded bg-slate-950/80 p-2.5">
+                      <div className="flex flex-wrap items-center justify-between gap-1 text-[0.6875rem] font-semibold text-indigo-300">
+                        <span>시도한 공격/배신 트랜잭션 (Attempted Action)</span>
+                        <span className="font-mono text-slate-400">
+                          Gas: {sim.gasUsed} | Reverted:{" "}
+                          {sim.txReverted ? "true" : "false"}
+                        </span>
+                      </div>
+                      <div className="mt-0.5 font-mono text-[0.7rem] text-white">
+                        [{sim.targetFunction}] {sim.adversarialActionKo}
+                      </div>
+                      <div className="mt-1 truncate font-mono text-[0.65rem] text-slate-400">
+                        Calldata: {sim.calldata}
+                      </div>
+                      {sim.revertReason && (
+                        <div className="mt-1 font-mono text-[0.6875rem] text-amber-300">
+                          Revert / Custom Error: {sim.revertReason}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                      <div className="rounded border border-slate-800 bg-slate-950/90 p-2.5">
+                        <div className="text-[0.65rem] font-semibold uppercase text-slate-400">
+                          실행 전 온체인 상태 (Before State)
+                        </div>
+                        <div className="mt-1 font-mono text-[0.7rem] text-slate-200">
+                          {sim.beforeState}
+                        </div>
+                      </div>
+                      <div
+                        className={`rounded border p-2.5 ${
+                          isBreached
+                            ? "border-rose-500/40 bg-rose-950/40"
+                            : "border-emerald-500/30 bg-emerald-950/30"
+                        }`}
+                      >
+                        <div className="text-[0.65rem] font-semibold uppercase text-slate-300">
+                          실행 후 온체인 상태 (After State)
+                        </div>
+                        <div
+                          className={`mt-1 font-mono text-[0.7rem] font-semibold ${
+                            isBreached ? "text-rose-200" : "text-emerald-200"
+                          }`}
+                        >
+                          {sim.afterState}
+                        </div>
+                      </div>
+                    </div>
+
+                    <p className="pt-1 text-[0.72rem] leading-relaxed text-slate-300">
+                      <strong className="text-white">증빙 결론:</strong>{" "}
+                      {sim.stateDeltaSummary} ({sim.legalImpactKo})
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* 1:1 Comparison Cards for the 5 Core Items */}
+      <div className="space-y-4">
+        {items.map((item) => {
+          const legalMapping = LEGAL_STATUTE_MAP[item.itemKey];
+          return (
+            <div
+              key={item.itemKey}
+              className={`rounded-xl border p-5 ${
+                item.status === "MISMATCH"
+                  ? "border-rose-500/40 bg-rose-950/15"
+                  : item.status === "NEEDS_HUMAN_REVIEW"
+                  ? "border-amber-500/40 bg-amber-950/15"
+                  : item.status === "MATCH"
+                  ? "border-emerald-500/30 bg-slate-900/80"
+                  : "border-slate-800 bg-slate-900/80"
+              }`}
+            >
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800/80 pb-3">
+                <div>
+                  <span className="font-mono text-xs font-semibold text-blue-400">
+                    [{item.itemKey}]
+                  </span>
+                  <h3 className="text-base font-bold text-white">
+                    {item.titleKo}
+                  </h3>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="rounded bg-slate-800 px-2 py-0.5 font-mono text-xs text-slate-300">
+                    Severity: {item.severity}
+                  </span>
+                  <ComparisonStatusBadge status={item.status} />
+                </div>
+              </div>
+
+              <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
+                {/* Left: Disclosed Claim from Whitepaper */}
+                <div className="rounded-lg border border-slate-800 bg-slate-950/80 p-4">
+                  <div className="flex items-center justify-between text-xs font-semibold text-sky-300">
+                    <span>공시 백서 주장 (Disclosed Claim)</span>
+                    <span className="font-mono text-slate-400">
+                      {item.sectionRef || "조항 미기재"}
+                    </span>
+                  </div>
+                  <p className="mt-2 text-sm font-medium text-white">
+                    {item.disclosedClaim || "추출된 공시 주장이 없습니다."}
+                  </p>
+                  {item.sourceQuote && (
+                    <blockquote className="mt-2 border-l-2 border-sky-500/50 pl-3 text-xs italic text-slate-400">
+                      &ldquo;{item.sourceQuote}&rdquo;
+                    </blockquote>
+                  )}
+                </div>
+
+                {/* Right: On-chain State from Smart Contract */}
+                <div className="rounded-lg border border-slate-800 bg-slate-950/80 p-4">
+                  <div className="flex items-center justify-between text-xs font-semibold text-indigo-300">
+                    <span>온체인 실제 상태 (On-Chain Fact)</span>
+                    <span className="inline-flex items-center gap-1 font-mono text-[0.6875rem] text-slate-400">
+                      <Terminal className="h-3 w-3" />
+                      {item.evidenceFunctionOrSlot}
+                    </span>
+                  </div>
+                  <p className="mt-2 font-mono text-xs leading-relaxed text-slate-100">
+                    {item.onchainState ||
+                      "아직 온체인 상태 스냅샷이 수집되지 않았습니다."}
+                  </p>
+                  <div className="mt-3 border-t border-slate-800/80 pt-2 text-xs text-slate-300">
+                    <strong className="text-slate-100">
+                      대조 판정 근거(Rationale):
+                    </strong>{" "}
+                    {item.rationale ||
+                      "CRE 대조 실행 후 판정 근거가 생성됩니다."}
+                  </div>
+                </div>
+              </div>
+
+              {/* 3-Jurisdiction (KR / EU / US) Legal & Regulatory Statute Mapping */}
+              {legalMapping && (
+                <div className="mt-4 rounded-lg border border-slate-800/90 bg-slate-950/90 p-3.5">
+                  <div className="flex items-center gap-1.5 text-xs font-semibold text-amber-300">
+                    <Scale className="h-3.5 w-3.5 text-amber-400" />
+                    <span>
+                      글로벌 3대 규제 관할권(한국·EU·미국) 관련 법조문 및 상장심사 기준 매핑
+                    </span>
+                  </div>
+                  <div className="mt-2.5 grid grid-cols-1 gap-2.5 md:grid-cols-3">
+                    {Object.values(legalMapping.statutes).map((cit) => (
+                      <div
+                        key={cit.jurisdiction}
+                        className="rounded border border-slate-800 bg-slate-900/70 p-2.5 text-[0.7rem]"
+                      >
+                        <div className="flex items-center justify-between gap-1 font-semibold text-indigo-200">
+                          <span>
+                            {cit.flag} [{cit.jurisdictionLabelKo}]
+                          </span>
+                        </div>
+                        <div className="mt-1 font-semibold text-white">
+                          {cit.statuteTitle} —{" "}
+                          <span className="text-amber-300">
+                            {cit.articleRef}
+                          </span>
+                        </div>
+                        <p className="mt-1 leading-relaxed text-slate-400">
+                          {cit.relevanceSummaryKo}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
 
       {/* Bottom Step Navigation */}

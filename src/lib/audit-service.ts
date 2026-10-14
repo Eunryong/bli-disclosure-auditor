@@ -14,6 +14,7 @@ import {
   type AuditComparisonStatus,
   type AuditSeverity,
   type AuditStage,
+  type CounterfactualBreachSimulation,
   type CreateAuditCaseInput,
   type CreWorkflowExecutionTrace,
   type OnchainAnchorVerification,
@@ -29,6 +30,8 @@ export function computeSha256Hex(content: string): string {
 export function serializeAuditCase(record: any): AuditCaseDTO {
   let anchorVerification: OnchainAnchorVerification | null = null;
   let creWorkflowTrace: CreWorkflowExecutionTrace | null = null;
+  let breachSimulations: CounterfactualBreachSimulation[] | undefined =
+    undefined;
   if (record.onchainSnapshotJson) {
     try {
       const parsed = JSON.parse(record.onchainSnapshotJson);
@@ -37,6 +40,14 @@ export function serializeAuditCase(record: any): AuditCaseDTO {
       }
       if (parsed && parsed.creWorkflowTrace) {
         creWorkflowTrace = parsed.creWorkflowTrace;
+      }
+      if (parsed && Array.isArray(parsed.breachSimulations)) {
+        breachSimulations = parsed.breachSimulations;
+      } else if (
+        parsed?.creWorkflowTrace &&
+        Array.isArray(parsed.creWorkflowTrace.breachSimulations)
+      ) {
+        breachSimulations = parsed.creWorkflowTrace.breachSimulations;
       }
     } catch {
       // ignore malformed json
@@ -59,6 +70,7 @@ export function serializeAuditCase(record: any): AuditCaseDTO {
     onchainSnapshotJson: record.onchainSnapshotJson,
     creWorkflowRunId: record.creWorkflowRunId,
     creWorkflowTrace,
+    breachSimulations,
     mismatchCount: record.mismatchCount,
     needsReviewCount: record.needsReviewCount,
     matchCount: record.matchCount,

@@ -14,14 +14,24 @@ import {
   Printer,
   ShieldCheck,
   FileCheck2,
+  Scale,
+  Code2,
+  Copy,
+  Flame,
 } from "lucide-react";
 import type {
   AuditCaseDTO,
   AuditCheckItemDTO,
   AuditComparisonStatus,
+  CounterfactualBreachSimulation,
 } from "@/types/audit";
 import { ComparisonStatusBadge } from "@/components/StatusBadge";
 import { getEtherscanAddressUrl, getEtherscanTxUrl } from "@/lib/etherscan";
+import {
+  CODE_REMEDIATION_SPECS,
+  LEGAL_STATUTE_MAP,
+  generateLegalCureNotice,
+} from "@/lib/legal-knowledge";
 
 export function ReviewWorkspace({
   initialAudit,
@@ -42,6 +52,7 @@ export function ReviewWorkspace({
   const [saving, setSaving] = useState(false);
   const [anchoring, setAnchoring] = useState(false);
   const [showPrintReport, setShowPrintReport] = useState(false);
+  const [copiedCureNotice, setCopiedCureNotice] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
 
   const verification = audit.anchorVerification || null;
@@ -54,6 +65,33 @@ export function ReviewWorkspace({
     audit.auditRegistryAddress
   );
   const txExplorerUrl = getEtherscanTxUrl(audit.chainId, audit.anchorTxHash);
+
+  let parsedSnapshot: any = null;
+  if (audit.onchainSnapshotJson) {
+    try {
+      parsedSnapshot = JSON.parse(audit.onchainSnapshotJson);
+    } catch {
+      parsedSnapshot = null;
+    }
+  }
+
+  const breachSimulations: CounterfactualBreachSimulation[] = Array.isArray(
+    audit.breachSimulations
+  )
+    ? audit.breachSimulations
+    : Array.isArray(parsedSnapshot?.breachSimulations)
+    ? parsedSnapshot.breachSimulations
+    : Array.isArray(parsedSnapshot?.creWorkflowTrace?.breachSimulations)
+    ? parsedSnapshot.creWorkflowTrace.breachSimulations
+    : [];
+
+  const legalCureNotice = generateLegalCureNotice({
+    ...audit,
+    reviewerName,
+    overallSummary,
+    checkItems: items,
+    breachSimulations,
+  });
 
   function updateItemReview(
     itemKey: string,
@@ -70,6 +108,16 @@ export function ReviewWorkspace({
           : item
       )
     );
+  }
+
+  async function handleCopyCureNotice() {
+    try {
+      await navigator.clipboard.writeText(legalCureNotice.fullNoticeTextKo);
+      setCopiedCureNotice(true);
+      setTimeout(() => setCopiedCureNotice(false), 2500);
+    } catch {
+      // ignore clipboard errors
+    }
   }
 
   async function handleSaveReview(anchorAction: boolean) {
@@ -120,15 +168,6 @@ export function ReviewWorkspace({
   }
 
   function handleExportJsonReport() {
-    let parsedSnapshot: any = null;
-    if (audit.onchainSnapshotJson) {
-      try {
-        parsedSnapshot = JSON.parse(audit.onchainSnapshotJson);
-      } catch {
-        parsedSnapshot = null;
-      }
-    }
-
     const payload = {
       exportedAt: new Date().toISOString(),
       disclaimer:
@@ -157,6 +196,10 @@ export function ReviewWorkspace({
         anchoredAt: audit.anchoredAt,
       },
       onchainAnchorVerification: verification,
+      counterfactualBreachSimulations: breachSimulations,
+      legalStatuteMappings: LEGAL_STATUTE_MAP,
+      codeRemediationSpecs: CODE_REMEDIATION_SPECS,
+      legalCureNoticeDraft: legalCureNotice,
       onchainSnapshot: parsedSnapshot,
       checkItems: items,
     };
@@ -529,93 +572,298 @@ export function ReviewWorkspace({
               </table>
             </div>
           </div>
+
+          {breachSimulations.length > 0 && (
+            <div className="mt-5">
+              <h3 className="text-sm font-bold text-slate-900">
+                3. 온체인 공시 위반 행위 재현 시뮬레이션 (Adversarial Breach Simulation Proof)
+              </h3>
+              <div className="mt-2 overflow-x-auto">
+                <table className="w-full border-collapse border border-slate-300 text-left text-xs">
+                  <thead className="bg-slate-200 text-slate-900">
+                    <tr>
+                      <th className="border border-slate-300 p-2">재현 시나리오</th>
+                      <th className="border border-slate-300 p-2">실행 트랜잭션</th>
+                      <th className="border border-slate-300 p-2">실행 전 → 실행 후 상태</th>
+                      <th className="border border-slate-300 p-2">방어/위반 결과</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {breachSimulations.map((sim) => (
+                      <tr key={sim.scenarioId} className="align-top">
+                        <td className="border border-slate-300 p-2 font-semibold">
+                          {sim.titleKo}
+                        </td>
+                        <td className="border border-slate-300 p-2 font-mono text-[0.6875rem]">
+                          [{sim.targetFunction}] {sim.adversarialActionKo}
+                          <div className="mt-0.5 text-[0.65rem] text-slate-500">
+                            Gas: {sim.gasUsed} | Calldata: {sim.calldata.slice(0, 26)}...
+                          </div>
+                        </td>
+                        <td className="border border-slate-300 p-2 font-mono text-[0.6875rem]">
+                          <div>Before: {sim.beforeState}</div>
+                          <div className="mt-0.5 font-semibold">
+                            After: {sim.afterState}
+                          </div>
+                        </td>
+                        <td className="border border-slate-300 p-2 font-mono font-bold">
+                          {sim.badgeText}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          <div className="mt-5">
+            <h3 className="text-sm font-bold text-slate-900">
+              4. 법무 시정요구서(Legal Cure Notice) 및 Solidity 방어 패치 명세
+            </h3>
+            <pre className="mt-2 whitespace-pre-wrap rounded border border-slate-300 bg-slate-50 p-3 font-sans text-[0.7rem] leading-relaxed text-slate-800">
+              {legalCureNotice.fullNoticeTextKo}
+            </pre>
+          </div>
         </section>
       )}
 
+      {/* =================================================================== */}
+      {/* Dedicated Panel: Legal Cure Notice & Solidity Code Remediation Diff */}
+      {/* =================================================================== */}
+      <div className="rounded-xl border border-indigo-500/40 bg-slate-900/95 p-6 shadow-lg">
+        <div className="flex flex-wrap items-start justify-between gap-4 border-b border-slate-800 pb-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-indigo-300">
+              <Code2 className="h-4 w-4 text-indigo-400" />
+              법무 시정요구서(Legal Cure Notice) &amp; Solidity 방어 패치(Code Remediation Diff)
+            </div>
+            <h3 className="text-base font-bold text-white">
+              공시·스마트계약 불일치 소명 요구 공문 초안 및 코드/백서 양방향 시정 가이드
+            </h3>
+            <p className="text-xs text-slate-400">
+              검출된 불일치(<code>MISMATCH</code>) 및 행위 재현 시뮬레이션(
+              <code>BREACH_SUCCEEDED</code>) 증거와 한·EU·미 3대 관할권 법조문을 인용해 발행사 앞 발송할 공식 소명·시정요구서 초안과 Solidity 스마트계약 패치 코드를 자동 생성합니다.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleCopyCureNotice}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-indigo-400/40 bg-indigo-600/25 px-3.5 py-2 text-xs font-semibold text-indigo-200 hover:bg-indigo-600/40"
+          >
+            <Copy className="h-3.5 w-3.5" />
+            {copiedCureNotice
+              ? "시정요구서 전문 복사됨!"
+              : "법무 시정요구서(Markdown) 전문 복사"}
+          </button>
+        </div>
+
+        {/* Formal Legal Cure Notice Markdown Box */}
+        <div className="mt-4 rounded-lg border border-slate-800 bg-slate-950 p-4">
+          <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-xs">
+            <span className="font-mono font-bold text-amber-300">
+              문서번호: {legalCureNotice.documentNumber} | 수신: {legalCureNotice.recipientProject}
+            </span>
+            <span className="font-mono text-slate-400">
+              발신일: {legalCureNotice.issuedDateIso} | 검토역: {reviewerName}
+            </span>
+          </div>
+          <pre className="max-h-72 overflow-y-auto whitespace-pre-wrap rounded border border-slate-800/90 bg-slate-900/90 p-3.5 font-sans text-xs leading-relaxed text-slate-200">
+            {legalCureNotice.fullNoticeTextKo}
+          </pre>
+        </div>
+
+        {/* Side-by-Side Solidity Remediation Diff & Whitepaper Redline per Item */}
+        <div className="mt-5 space-y-4">
+          <div className="flex items-center gap-2 text-xs font-semibold text-emerald-300">
+            <Flame className="h-4 w-4 text-amber-400" />
+            <span>
+              항목별 Solidity 취약 코드(<code>- BLIX</code>) vs 공시 준수 방어 코드(
+              <code>+ BLIC Patch</code>) 및 백서 정정(Redline) 명세
+            </span>
+          </div>
+
+          {items.map((item) => {
+            const spec = CODE_REMEDIATION_SPECS[item.itemKey];
+            if (!spec) return null;
+            return (
+              <div
+                key={`remediation-${item.itemKey}`}
+                className="rounded-lg border border-slate-800 bg-slate-950/90 p-4"
+              >
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
+                  <div>
+                    <span className="font-mono text-xs font-bold text-indigo-300">
+                      [{item.itemKey}]
+                    </span>{" "}
+                    <span className="text-sm font-bold text-white">
+                      {spec.titleKo}
+                    </span>
+                  </div>
+                  <ComparisonStatusBadge status={item.status} />
+                </div>
+
+                <p className="mt-2 text-xs text-rose-200/90">
+                  <strong className="text-rose-300">핵심 취약점 진단:</strong>{" "}
+                  {spec.vulnerabilitySummaryKo}
+                </p>
+
+                <div className="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-2">
+                  <div className="rounded border border-rose-500/30 bg-rose-950/20 p-3">
+                    <div className="mb-1.5 font-mono text-[0.6875rem] font-bold text-rose-300">
+                      - {spec.vulnerableContractLabel}
+                    </div>
+                    <pre className="overflow-x-auto font-mono text-[0.6875rem] leading-relaxed text-rose-200">
+                      {spec.vulnerableSolidityCode}
+                    </pre>
+                  </div>
+
+                  <div className="rounded border border-emerald-500/30 bg-emerald-950/20 p-3">
+                    <div className="mb-1.5 font-mono text-[0.6875rem] font-bold text-emerald-300">
+                      + {spec.remediatedContractLabel}
+                    </div>
+                    <pre className="overflow-x-auto font-mono text-[0.6875rem] leading-relaxed text-emerald-200">
+                      {spec.remediatedSolidityCode}
+                    </pre>
+                  </div>
+                </div>
+
+                <div className="mt-3 grid grid-cols-1 gap-2.5 text-xs md:grid-cols-2">
+                  <div className="rounded border border-slate-800 bg-slate-900/80 p-2.5">
+                    <div className="font-semibold text-emerald-300">
+                      시정 방안 A — 스마트계약 재배포 / 권한 소각 (Code Remediation)
+                    </div>
+                    <p className="mt-1 text-[0.72rem] leading-relaxed text-slate-300">
+                      {spec.whitepaperRedline.optionACodeEnforcedText}
+                    </p>
+                  </div>
+                  <div className="rounded border border-slate-800 bg-slate-900/80 p-2.5">
+                    <div className="font-semibold text-sky-300">
+                      시정 방안 B — 백서 공시 문구 정정 공고 (Whitepaper Redline)
+                    </div>
+                    <p className="mt-1 text-[0.72rem] leading-relaxed text-slate-300">
+                      {spec.whitepaperRedline.optionBDisclosureRiskRedline}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Item-by-Item Legal Review & Sign-off */}
       <div className="space-y-4">
-        {items.map((item) => (
-          <div
-            key={item.itemKey}
-            className="rounded-xl border border-slate-800 bg-slate-900/80 p-5"
-          >
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
-              <div>
-                <span className="font-mono text-xs font-semibold text-blue-400">
-                  [{item.itemKey}]
-                </span>
-                <h3 className="text-base font-bold text-white">
-                  {item.titleKo}
-                </h3>
+        {items.map((item) => {
+          const legalMapping = LEGAL_STATUTE_MAP[item.itemKey];
+          return (
+            <div
+              key={item.itemKey}
+              className="rounded-xl border border-slate-800 bg-slate-900/80 p-5"
+            >
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
+                <div>
+                  <span className="font-mono text-xs font-semibold text-blue-400">
+                    [{item.itemKey}]
+                  </span>
+                  <h3 className="text-base font-bold text-white">
+                    {item.titleKo}
+                  </h3>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <ComparisonStatusBadge status={item.status} />
+                  <label
+                    htmlFor={`status-${item.itemKey}`}
+                    className="sr-only"
+                  >
+                    최종 상태 변경
+                  </label>
+                  <select
+                    id={`status-${item.itemKey}`}
+                    value={item.status}
+                    onChange={(e) =>
+                      updateItemReview(
+                        item.itemKey,
+                        "status",
+                        e.target.value as AuditComparisonStatus
+                      )
+                    }
+                    className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs font-semibold text-white focus:border-blue-500 focus:outline-none"
+                  >
+                    <option value="MATCH">MATCH (일치 확정)</option>
+                    <option value="MISMATCH">MISMATCH (불일치 확정)</option>
+                    <option value="NEEDS_HUMAN_REVIEW">
+                      NEEDS_HUMAN_REVIEW (추가 소명/검토 필요)
+                    </option>
+                    <option value="PENDING">PENDING (대기)</option>
+                  </select>
+                </div>
               </div>
 
-              <div className="flex items-center gap-3">
-                <ComparisonStatusBadge status={item.status} />
+              <div className="mt-3 grid grid-cols-1 gap-3 text-xs sm:grid-cols-2">
+                <div className="rounded-lg bg-slate-950/70 p-3">
+                  <div className="font-semibold text-sky-300">
+                    백서 공시 주장 ({item.sectionRef})
+                  </div>
+                  <p className="mt-1 text-slate-200">{item.disclosedClaim}</p>
+                </div>
+                <div className="rounded-lg bg-slate-950/70 p-3">
+                  <div className="font-semibold text-indigo-300">
+                    온체인 실제 값 ({item.evidenceFunctionOrSlot})
+                  </div>
+                  <p className="mt-1 font-mono text-slate-200">
+                    {item.onchainState}
+                  </p>
+                </div>
+              </div>
+
+              {legalMapping && (
+                <div className="mt-3 rounded-lg border border-slate-800/90 bg-slate-950/80 p-3">
+                  <div className="flex items-center gap-1.5 text-[0.7rem] font-semibold text-amber-300">
+                    <Scale className="h-3.5 w-3.5 text-amber-400" />
+                    <span>적용 법조문 및 거래소 심사 기준 (KR / EU / US)</span>
+                  </div>
+                  <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-3">
+                    {Object.values(legalMapping.statutes).map((cit) => (
+                      <div
+                        key={cit.jurisdiction}
+                        className="rounded border border-slate-800 bg-slate-900/70 p-2 text-[0.6875rem]"
+                      >
+                        <div className="font-semibold text-indigo-200">
+                          {cit.flag} [{cit.jurisdictionLabelKo}] {cit.statuteTitle}
+                        </div>
+                        <div className="mt-0.5 font-mono text-amber-300">
+                          {cit.articleRef}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="mt-3">
                 <label
-                  htmlFor={`status-${item.itemKey}`}
-                  className="sr-only"
+                  htmlFor={`note-${item.itemKey}`}
+                  className="block text-xs font-semibold text-amber-300"
                 >
-                  최종 상태 변경
+                  법무·컴플라이언스 담당자 검토 메모 (reviewerNote)
                 </label>
-                <select
-                  id={`status-${item.itemKey}`}
-                  value={item.status}
+                <textarea
+                  id={`note-${item.itemKey}`}
+                  rows={2}
+                  value={item.reviewerNote}
                   onChange={(e) =>
-                    updateItemReview(
-                      item.itemKey,
-                      "status",
-                      e.target.value as AuditComparisonStatus
-                    )
+                    updateItemReview(item.itemKey, "reviewerNote", e.target.value)
                   }
-                  className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs font-semibold text-white focus:border-blue-500 focus:outline-none"
-                >
-                  <option value="MATCH">MATCH (일치 확정)</option>
-                  <option value="MISMATCH">MISMATCH (불일치 확정)</option>
-                  <option value="NEEDS_HUMAN_REVIEW">
-                    NEEDS_HUMAN_REVIEW (추가 소명/검토 필요)
-                  </option>
-                  <option value="PENDING">PENDING (대기)</option>
-                </select>
+                  placeholder="소명 요청 사항, 온체인 함수 위험도, 오프체인 증빙 대조 결과 등을 기록하세요."
+                  className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white focus:border-blue-500 focus:outline-none"
+                />
               </div>
             </div>
-
-            <div className="mt-3 grid grid-cols-1 gap-3 text-xs sm:grid-cols-2">
-              <div className="rounded-lg bg-slate-950/70 p-3">
-                <div className="font-semibold text-sky-300">
-                  백서 공시 주장 ({item.sectionRef})
-                </div>
-                <p className="mt-1 text-slate-200">{item.disclosedClaim}</p>
-              </div>
-              <div className="rounded-lg bg-slate-950/70 p-3">
-                <div className="font-semibold text-indigo-300">
-                  온체인 실제 값 ({item.evidenceFunctionOrSlot})
-                </div>
-                <p className="mt-1 font-mono text-slate-200">
-                  {item.onchainState}
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-3">
-              <label
-                htmlFor={`note-${item.itemKey}`}
-                className="block text-xs font-semibold text-amber-300"
-              >
-                법무·컴플라이언스 담당자 검토 메모 (reviewerNote)
-              </label>
-              <textarea
-                id={`note-${item.itemKey}`}
-                rows={2}
-                value={item.reviewerNote}
-                onChange={(e) =>
-                  updateItemReview(item.itemKey, "reviewerNote", e.target.value)
-                }
-                placeholder="소명 요청 사항, 온체인 함수 위험도, 오프체인 증빙 대조 결과 등을 기록하세요."
-                className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white focus:border-blue-500 focus:outline-none"
-              />
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Bottom Navigation */}

@@ -218,6 +218,92 @@ export interface CreDonConsensusOutput {
   }>;
 }
 
+export type BreachSimulationOutcome = "DEFENDED" | "BREACH_SUCCEEDED";
+
+export interface CounterfactualBreachSimulation {
+  scenarioId:
+    | "breach_1_unauthorized_mint"
+    | "breach_2_fee_hike_50pct"
+    | "breach_3_investor_wallet_freeze"
+    | "breach_4_premature_team_dump";
+  order: 1 | 2 | 3 | 4;
+  itemKey: AuditCheckItemKey;
+  titleKo: string;
+  titleEn: string;
+  whitepaperPromiseKo: string;
+  adversarialActionKo: string;
+  callerAddress: string;
+  callerRole: string;
+  targetFunction: string;
+  calldata: string;
+  secondaryCalldata?: string;
+  outcome: BreachSimulationOutcome;
+  badgeText: "DEFENDED / BLOCKED_BY_CODE" | "BREACH_SUCCEEDED";
+  txReverted: boolean;
+  revertReason: string | null;
+  returnDataHex: string;
+  gasUsed: string;
+  beforeState: string;
+  afterState: string;
+  stateDeltaSummary: string;
+  legalImpactKo: string;
+}
+
+export interface JurisdictionStatuteCitation {
+  jurisdiction: "KR" | "EU" | "US";
+  flag: string;
+  jurisdictionLabelKo: string;
+  statuteTitle: string;
+  articleRef: string;
+  relevanceSummaryKo: string;
+}
+
+export interface ItemLegalStatuteMapping {
+  itemKey: AuditCheckItemKey;
+  titleKo: string;
+  statutes: {
+    KR: JurisdictionStatuteCitation;
+    EU: JurisdictionStatuteCitation;
+    US: JurisdictionStatuteCitation;
+  };
+}
+
+export interface ItemCodeRemediationSpec {
+  itemKey: AuditCheckItemKey;
+  titleKo: string;
+  titleEn: string;
+  vulnerabilitySummaryKo: string;
+  vulnerableContractLabel: string;
+  remediatedContractLabel: string;
+  vulnerableSolidityCode: string;
+  remediatedSolidityCode: string;
+  unifiedDiff: string;
+  whitepaperRedline: {
+    disclosedClaimOriginal: string;
+    optionACodeEnforcedText: string;
+    optionBDisclosureRiskRedline: string;
+  };
+}
+
+export interface LegalCureNoticeDraft {
+  documentNumber: string;
+  issuedDateIso: string;
+  recipientProject: string;
+  tokenSymbol: string;
+  tokenAddress: string;
+  chainId: number;
+  chainName: string;
+  snapshotBlockNumber: number;
+  documentHash: string;
+  reportHash: string;
+  overallStatus: AuditComparisonStatus;
+  mismatchCount: number;
+  needsReviewCount: number;
+  breachSucceededCount: number;
+  subjectLineKo: string;
+  fullNoticeTextKo: string;
+}
+
 export interface CreWorkflowExecutionTrace {
   workflowRunId: string;
   workflowName: string;
@@ -246,6 +332,7 @@ export interface CreWorkflowExecutionTrace {
     verifyAnchorCalldata: string;
     reportHash: string;
   };
+  breachSimulations?: CounterfactualBreachSimulation[];
   totalDurationMs: number;
   executedAt: string;
   steps: CreWorkflowStepTrace[];
@@ -267,6 +354,7 @@ export interface AuditCaseDTO {
   onchainSnapshotJson: string | null;
   creWorkflowRunId: string | null;
   creWorkflowTrace?: CreWorkflowExecutionTrace | null;
+  breachSimulations?: CounterfactualBreachSimulation[] | null;
   mismatchCount: number;
   needsReviewCount: number;
   matchCount: number;

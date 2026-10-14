@@ -227,6 +227,17 @@ async function main() {
     4,
     "CRE Workflow Trace must contain all 4 pipeline steps"
   );
+  assert.ok(
+    Array.isArray(compareData.audit.breachSimulations) &&
+      compareData.audit.breachSimulations.length === 4,
+    "Compare response must include all 4 counterfactual breach simulations"
+  );
+  assert.ok(
+    compareData.audit.breachSimulations.every(
+      (b: any) => b.outcome === "BREACH_SUCCEEDED"
+    ),
+    "BLIX must have BREACH_SUCCEEDED across all 4 counterfactual breach simulations"
+  );
 
   // Render `/audits/[id]/compare` page SSR HTML
   const comparePageTree = await AuditComparePage({
@@ -238,13 +249,25 @@ async function main() {
     "CRE 4-Step Pipeline Inspector must render on /compare"
   );
   assert.ok(
+    comparePageHtml.includes("온체인 공시 위반 행위 재현 결과"),
+    "Counterfactual Breach Simulation Proof section must render on /compare"
+  );
+  assert.ok(
+    comparePageHtml.includes("BREACH_SUCCEEDED"),
+    "BREACH_SUCCEEDED badge must render on /compare for BLIX"
+  );
+  assert.ok(
+    comparePageHtml.includes("Regulation (EU) 2023/1114"),
+    "3-Jurisdiction statute mapping (MiCA) must render on /compare"
+  );
+  assert.ok(
     comparePageHtml.includes(compareData.audit.creWorkflowTrace.consensus.consensusDigest),
     "DON Consensus Digest must render on /compare"
   );
   console.log(
-    `  ✅ \`POST /api/audits/[id]/compare\` executed Chainlink CRE 4-step workflow (Run ID: ${compareData.audit.creWorkflowRunId})`
+    `  ✅ \`POST /api/audits/[id]/compare\` executed Chainlink CRE 4-step workflow + 4 Counterfactual Breach Simulations (Run ID: ${compareData.audit.creWorkflowRunId})`
   );
-  console.log(`  ✅ \`GET /audits/[id]/compare\` SSR HTML rendered (${comparePageHtml.length.toLocaleString()} bytes) with CRE trace & 16 EVM reads\n`);
+  console.log(`  ✅ \`GET /audits/[id]/compare\` SSR HTML rendered (${comparePageHtml.length.toLocaleString()} bytes) with CRE trace, 16 EVM reads, 4 Breach Proofs & KR/EU/US statutes\n`);
 
   // ---------------------------------------------------------------------------
   // 5. Page 5: `GET /audits/[id]/review` & `POST /api/audits/[id]/review`
@@ -298,10 +321,15 @@ async function main() {
     reviewPageHtml.includes("증빙 패키지(JSON) 다운로드"),
     "JSON evidence export button must render on /review"
   );
+  assert.ok(
+    reviewPageHtml.includes("법무 시정요구서(Legal Cure Notice)") &&
+      reviewPageHtml.includes("Solidity 방어 패치(Code Remediation Diff)"),
+    "Legal Cure Notice & Solidity Code Remediation Diff panel must render on /review"
+  );
   console.log(
     `  ✅ \`POST /api/audits/[id]/review\` anchored on AuditRegistry (tx: ${reviewData.audit.anchorTxHash.slice(0, 22)}..., verifyAnchor=true)`
   );
-  console.log(`  ✅ \`GET /audits/[id]/review\` SSR HTML rendered (${reviewPageHtml.length.toLocaleString()} bytes)\n`);
+  console.log(`  ✅ \`GET /audits/[id]/review\` SSR HTML rendered (${reviewPageHtml.length.toLocaleString()} bytes) with Legal Cure Notice & Solidity Diff\n`);
 
   // ---------------------------------------------------------------------------
   // 6. Verify `GET /api/audits/[id]` & Clean Up Temporary Test Case (`DELETE /api/audits/[id]`)
@@ -330,6 +358,12 @@ async function main() {
       await AuditReviewPage({ params: Promise.resolve({ id: seedId }) })
     );
     assert.ok(seedExtractHtml.length > 1000 && seedCompareHtml.length > 1000 && seedReviewHtml.length > 1000);
+    if (seedId === "audit-compliant-blic") {
+      assert.ok(
+        seedCompareHtml.includes("DEFENDED / BLOCKED_BY_CODE"),
+        "BLIC /compare must render DEFENDED / BLOCKED_BY_CODE badge"
+      );
+    }
   }
   console.log("  ✅ Canonical seed cases (`audit-compliant-blic`, `audit-mismatched-blix`) verified across all 5 routes\n");
 

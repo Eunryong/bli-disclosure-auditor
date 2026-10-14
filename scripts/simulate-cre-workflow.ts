@@ -144,6 +144,25 @@ async function main() {
       console.log(`      └─ Evidence      : ${comp.evidenceFunctionOrSlot}`);
     }
 
+    if (workflowResult.trace.breachSimulations?.length) {
+      console.log(
+        "\n  🔥 [Counterfactual Breach Simulation — Cloned EVM Sandbox Execution]"
+      );
+      for (const sim of workflowResult.trace.breachSimulations) {
+        const simBadge =
+          sim.outcome === "DEFENDED"
+            ? "[DEFENDED / BLOCKED_BY_CODE]"
+            : "[BREACH_SUCCEEDED]          ";
+        console.log(`    • ${simBadge} ${sim.titleKo}`);
+        console.log(
+          `      └─ Action        : [${sim.targetFunction}] ${sim.adversarialActionKo} (Gas: ${sim.gasUsed})`
+        );
+        console.log(
+          `      └─ Before -> After: ${sim.beforeState}  ==>  ${sim.afterState}`
+        );
+      }
+    }
+
     console.log(
       `\n  🏛️  [Step 4: On-Chain AuditRegistry Anchor & Verification]`
     );

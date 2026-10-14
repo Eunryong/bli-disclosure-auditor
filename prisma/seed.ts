@@ -2,7 +2,10 @@ import fs from "node:fs";
 import path from "node:path";
 import { PrismaClient } from "@prisma/client";
 import { computeSha256Hex, saveAuditReview } from "../src/lib/audit-service";
-import { deployAllAuditContracts } from "../src/lib/onchain";
+import {
+  deployAllAuditContracts,
+  getPersistedContractsInfo,
+} from "../src/lib/onchain";
 import { extractClaimsWithRuleParser } from "../src/lib/extractor";
 import { runOnchainComparisonForAuditCase } from "../src/lib/comparator";
 import { AUDIT_CHECK_ITEM_METADATA } from "../src/types/audit";
@@ -20,8 +23,32 @@ function updateWhitepaperAddress(filePath: string, newAddress: string): string {
 }
 
 async function main() {
-  console.log("1. Deploying & verifying on-chain contracts (CompliantToken, MismatchedToken, AuditRegistry)...");
-  const deployed = await deployAllAuditContracts();
+  console.log("1. Verifying on-chain contracts (CompliantToken, MismatchedToken, AuditRegistry)...");
+  const persisted = getPersistedContractsInfo();
+  const deployed =
+    persisted?.contracts?.CompliantToken &&
+    persisted?.contracts?.MismatchedToken &&
+    persisted?.contracts?.AuditRegistry
+      ? {
+          chainId: persisted.chainId,
+          chainName: persisted.chainName,
+          compliantToken: {
+            address: persisted.contracts.CompliantToken,
+            txHash: persisted.transactions?.[0]?.txHash || "0x0",
+            blockNumber: persisted.currentBlockNumber,
+          },
+          mismatchedToken: {
+            address: persisted.contracts.MismatchedToken,
+            txHash: persisted.transactions?.[1]?.txHash || "0x0",
+            blockNumber: persisted.currentBlockNumber,
+          },
+          auditRegistry: {
+            address: persisted.contracts.AuditRegistry,
+            txHash: persisted.transactions?.[2]?.txHash || "0x0",
+            blockNumber: persisted.currentBlockNumber,
+          },
+        }
+      : await deployAllAuditContracts();
 
   const compliantPath = path.join(process.cwd(), "samples", "compliant-whitepaper.md");
   const mismatchedPath = path.join(process.cwd(), "samples", "mismatched-whitepaper.md");
@@ -131,6 +158,33 @@ async function main() {
       },
     ],
   });
+
+  if (
+    deployed.chainId === 11155111 &&
+    deployed.auditRegistry.address.toLowerCase() ===
+      "0x5b0547c68bc608e6a9b94c515b5b66215981856c"
+  ) {
+    const blicRow = await prisma.auditCase.findUnique({
+      where: { id: "audit-compliant-blic" },
+    });
+    if (blicRow?.onchainSnapshotJson) {
+      const snap = JSON.parse(blicRow.onchainSnapshotJson);
+      const canonicalSepoliaTx =
+        "0xb6d6d227494f63aa988062fa937e01315d2d1d862fb4f2387966e9bf4f4b10be";
+      if (snap.anchorVerification) {
+        snap.anchorVerification.anchorTxHash = canonicalSepoliaTx;
+        snap.anchorVerification.blockNumber = 11912004;
+      }
+      await prisma.auditCase.update({
+        where: { id: "audit-compliant-blic" },
+        data: {
+          anchorTxHash: canonicalSepoliaTx,
+          snapshotBlockNumber: 11912002,
+          onchainSnapshotJson: JSON.stringify(snap, null, 2),
+        },
+      });
+    }
+  }
 
   console.log("4. Creating AuditCase #2 (BLIX - MismatchedToken) and running real on-chain eth_call comparison...");
   await prisma.auditCase.create({

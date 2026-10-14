@@ -318,17 +318,24 @@ export async function executeCreAuditWorkflow(
 
   const snapshot = await inspectTokenOnchainState(params.tokenAddress);
 
+  const breachSuccessCount = snapshot.breachSimulations.filter(
+    (s) => s.outcome === "BREACH_SUCCEEDED"
+  ).length;
+  const breachDefendedCount = snapshot.breachSimulations.filter(
+    (s) => s.outcome === "DEFENDED"
+  ).length;
+
   const step2End = Math.max(Date.now(), step2Start + 8);
   steps.push({
     stepNumber: 2,
     stepId: "step_2_onchain_evm_read",
-    title: "[Step 2: On-chain EVM State Inspection]",
-    capability: "chainlink.capabilities.evm_read@1.0.0",
+    title: "[Step 2: On-chain EVM State Inspection & Breach Simulation]",
+    capability: "chainlink.capabilities.evm_read@1.0.0 + evm_sandbox_sim",
     status: "SUCCESS",
     startedAt: step2StartedIso,
     completedAt: new Date(step2End).toISOString(),
     durationMs: step2End - step2Start,
-    summary: `Executed ${snapshot.rawCallTraces.length} ABI eth_call reads + EIP-1967 slot inspection on ${snapshot.symbol} (${snapshot.tokenAddress}) at Block #${snapshot.blockNumber}.`,
+    summary: `Executed ${snapshot.rawCallTraces.length} ABI eth_call reads + EIP-1967 slot inspection + 4 counterfactual breach simulations (Defended=${breachDefendedCount}, Breached=${breachSuccessCount}) on ${snapshot.symbol} (${snapshot.tokenAddress}) at Block #${snapshot.blockNumber}.`,
     inputPayload: {
       chainId: snapshot.chainId,
       chainName: snapshot.chainName,
@@ -336,6 +343,9 @@ export async function executeCreAuditWorkflow(
       tokenAddress: snapshot.tokenAddress,
       eip1967ImplementationSlot: config.evm.eip1967ImplementationSlot,
       viewFunctionsQueried: snapshot.rawCallTraces.map((c) => c.fn),
+      adversarialScenariosSimulated: snapshot.breachSimulations.map(
+        (s) => s.scenarioId
+      ),
     },
     outputPayload: {
       blockNumber: snapshot.blockNumber,
@@ -362,6 +372,12 @@ export async function executeCreAuditWorkflow(
       logicImplementation: snapshot.logicImplementation,
       eip1967SlotValue: snapshot.eip1967SlotValue,
       rawCallCount: snapshot.rawCallTraces.length,
+      breachSimulationSummary: {
+        totalScenarios: snapshot.breachSimulations.length,
+        defendedCount: breachDefendedCount,
+        breachSucceededCount: breachSuccessCount,
+      },
+      breachSimulations: snapshot.breachSimulations,
     },
   });
 
@@ -496,6 +512,7 @@ export async function executeCreAuditWorkflow(
       documentHash: documentHashBytes32,
       tokenAddress: resolvedTokenAddr,
       chainId: snapshot.chainId,
+      chainName: snapshot.chainName,
       blockNumber: snapshot.blockNumber,
       mismatchCount,
       reportHash,
@@ -548,6 +565,7 @@ export async function executeCreAuditWorkflow(
       verifyAnchorCalldata,
       reportHash,
     },
+    breachSimulations: snapshot.breachSimulations,
     totalDurationMs,
     executedAt: new Date().toISOString(),
     steps,

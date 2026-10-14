@@ -6,29 +6,29 @@
   "configPath": "cre-workflow/config.json",
   "cliBinaryDetected": false,
   "runtimeEngine": "chainlink-cre-local-simulator",
-  "executedAt": "2026-10-14T07:36:30.734Z",
-  "totalDurationMs": 93,
+  "executedAt": "2026-10-14T09:20:33.742Z",
+  "totalDurationMs": 6524,
   "casesSimulated": 2,
   "runs": [
     {
       "auditCaseId": "audit-compliant-blic",
       "projectName": "BLI LegalTech Foundation",
       "tokenSymbol": "BLIC",
-      "tokenAddress": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-      "documentHash": "0xa8dd5df5bc2992a26d006c948d0b7e6ef581130e84ea182e1f028e9f18910c45",
-      "workflowRunId": "cre-blic-b7849208-0fdc594c",
+      "tokenAddress": "0x534c51921913a8717Ca2db550b77fFabf168f71e",
+      "documentHash": "0x78a1ddb84b83bd68e2d3f336c18e9ebccdef9aa287fa2bb8a8d5edeb861f5832",
+      "workflowRunId": "cre-blic-b11912002-979b45fd",
       "overallStatus": "MATCH",
       "counts": {
         "matchCount": 5,
         "mismatchCount": 0,
         "needsReviewCount": 0
       },
-      "reportHash": "0x30fcda5ecd83ad909286cd073b27e8d5b2277d08b83e1fc2d57070fab68adaab",
-      "consensusDigest": "0x0fdc594c392af7393c47ffe634f8ac0d5f6ded985c4d41569a8051373b9166f3",
-      "anchorTxHash": "0x460bf7225aed7f77c6f967a29a12e3533ba6190fdb97e0e6eb128225e9f7ed04",
+      "reportHash": "0xcf7b6f0ff7a79c81ad2c4979284bdd2459bc486c1707b8785d6e5c42b25abd61",
+      "consensusDigest": "0x979b45fd21177cdd08672e4aa244cc2eda1cb3f2c5d72acc5f50bd3c22afa555",
+      "anchorTxHash": "0x8c46247b8a3bcdca5b27f282c60643c111dbe910fd712d4c326dbed966733328",
       "verifyAnchorVerified": true,
       "trace": {
-        "workflowRunId": "cre-blic-b7849208-0fdc594c",
+        "workflowRunId": "cre-blic-b11912002-979b45fd",
         "workflowName": "bli-disclosure-smart-contract-mismatch-auditor",
         "workflowVersion": "1.0.0",
         "manifestPath": "cre-workflow/workflow.yaml",
@@ -36,11 +36,11 @@
         "runtimeEngine": "chainlink-cre-local-simulator",
         "auditCaseId": "audit-compliant-blic",
         "tokenSymbol": "BLIC",
-        "tokenAddress": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-        "chainId": 31337,
-        "chainName": "Local Embedded EVM (Chain ID: 31337)",
-        "snapshotBlockNumber": 7849208,
-        "documentHash": "0xa8dd5df5bc2992a26d006c948d0b7e6ef581130e84ea182e1f028e9f18910c45",
+        "tokenAddress": "0x534c51921913a8717Ca2db550b77fFabf168f71e",
+        "chainId": 11155111,
+        "chainName": "Ethereum Sepolia",
+        "snapshotBlockNumber": 11912002,
+        "documentHash": "0x78a1ddb84b83bd68e2d3f336c18e9ebccdef9aa287fa2bb8a8d5edeb861f5832",
         "overallStatus": "MATCH",
         "counts": {
           "matchCount": 5,
@@ -53,48 +53,143 @@
           "nodeCount": 4,
           "quorumRequired": 3,
           "quorumReached": 4,
-          "consensusDigest": "0x0fdc594c392af7393c47ffe634f8ac0d5f6ded985c4d41569a8051373b9166f3",
-          "reportHash": "0x30fcda5ecd83ad909286cd073b27e8d5b2277d08b83e1fc2d57070fab68adaab",
+          "consensusDigest": "0x979b45fd21177cdd08672e4aa244cc2eda1cb3f2c5d72acc5f50bd3c22afa555",
+          "reportHash": "0xcf7b6f0ff7a79c81ad2c4979284bdd2459bc486c1707b8785d6e5c42b25abd61",
           "nodeSignatures": [
             {
               "nodeId": "cre-node-01.chainlink.don",
               "operator": "BLI RegTech Oracle Node #1",
               "signerAddress": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-              "observationHash": "0x03a96df8f5be863f147d133a7967031841785bda8b9b559f953a09ea9e8b8ec7",
-              "signature": "0xbf450d3ca589dc38ed09a66c36f75cc8e3acfc59b6dbbeff1437001c910fbaafb0c1c1b06ee087ea2c0aee51f2ca0e24c764daeb11fcb3f5c16e8e8145afa4411b"
+              "observationHash": "0xa74d7ad96fa946d0ae14594165f9cfb9c5ba46158a91e725a6ae7445accde42b",
+              "signature": "0xd307e2c3cba242902526c9707267fad457ef7ebc1b58f0ea7a50bb40703cf83f2778ccaddb1e6a9d95778e5061f81e36cea06c1c8c4e87b932c8d045d7afbb6f1b"
             },
             {
               "nodeId": "cre-node-02.chainlink.don",
               "operator": "BLI RegTech Oracle Node #2",
               "signerAddress": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
-              "observationHash": "0xb085002302ee3ead3da76ced8360d8be93b1026e683ba512a3d74cc128e10fda",
-              "signature": "0x778ed33b1d329be962f73e8087d8c02982daa5adbc51b3248a33a22e5c40ff4cedaa2c17fd606d2fd9f8adb7bf75949a16a5830db857a8a42e97b863fe4ba2401c"
+              "observationHash": "0x51ceb7ecee8deab13e0713f538f7a5c5376c51fbe2cc8073b7a9ff0f3cdefbf2",
+              "signature": "0xd16214742cd3a42c4ac2f6810e6759f905f4244e7d180101423e94c1d40366b4b373a7319ac5b17645994d83fcefcf1088947d29dbbe3127d3c02a39ae96f7aa1c"
             },
             {
               "nodeId": "cre-node-03.chainlink.don",
               "operator": "BLI RegTech Oracle Node #3",
               "signerAddress": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
-              "observationHash": "0x187cdeabb0fc6656b2aaf6aa90be703fd82225454ae92cf42f694290424594a4",
-              "signature": "0x340b1bd9349ad9e28c5631ffeb24b6aa0877034db4b81ffff00cb42fef16e3eca740c799f7d238d973e2e48dde9aa4d894ca76072a0b3c8a35d118e26d13091c1b"
+              "observationHash": "0x349dbfe4d9500e5820a000e57ca234ce1e13bd8fb14161f5b1934d7ebe410a34",
+              "signature": "0x8b3d062104106fdcbb98adf6d4cc40671a224d6b5f16c355c283e87512656712b271de098fdd2f39124c13d4a6f4654bf288f5181c70829b4c45663e26f3736a1b"
             },
             {
               "nodeId": "cre-node-04.chainlink.don",
               "operator": "BLI RegTech Oracle Node #4",
               "signerAddress": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-              "observationHash": "0xed7dced02877500d7486df7d1d1db3c74a38612ffd06056079e020a2f412bc48",
-              "signature": "0x8d23d4c47484c9053be62bcc798a09b51b0824e9c5ccd6ebcb90e2f0f001844117456de1dbb7989b2c3310f6e05a09daaa05f28a640562879215bf86ba1068ef1c"
+              "observationHash": "0x9a8e40e41471fd0f83c99fd7294523dd75de8e4d574779d475587c5d8bb53831",
+              "signature": "0x5f2bf320787e026f07896e8db7d270d992e077b9ceac680526614b33b641c05b903428cb899163d8a98561db1712e95cfc02efc8df15eb70e3960d7c5ce26bd21c"
             }
           ]
         },
         "auditRegistryPayload": {
-          "auditRegistryAddress": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+          "auditRegistryAddress": "0x5B0547C68bc608E6A9b94C515B5B66215981856c",
           "functionSignature": "recordAudit(bytes32,address,uint256,uint256,uint8,bytes32)",
-          "recordAuditCalldata": "0x97cdb786a8dd5df5bc2992a26d006c948d0b7e6ef581130e84ea182e1f028e9f18910c450000000000000000000000005fbdb2315678afecb367f032d93f642f64180aa30000000000000000000000000000000000000000000000000000000000007a69000000000000000000000000000000000000000000000000000000000077c4f8000000000000000000000000000000000000000000000000000000000000000030fcda5ecd83ad909286cd073b27e8d5b2277d08b83e1fc2d57070fab68adaab",
-          "verifyAnchorCalldata": "0x681aa94aa8dd5df5bc2992a26d006c948d0b7e6ef581130e84ea182e1f028e9f18910c450000000000000000000000005fbdb2315678afecb367f032d93f642f64180aa330fcda5ecd83ad909286cd073b27e8d5b2277d08b83e1fc2d57070fab68adaab",
-          "reportHash": "0x30fcda5ecd83ad909286cd073b27e8d5b2277d08b83e1fc2d57070fab68adaab"
+          "recordAuditCalldata": "0x97cdb78678a1ddb84b83bd68e2d3f336c18e9ebccdef9aa287fa2bb8a8d5edeb861f5832000000000000000000000000534c51921913a8717ca2db550b77ffabf168f71e0000000000000000000000000000000000000000000000000000000000aa36a70000000000000000000000000000000000000000000000000000000000b5c3420000000000000000000000000000000000000000000000000000000000000000cf7b6f0ff7a79c81ad2c4979284bdd2459bc486c1707b8785d6e5c42b25abd61",
+          "verifyAnchorCalldata": "0x681aa94a78a1ddb84b83bd68e2d3f336c18e9ebccdef9aa287fa2bb8a8d5edeb861f5832000000000000000000000000534c51921913a8717ca2db550b77ffabf168f71ecf7b6f0ff7a79c81ad2c4979284bdd2459bc486c1707b8785d6e5c42b25abd61",
+          "reportHash": "0xcf7b6f0ff7a79c81ad2c4979284bdd2459bc486c1707b8785d6e5c42b25abd61"
         },
-        "totalDurationMs": 34,
-        "executedAt": "2026-10-14T07:36:30.775Z",
+        "breachSimulations": [
+          {
+            "scenarioId": "breach_1_unauthorized_mint",
+            "order": 1,
+            "itemKey": "maxSupplyAndMintability",
+            "titleKo": "[시나리오 1] 무단 추가 발행 시도 (Unauthorized Minting)",
+            "titleEn": "Unauthorized 10M Token Mint Attempt",
+            "whitepaperPromiseKo": "총발행량 100,000,000 BLIC 영구 고정 및 추가 발행(Mint) 불가 공시",
+            "adversarialActionKo": "관리자(0x6C46f56a...) 계정으로 mint(attacker, 10,000,000 * 10^18) 강제 호출",
+            "callerAddress": "0x6C46f56a840B153B33d954bbCF1cd9843f372593",
+            "callerRole": "Deployer EOA (owner=0x0)",
+            "targetFunction": "mint(address,uint256)",
+            "calldata": "0x40c10f190000000000000000000000009965507d1a55bcc2695c58ba16fb37d819b0a4dc000000000000000000000000000000000000000000084595161401484a000000",
+            "outcome": "DEFENDED",
+            "badgeText": "DEFENDED / BLOCKED_BY_CODE",
+            "txReverted": true,
+            "revertReason": "EVM Revert: mint(address,uint256) selector (0x40c10f19) absent in immutable bytecode (mintable=false, owner=0x0)",
+            "returnDataHex": "0x",
+            "gasUsed": "212",
+            "beforeState": "totalSupply = 100,000,000 BLIC | balanceOf(attacker) = 0 BLIC",
+            "afterState": "totalSupply = 100,000,000 BLIC (변동 없음) | balanceOf(attacker) = 0 BLIC",
+            "stateDeltaSummary": "추가 발행 함수 자체가 바이트코드에 존재하지 않아 트랜잭션이 즉시 Revert되었으며 1억 개 상한이 코드로 방어됨",
+            "legalImpactKo": "백서 공시대로 추가 발행이 기술적으로 불가능함이 입증됨 (가상자산이용자보호법 제10조 중요사항 부합)"
+          },
+          {
+            "scenarioId": "breach_2_fee_hike_50pct",
+            "order": 2,
+            "itemKey": "transferFee",
+            "titleKo": "[시나리오 2] 전송 수수료 기습 50% 인상 시도 (Predatory 50% Fee Hike)",
+            "titleEn": "Predatory 50% Transfer Fee Hike Attempt",
+            "whitepaperPromiseKo": "전송 수수료 1.00% (100 bps) 영구 고정 및 사후 인상 불가 공시",
+            "adversarialActionKo": "관리자(0x6C46f56a...) 계정으로 setTransferFeeBps(5000) (50.00% 징수) 호출",
+            "callerAddress": "0x6C46f56a840B153B33d954bbCF1cd9843f372593",
+            "callerRole": "Deployer EOA (owner=0x0)",
+            "targetFunction": "setTransferFeeBps(uint256)",
+            "calldata": "0x93a404e60000000000000000000000000000000000000000000000000000000000001388",
+            "outcome": "DEFENDED",
+            "badgeText": "DEFENDED / BLOCKED_BY_CODE",
+            "txReverted": true,
+            "revertReason": "EVM Revert: setTransferFeeBps(uint256) selector (0x93a404e6) absent; transferFeeBps=100 is immutable constant",
+            "returnDataHex": "0x",
+            "gasUsed": "233",
+            "beforeState": "transferFeeBps = 100 bps (1.00%, constant)",
+            "afterState": "transferFeeBps = 100 bps (1.00%, 변동 없음)",
+            "stateDeltaSummary": "수수료 변경 setter가 존재하지 않고 상수로 고정되어 있어 50% 기습 인상 트랜잭션이 즉시 Revert됨",
+            "legalImpactKo": "수수료율 고정 공시가 스마트계약 상수로 강제되어 임의 수수료 편취 위험이 없음을 입증함"
+          },
+          {
+            "scenarioId": "breach_3_investor_wallet_freeze",
+            "order": 3,
+            "itemKey": "transferRestrictions",
+            "titleKo": "[시나리오 3] 투자자 지갑 강제 동결 시도 (Targeted Investor Wallet Freeze)",
+            "titleEn": "Targeted Investor Wallet Freeze & Transfer Block",
+            "whitepaperPromiseKo": "특정 지갑 동결(Blacklist) 및 임의 전송 차단 기능 미탑재 공시",
+            "adversarialActionKo": "관리자가 setBlacklisted(investor, true) 호출 후, 해당 투자자가 transfer(recipient, 1,000) 실행",
+            "callerAddress": "0x6C46f56a840B153B33d954bbCF1cd9843f372593",
+            "callerRole": "Deployer EOA -> Investor Wallet",
+            "targetFunction": "setBlacklisted(address,bool) → transfer(address,uint256)",
+            "calldata": "0xd01dd6d2000000000000000000000000976ea74026e726554db657fa54763abd0c3a0aa90000000000000000000000000000000000000000000000000000000000000001",
+            "secondaryCalldata": "0xa9059cbb00000000000000000000000014dc79964da2c08b23698b3d3cc7ca32193d995500000000000000000000000000000000000000000000003635c9adc5dea00000",
+            "outcome": "DEFENDED",
+            "badgeText": "DEFENDED / BLOCKED_BY_CODE",
+            "txReverted": true,
+            "revertReason": "setBlacklisted(address,bool) Reverted (blacklistable=false); subsequent investor transfer(1,000 BLIC) Succeeded",
+            "returnDataHex": "0x0000000000000000000000000000000000000000000000000000000000000001",
+            "gasUsed": "27754",
+            "beforeState": "isBlacklisted(investor) = false | investor 정상 전송 가능",
+            "afterState": "isBlacklisted(investor) = false (동결 실패) | investor 1,000 BLIC 정상 전송 완료",
+            "stateDeltaSummary": "블랙리스트 상태변수 및 동결 함수가 존재하지 않아 관리자 동결 시도가 Revert되었으며 투자자 자산 이동이 정상 실행됨",
+            "legalImpactKo": "백서 공시대로 제3자(관리자)에 의한 임의 자산 동결이 불가능함이 온체인 실행으로 입증됨"
+          },
+          {
+            "scenarioId": "breach_4_premature_team_dump",
+            "order": 4,
+            "itemKey": "teamLockup",
+            "titleKo": "[시나리오 4] 팀 락업 물량 조기 유출 시도 (Premature Team Token Dump)",
+            "titleEn": "Pre-2028 Team Wallet 5M Token Dump Attempt",
+            "whitepaperPromiseKo": "팀 할당 물량(20,000,000개) 2028-01-01 00:00:00 UTC(1830297600)까지 온체인 타임락 강제 동결 공시",
+            "adversarialActionKo": "락업 해제일 이전 블록(timestamp=1760419000)에서 teamWallet(0x70997970...)이 transfer(recipient, 5,000,000 * 10^18) 호출",
+            "callerAddress": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+            "callerRole": "Team Allocation Wallet",
+            "targetFunction": "transfer(address,uint256)",
+            "calldata": "0xa9059cbb00000000000000000000000014dc79964da2c08b23698b3d3cc7ca32193d99550000000000000000000000000000000000000000000422ca8b0a00a425000000",
+            "outcome": "DEFENDED",
+            "badgeText": "DEFENDED / BLOCKED_BY_CODE",
+            "txReverted": true,
+            "revertReason": "Custom Error TeamTokensLockedUntilRelease(releaseTimestamp=1830297600, currentTimestamp=1760419000) [selector: 0x96b9fdb1]",
+            "returnDataHex": "0x96b9fdb1000000000000000000000000000000000000000000000000000000006d1820000000000000000000000000000000000000000000000000000000000068eddcb8",
+            "gasUsed": "654",
+            "beforeState": "balanceOf(teamWallet) = 20,000,000 BLIC | releaseTimestamp = 1830297600 (2028-01-01)",
+            "afterState": "balanceOf(teamWallet) = 20,000,000 BLIC (유출 차단) | balanceOf(recipient) = 0 BLIC",
+            "stateDeltaSummary": "_transfer() 내부 타임락 조건문(block.timestamp < teamLockupReleaseTimestamp)이 작동하여 조기 유출 트랜잭션이 즉시 Revert됨",
+            "legalImpactKo": "백서에 공시된 2028년 팀 물량 락업 의무가 스마트계약 코드로 완벽히 강제되고 있음이 입증됨"
+          }
+        ],
+        "totalDurationMs": 2185,
+        "executedAt": "2026-10-14T09:20:35.936Z",
         "steps": [
           {
             "stepNumber": 1,
@@ -102,10 +197,10 @@
             "title": "[Step 1: Trigger & Off-chain Disclosure Fetch]",
             "capability": "chainlink.capabilities.http_client@1.0.0 + llm_extractor",
             "status": "SUCCESS",
-            "startedAt": "2026-10-14T07:36:30.746Z",
-            "completedAt": "2026-10-14T07:36:30.754Z",
+            "startedAt": "2026-10-14T09:20:33.755Z",
+            "completedAt": "2026-10-14T09:20:33.763Z",
             "durationMs": 8,
-            "summary": "Fetched SHA-256 documentHash (0xa8dd5df5bc29...) & extracted 5 structured disclosure claims via deterministic-rule-parser engine.",
+            "summary": "Fetched SHA-256 documentHash (0x78a1ddb84b83...) & extracted 5 structured disclosure claims via deterministic-rule-parser engine.",
             "inputPayload": {
               "triggerType": "cre.triggers.http_webhook@1.0.0",
               "auditCaseId": "audit-compliant-blic",
@@ -114,7 +209,7 @@
               "whitepaperCharLength": 1759
             },
             "outputPayload": {
-              "documentHash": "0xa8dd5df5bc2992a26d006c948d0b7e6ef581130e84ea182e1f028e9f18910c45",
+              "documentHash": "0x78a1ddb84b83bd68e2d3f336c18e9ebccdef9aa287fa2bb8a8d5edeb861f5832",
               "extractionEngine": "deterministic-rule-parser",
               "claimCount": 5,
               "disclosedClaims": [
@@ -174,18 +269,18 @@
           {
             "stepNumber": 2,
             "stepId": "step_2_onchain_evm_read",
-            "title": "[Step 2: On-chain EVM State Inspection]",
-            "capability": "chainlink.capabilities.evm_read@1.0.0",
+            "title": "[Step 2: On-chain EVM State Inspection & Breach Simulation]",
+            "capability": "chainlink.capabilities.evm_read@1.0.0 + evm_sandbox_sim",
             "status": "SUCCESS",
-            "startedAt": "2026-10-14T07:36:30.754Z",
-            "completedAt": "2026-10-14T07:36:30.769Z",
-            "durationMs": 15,
-            "summary": "Executed 22 ABI eth_call reads + EIP-1967 slot inspection on BLIC (0x5FbDB2315678afecb367f032d93F642f64180aa3) at Block #7849208.",
+            "startedAt": "2026-10-14T09:20:33.763Z",
+            "completedAt": "2026-10-14T09:20:34.866Z",
+            "durationMs": 1103,
+            "summary": "Executed 22 ABI eth_call reads + EIP-1967 slot inspection + 4 counterfactual breach simulations (Defended=4, Breached=0) on BLIC (0x534c51921913a8717Ca2db550b77fFabf168f71e) at Block #11912002.",
             "inputPayload": {
-              "chainId": 31337,
-              "chainName": "Local Embedded EVM (Chain ID: 31337)",
+              "chainId": 11155111,
+              "chainName": "Ethereum Sepolia",
               "executionMode": "EMBEDDED_EVM",
-              "tokenAddress": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+              "tokenAddress": "0x534c51921913a8717Ca2db550b77fFabf168f71e",
               "eip1967ImplementationSlot": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
               "viewFunctionsQueried": [
                 "name()",
@@ -210,10 +305,16 @@
                 "upgradeable()",
                 "adminAddress()",
                 "logicImplementation()"
+              ],
+              "adversarialScenariosSimulated": [
+                "breach_1_unauthorized_mint",
+                "breach_2_fee_hike_50pct",
+                "breach_3_investor_wallet_freeze",
+                "breach_4_premature_team_dump"
               ]
             },
             "outputPayload": {
-              "blockNumber": 7849208,
+              "blockNumber": 11912002,
               "name": "BLI Compliant Utility Token",
               "symbol": "BLIC",
               "totalSupplyFormatted": "100000000",
@@ -236,7 +337,107 @@
               "adminIsContract": false,
               "logicImplementation": "0x0000000000000000000000000000000000000000",
               "eip1967SlotValue": "0x0000000000000000000000000000000000000000000000000000000000000000",
-              "rawCallCount": 22
+              "rawCallCount": 22,
+              "breachSimulationSummary": {
+                "totalScenarios": 4,
+                "defendedCount": 4,
+                "breachSucceededCount": 0
+              },
+              "breachSimulations": [
+                {
+                  "scenarioId": "breach_1_unauthorized_mint",
+                  "order": 1,
+                  "itemKey": "maxSupplyAndMintability",
+                  "titleKo": "[시나리오 1] 무단 추가 발행 시도 (Unauthorized Minting)",
+                  "titleEn": "Unauthorized 10M Token Mint Attempt",
+                  "whitepaperPromiseKo": "총발행량 100,000,000 BLIC 영구 고정 및 추가 발행(Mint) 불가 공시",
+                  "adversarialActionKo": "관리자(0x6C46f56a...) 계정으로 mint(attacker, 10,000,000 * 10^18) 강제 호출",
+                  "callerAddress": "0x6C46f56a840B153B33d954bbCF1cd9843f372593",
+                  "callerRole": "Deployer EOA (owner=0x0)",
+                  "targetFunction": "mint(address,uint256)",
+                  "calldata": "0x40c10f190000000000000000000000009965507d1a55bcc2695c58ba16fb37d819b0a4dc000000000000000000000000000000000000000000084595161401484a000000",
+                  "outcome": "DEFENDED",
+                  "badgeText": "DEFENDED / BLOCKED_BY_CODE",
+                  "txReverted": true,
+                  "revertReason": "EVM Revert: mint(address,uint256) selector (0x40c10f19) absent in immutable bytecode (mintable=false, owner=0x0)",
+                  "returnDataHex": "0x",
+                  "gasUsed": "212",
+                  "beforeState": "totalSupply = 100,000,000 BLIC | balanceOf(attacker) = 0 BLIC",
+                  "afterState": "totalSupply = 100,000,000 BLIC (변동 없음) | balanceOf(attacker) = 0 BLIC",
+                  "stateDeltaSummary": "추가 발행 함수 자체가 바이트코드에 존재하지 않아 트랜잭션이 즉시 Revert되었으며 1억 개 상한이 코드로 방어됨",
+                  "legalImpactKo": "백서 공시대로 추가 발행이 기술적으로 불가능함이 입증됨 (가상자산이용자보호법 제10조 중요사항 부합)"
+                },
+                {
+                  "scenarioId": "breach_2_fee_hike_50pct",
+                  "order": 2,
+                  "itemKey": "transferFee",
+                  "titleKo": "[시나리오 2] 전송 수수료 기습 50% 인상 시도 (Predatory 50% Fee Hike)",
+                  "titleEn": "Predatory 50% Transfer Fee Hike Attempt",
+                  "whitepaperPromiseKo": "전송 수수료 1.00% (100 bps) 영구 고정 및 사후 인상 불가 공시",
+                  "adversarialActionKo": "관리자(0x6C46f56a...) 계정으로 setTransferFeeBps(5000) (50.00% 징수) 호출",
+                  "callerAddress": "0x6C46f56a840B153B33d954bbCF1cd9843f372593",
+                  "callerRole": "Deployer EOA (owner=0x0)",
+                  "targetFunction": "setTransferFeeBps(uint256)",
+                  "calldata": "0x93a404e60000000000000000000000000000000000000000000000000000000000001388",
+                  "outcome": "DEFENDED",
+                  "badgeText": "DEFENDED / BLOCKED_BY_CODE",
+                  "txReverted": true,
+                  "revertReason": "EVM Revert: setTransferFeeBps(uint256) selector (0x93a404e6) absent; transferFeeBps=100 is immutable constant",
+                  "returnDataHex": "0x",
+                  "gasUsed": "233",
+                  "beforeState": "transferFeeBps = 100 bps (1.00%, constant)",
+                  "afterState": "transferFeeBps = 100 bps (1.00%, 변동 없음)",
+                  "stateDeltaSummary": "수수료 변경 setter가 존재하지 않고 상수로 고정되어 있어 50% 기습 인상 트랜잭션이 즉시 Revert됨",
+                  "legalImpactKo": "수수료율 고정 공시가 스마트계약 상수로 강제되어 임의 수수료 편취 위험이 없음을 입증함"
+                },
+                {
+                  "scenarioId": "breach_3_investor_wallet_freeze",
+                  "order": 3,
+                  "itemKey": "transferRestrictions",
+                  "titleKo": "[시나리오 3] 투자자 지갑 강제 동결 시도 (Targeted Investor Wallet Freeze)",
+                  "titleEn": "Targeted Investor Wallet Freeze & Transfer Block",
+                  "whitepaperPromiseKo": "특정 지갑 동결(Blacklist) 및 임의 전송 차단 기능 미탑재 공시",
+                  "adversarialActionKo": "관리자가 setBlacklisted(investor, true) 호출 후, 해당 투자자가 transfer(recipient, 1,000) 실행",
+                  "callerAddress": "0x6C46f56a840B153B33d954bbCF1cd9843f372593",
+                  "callerRole": "Deployer EOA -> Investor Wallet",
+                  "targetFunction": "setBlacklisted(address,bool) → transfer(address,uint256)",
+                  "calldata": "0xd01dd6d2000000000000000000000000976ea74026e726554db657fa54763abd0c3a0aa90000000000000000000000000000000000000000000000000000000000000001",
+                  "secondaryCalldata": "0xa9059cbb00000000000000000000000014dc79964da2c08b23698b3d3cc7ca32193d995500000000000000000000000000000000000000000000003635c9adc5dea00000",
+                  "outcome": "DEFENDED",
+                  "badgeText": "DEFENDED / BLOCKED_BY_CODE",
+                  "txReverted": true,
+                  "revertReason": "setBlacklisted(address,bool) Reverted (blacklistable=false); subsequent investor transfer(1,000 BLIC) Succeeded",
+                  "returnDataHex": "0x0000000000000000000000000000000000000000000000000000000000000001",
+                  "gasUsed": "27754",
+                  "beforeState": "isBlacklisted(investor) = false | investor 정상 전송 가능",
+                  "afterState": "isBlacklisted(investor) = false (동결 실패) | investor 1,000 BLIC 정상 전송 완료",
+                  "stateDeltaSummary": "블랙리스트 상태변수 및 동결 함수가 존재하지 않아 관리자 동결 시도가 Revert되었으며 투자자 자산 이동이 정상 실행됨",
+                  "legalImpactKo": "백서 공시대로 제3자(관리자)에 의한 임의 자산 동결이 불가능함이 온체인 실행으로 입증됨"
+                },
+                {
+                  "scenarioId": "breach_4_premature_team_dump",
+                  "order": 4,
+                  "itemKey": "teamLockup",
+                  "titleKo": "[시나리오 4] 팀 락업 물량 조기 유출 시도 (Premature Team Token Dump)",
+                  "titleEn": "Pre-2028 Team Wallet 5M Token Dump Attempt",
+                  "whitepaperPromiseKo": "팀 할당 물량(20,000,000개) 2028-01-01 00:00:00 UTC(1830297600)까지 온체인 타임락 강제 동결 공시",
+                  "adversarialActionKo": "락업 해제일 이전 블록(timestamp=1760419000)에서 teamWallet(0x70997970...)이 transfer(recipient, 5,000,000 * 10^18) 호출",
+                  "callerAddress": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+                  "callerRole": "Team Allocation Wallet",
+                  "targetFunction": "transfer(address,uint256)",
+                  "calldata": "0xa9059cbb00000000000000000000000014dc79964da2c08b23698b3d3cc7ca32193d99550000000000000000000000000000000000000000000422ca8b0a00a425000000",
+                  "outcome": "DEFENDED",
+                  "badgeText": "DEFENDED / BLOCKED_BY_CODE",
+                  "txReverted": true,
+                  "revertReason": "Custom Error TeamTokensLockedUntilRelease(releaseTimestamp=1830297600, currentTimestamp=1760419000) [selector: 0x96b9fdb1]",
+                  "returnDataHex": "0x96b9fdb1000000000000000000000000000000000000000000000000000000006d1820000000000000000000000000000000000000000000000000000000000068eddcb8",
+                  "gasUsed": "654",
+                  "beforeState": "balanceOf(teamWallet) = 20,000,000 BLIC | releaseTimestamp = 1830297600 (2028-01-01)",
+                  "afterState": "balanceOf(teamWallet) = 20,000,000 BLIC (유출 차단) | balanceOf(recipient) = 0 BLIC",
+                  "stateDeltaSummary": "_transfer() 내부 타임락 조건문(block.timestamp < teamLockupReleaseTimestamp)이 작동하여 조기 유출 트랜잭션이 즉시 Revert됨",
+                  "legalImpactKo": "백서에 공시된 2028년 팀 물량 락업 의무가 스마트계약 코드로 완벽히 강제되고 있음이 입증됨"
+                }
+              ]
             }
           },
           {
@@ -245,10 +446,10 @@
             "title": "[Step 3: DON Consensus & Discrepancy Evaluation]",
             "capability": "chainlink.capabilities.ocr3_consensus@1.0.0",
             "status": "SUCCESS",
-            "startedAt": "2026-10-14T07:36:30.769Z",
-            "completedAt": "2026-10-14T07:36:30.774Z",
+            "startedAt": "2026-10-14T09:20:34.866Z",
+            "completedAt": "2026-10-14T09:20:34.871Z",
             "durationMs": 5,
-            "summary": "DON (4/4 nodes, OCR3-BFT) reached consensus: MATCH (MATCH=5, MISMATCH=0, NEEDS_HUMAN_REVIEW=0) | reportHash=0x30fcda5ecd83...",
+            "summary": "DON (4/4 nodes, OCR3-BFT) reached consensus: MATCH (MATCH=5, MISMATCH=0, NEEDS_HUMAN_REVIEW=0) | reportHash=0xcf7b6f0ff7a7...",
             "inputPayload": {
               "donId": "don-bli-legaltech-cre-01",
               "protocol": "OCR3-BFT",
@@ -268,8 +469,8 @@
                 "mismatchCount": 0,
                 "needsReviewCount": 0
               },
-              "consensusDigest": "0x0fdc594c392af7393c47ffe634f8ac0d5f6ded985c4d41569a8051373b9166f3",
-              "reportHash": "0x30fcda5ecd83ad909286cd073b27e8d5b2277d08b83e1fc2d57070fab68adaab",
+              "consensusDigest": "0x979b45fd21177cdd08672e4aa244cc2eda1cb3f2c5d72acc5f50bd3c22afa555",
+              "reportHash": "0xcf7b6f0ff7a79c81ad2c4979284bdd2459bc486c1707b8785d6e5c42b25abd61",
               "itemVerdicts": [
                 {
                   "itemKey": "maxSupplyAndMintability",
@@ -307,29 +508,29 @@
                   "nodeId": "cre-node-01.chainlink.don",
                   "operator": "BLI RegTech Oracle Node #1",
                   "signerAddress": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-                  "observationHash": "0x03a96df8f5be863f147d133a7967031841785bda8b9b559f953a09ea9e8b8ec7",
-                  "signature": "0xbf450d3ca589dc38ed09a66c36f75cc8e3acfc59b6dbbeff1437001c910fbaafb0c1c1b06ee087ea2c0aee51f2ca0e24c764daeb11fcb3f5c16e8e8145afa4411b"
+                  "observationHash": "0xa74d7ad96fa946d0ae14594165f9cfb9c5ba46158a91e725a6ae7445accde42b",
+                  "signature": "0xd307e2c3cba242902526c9707267fad457ef7ebc1b58f0ea7a50bb40703cf83f2778ccaddb1e6a9d95778e5061f81e36cea06c1c8c4e87b932c8d045d7afbb6f1b"
                 },
                 {
                   "nodeId": "cre-node-02.chainlink.don",
                   "operator": "BLI RegTech Oracle Node #2",
                   "signerAddress": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
-                  "observationHash": "0xb085002302ee3ead3da76ced8360d8be93b1026e683ba512a3d74cc128e10fda",
-                  "signature": "0x778ed33b1d329be962f73e8087d8c02982daa5adbc51b3248a33a22e5c40ff4cedaa2c17fd606d2fd9f8adb7bf75949a16a5830db857a8a42e97b863fe4ba2401c"
+                  "observationHash": "0x51ceb7ecee8deab13e0713f538f7a5c5376c51fbe2cc8073b7a9ff0f3cdefbf2",
+                  "signature": "0xd16214742cd3a42c4ac2f6810e6759f905f4244e7d180101423e94c1d40366b4b373a7319ac5b17645994d83fcefcf1088947d29dbbe3127d3c02a39ae96f7aa1c"
                 },
                 {
                   "nodeId": "cre-node-03.chainlink.don",
                   "operator": "BLI RegTech Oracle Node #3",
                   "signerAddress": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
-                  "observationHash": "0x187cdeabb0fc6656b2aaf6aa90be703fd82225454ae92cf42f694290424594a4",
-                  "signature": "0x340b1bd9349ad9e28c5631ffeb24b6aa0877034db4b81ffff00cb42fef16e3eca740c799f7d238d973e2e48dde9aa4d894ca76072a0b3c8a35d118e26d13091c1b"
+                  "observationHash": "0x349dbfe4d9500e5820a000e57ca234ce1e13bd8fb14161f5b1934d7ebe410a34",
+                  "signature": "0x8b3d062104106fdcbb98adf6d4cc40671a224d6b5f16c355c283e87512656712b271de098fdd2f39124c13d4a6f4654bf288f5181c70829b4c45663e26f3736a1b"
                 },
                 {
                   "nodeId": "cre-node-04.chainlink.don",
                   "operator": "BLI RegTech Oracle Node #4",
                   "signerAddress": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-                  "observationHash": "0xed7dced02877500d7486df7d1d1db3c74a38612ffd06056079e020a2f412bc48",
-                  "signature": "0x8d23d4c47484c9053be62bcc798a09b51b0824e9c5ccd6ebcb90e2f0f001844117456de1dbb7989b2c3310f6e05a09daaa05f28a640562879215bf86ba1068ef1c"
+                  "observationHash": "0x9a8e40e41471fd0f83c99fd7294523dd75de8e4d574779d475587c5d8bb53831",
+                  "signature": "0x5f2bf320787e026f07896e8db7d270d992e077b9ceac680526614b33b641c05b903428cb899163d8a98561db1712e95cfc02efc8df15eb70e3960d7c5ce26bd21c"
                 }
               ]
             }
@@ -340,27 +541,28 @@
             "title": "[Step 4: On-chain AuditRegistry Write / Verification Readiness]",
             "capability": "chainlink.capabilities.evm_write@1.0.0",
             "status": "SUCCESS",
-            "startedAt": "2026-10-14T07:36:30.769Z",
-            "completedAt": "2026-10-14T07:36:30.775Z",
-            "durationMs": 6,
-            "summary": "Anchored to AuditRegistry (0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0) in tx 0x460bf7225aed... & verified on-chain (verified=true).",
+            "startedAt": "2026-10-14T09:20:34.867Z",
+            "completedAt": "2026-10-14T09:20:35.936Z",
+            "durationMs": 1069,
+            "summary": "Anchored to AuditRegistry (0x5B0547C68bc608E6A9b94C515B5B66215981856c) in tx 0x8c46247b8a3b... & verified on-chain (verified=true).",
             "inputPayload": {
-              "auditRegistryAddress": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
-              "documentHash": "0xa8dd5df5bc2992a26d006c948d0b7e6ef581130e84ea182e1f028e9f18910c45",
-              "tokenAddress": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-              "chainId": 31337,
-              "blockNumber": 7849208,
+              "auditRegistryAddress": "0x5B0547C68bc608E6A9b94C515B5B66215981856c",
+              "documentHash": "0x78a1ddb84b83bd68e2d3f336c18e9ebccdef9aa287fa2bb8a8d5edeb861f5832",
+              "tokenAddress": "0x534c51921913a8717Ca2db550b77fFabf168f71e",
+              "chainId": 11155111,
+              "chainName": "Ethereum Sepolia",
+              "blockNumber": 11912002,
               "mismatchCount": 0,
-              "reportHash": "0x30fcda5ecd83ad909286cd073b27e8d5b2277d08b83e1fc2d57070fab68adaab",
+              "reportHash": "0xcf7b6f0ff7a79c81ad2c4979284bdd2459bc486c1707b8785d6e5c42b25abd61",
               "executeOnchainAnchor": true
             },
             "outputPayload": {
-              "auditRegistryAddress": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+              "auditRegistryAddress": "0x5B0547C68bc608E6A9b94C515B5B66215981856c",
               "functionSignature": "recordAudit(bytes32,address,uint256,uint256,uint8,bytes32)",
-              "recordAuditCalldata": "0x97cdb786a8dd5df5bc2992a26d006c948d0b7e6ef581130e84ea182e1f028e9f18910c450000000000000000000000005fbdb2315678afecb367f032d93f642f64180aa30000000000000000000000000000000000000000000000000000000000007a69000000000000000000000000000000000000000000000000000000000077c4f8000000000000000000000000000000000000000000000000000000000000000030fcda5ecd83ad909286cd073b27e8d5b2277d08b83e1fc2d57070fab68adaab",
-              "verifyAnchorCalldata": "0x681aa94aa8dd5df5bc2992a26d006c948d0b7e6ef581130e84ea182e1f028e9f18910c450000000000000000000000005fbdb2315678afecb367f032d93f642f64180aa330fcda5ecd83ad909286cd073b27e8d5b2277d08b83e1fc2d57070fab68adaab",
+              "recordAuditCalldata": "0x97cdb78678a1ddb84b83bd68e2d3f336c18e9ebccdef9aa287fa2bb8a8d5edeb861f5832000000000000000000000000534c51921913a8717ca2db550b77ffabf168f71e0000000000000000000000000000000000000000000000000000000000aa36a70000000000000000000000000000000000000000000000000000000000b5c3420000000000000000000000000000000000000000000000000000000000000000cf7b6f0ff7a79c81ad2c4979284bdd2459bc486c1707b8785d6e5c42b25abd61",
+              "verifyAnchorCalldata": "0x681aa94a78a1ddb84b83bd68e2d3f336c18e9ebccdef9aa287fa2bb8a8d5edeb861f5832000000000000000000000000534c51921913a8717ca2db550b77ffabf168f71ecf7b6f0ff7a79c81ad2c4979284bdd2459bc486c1707b8785d6e5c42b25abd61",
               "anchoredOnchain": true,
-              "anchorTxHash": "0x460bf7225aed7f77c6f967a29a12e3533ba6190fdb97e0e6eb128225e9f7ed04",
+              "anchorTxHash": "0x8c46247b8a3bcdca5b27f282c60643c111dbe910fd712d4c326dbed966733328",
               "verifyAnchorPassed": true
             }
           }
@@ -371,21 +573,21 @@
       "auditCaseId": "audit-mismatched-blix",
       "projectName": "BLI Alpha Labs Ltd.",
       "tokenSymbol": "BLIX",
-      "tokenAddress": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
-      "documentHash": "0xfbd4ed81d14a57c2f4b6cd55b637d0cea8196fa153894e461da6d465fb0277d8",
-      "workflowRunId": "cre-blix-b7849209-5fa30c25",
+      "tokenAddress": "0xbbE3c849D90c63645F917Be84a5b454FE858186F",
+      "documentHash": "0x592671e5451752596ebf6b2d83b2931902dcb2118e9e6d162afd676ecd3b2d0e",
+      "workflowRunId": "cre-blix-b11912002-18856015",
       "overallStatus": "MISMATCH",
       "counts": {
         "matchCount": 0,
         "mismatchCount": 4,
         "needsReviewCount": 1
       },
-      "reportHash": "0x4e440667f613a8a4cec1598557d76c9b3940fa27f35816d0f4746a076d3f65ec",
-      "consensusDigest": "0x5fa30c2588602222412644f53edcab696b48e7c220ec6fc6db4450576e37b7dd",
-      "anchorTxHash": "0x12f8cdc2b29f4124e2b86734c205b3d6f9c1f46b6a4b2f780133c7b2aa12bff0",
+      "reportHash": "0x92226c8e61bdf46ce5e47c1f9bc0aece8e499d1894c5be6a60f11766665ec080",
+      "consensusDigest": "0x1885601571dfc49b43a3fa2433ecdc1f2df056baf28fe0e7fad7ac475ece7e6e",
+      "anchorTxHash": "0x188772527fdd3707444450a0c8fc440ed6c98989cffd86cd8459d545b792c4ec",
       "verifyAnchorVerified": true,
       "trace": {
-        "workflowRunId": "cre-blix-b7849209-5fa30c25",
+        "workflowRunId": "cre-blix-b11912002-18856015",
         "workflowName": "bli-disclosure-smart-contract-mismatch-auditor",
         "workflowVersion": "1.0.0",
         "manifestPath": "cre-workflow/workflow.yaml",
@@ -393,11 +595,11 @@
         "runtimeEngine": "chainlink-cre-local-simulator",
         "auditCaseId": "audit-mismatched-blix",
         "tokenSymbol": "BLIX",
-        "tokenAddress": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
-        "chainId": 31337,
-        "chainName": "Local Embedded EVM (Chain ID: 31337)",
-        "snapshotBlockNumber": 7849209,
-        "documentHash": "0xfbd4ed81d14a57c2f4b6cd55b637d0cea8196fa153894e461da6d465fb0277d8",
+        "tokenAddress": "0xbbE3c849D90c63645F917Be84a5b454FE858186F",
+        "chainId": 11155111,
+        "chainName": "Ethereum Sepolia",
+        "snapshotBlockNumber": 11912002,
+        "documentHash": "0x592671e5451752596ebf6b2d83b2931902dcb2118e9e6d162afd676ecd3b2d0e",
         "overallStatus": "MISMATCH",
         "counts": {
           "matchCount": 0,
@@ -410,48 +612,143 @@
           "nodeCount": 4,
           "quorumRequired": 3,
           "quorumReached": 4,
-          "consensusDigest": "0x5fa30c2588602222412644f53edcab696b48e7c220ec6fc6db4450576e37b7dd",
-          "reportHash": "0x4e440667f613a8a4cec1598557d76c9b3940fa27f35816d0f4746a076d3f65ec",
+          "consensusDigest": "0x1885601571dfc49b43a3fa2433ecdc1f2df056baf28fe0e7fad7ac475ece7e6e",
+          "reportHash": "0x92226c8e61bdf46ce5e47c1f9bc0aece8e499d1894c5be6a60f11766665ec080",
           "nodeSignatures": [
             {
               "nodeId": "cre-node-01.chainlink.don",
               "operator": "BLI RegTech Oracle Node #1",
               "signerAddress": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-              "observationHash": "0x77bb91c71b85d092c7c9c5dde063b484d507ad8573f62c322a41007f625e9c63",
-              "signature": "0x17b113c9a69b44740e9959f46b8a4704c945180422304a487275114df9777b5ae792f14fa0715b4b93f7aeb488e2452ed0df567743efc103ecb3ebf70742ced61b"
+              "observationHash": "0xdd7372663b66ad33ee0a09dc0c98ef993e3b3e600604f8efefdb7e18e086f061",
+              "signature": "0x6999fbb8bf2dbe73533aaf255a258ab8d5e97d1c2e7ea4d85de3dd3894bfa25c4579cd168f9b8837c889aec15baf3de8ecc89039f57a839141cc4fd8b1a065a01b"
             },
             {
               "nodeId": "cre-node-02.chainlink.don",
               "operator": "BLI RegTech Oracle Node #2",
               "signerAddress": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
-              "observationHash": "0xa37dc9cca632c7d57fa6733f9ab08d6937e07dfa9e56556048d348988af889c5",
-              "signature": "0xd4a959d5b2c505bb3867f7341d1487bafc4500f290c7f07881126c0aae879cd764ffae0dbf5571ee7eca29a60ce58c17bdf2d44fc00c619963e2476098f090101c"
+              "observationHash": "0x1a440bfcbbf6da88d6fad6f588a60fead56d8b5f39ef45436d2c345d942dcd24",
+              "signature": "0x231b43b2525e6ae868427b0b33ef350bbe330f0013e6fd5c86db609eabd5e027b2acec74ffd148289c6506406f9d4fa7c7d72d3e0516e1dc675a6a54e67314651c"
             },
             {
               "nodeId": "cre-node-03.chainlink.don",
               "operator": "BLI RegTech Oracle Node #3",
               "signerAddress": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
-              "observationHash": "0x185c740eae833685bd7657a24dcc853923e0aec25e36b3122556dba5b6ebdea6",
-              "signature": "0xd32e58510a48df35b4619711a718cb85f4e53dc00e603e0dbf4ddbe62573a42a79267bd11a3bb0b3eb9504bc24f4a8baa9954d793c14bd4357712094053b897e1b"
+              "observationHash": "0x1cb93af743d18e6ee8ab84e5579ca8129bad5d6904212bdec466ff6d966cfe2b",
+              "signature": "0x527c5e131a5c139f4c4a7f67a88c74e1933f59a69623314dae2d6e6c589a0490a3d44111ffdd9e43ccf4f001f242517d65e0a999afdbb1007d8cb92159fa713f1b"
             },
             {
               "nodeId": "cre-node-04.chainlink.don",
               "operator": "BLI RegTech Oracle Node #4",
               "signerAddress": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-              "observationHash": "0x6bb663baaae910f939374cde44d6f10929ced73f05d9e52bfaeb1422c6d3ddb1",
-              "signature": "0x932a0322ad0ddb50392077f11e6662da97da20259b6bf14491e72a05e1978824368c421a4fce02a3ae589ec612367865d1f82cd9acf70a1a1936c6fab16dc44b1c"
+              "observationHash": "0xf5e3f33bbcdc9cac8d3d9d7c3c19a255365a5d5fbc7b2ef66d8f481fc7a5325b",
+              "signature": "0xec9068d7703e6f68ea180e9b787e79c21aced12176786e105ea77f73cc5a7a748fb27dfa49532395b85e7cefc94893d4b9ca82de8af960df5a9e2973ae53cabb1c"
             }
           ]
         },
         "auditRegistryPayload": {
-          "auditRegistryAddress": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+          "auditRegistryAddress": "0x5B0547C68bc608E6A9b94C515B5B66215981856c",
           "functionSignature": "recordAudit(bytes32,address,uint256,uint256,uint8,bytes32)",
-          "recordAuditCalldata": "0x97cdb786fbd4ed81d14a57c2f4b6cd55b637d0cea8196fa153894e461da6d465fb0277d8000000000000000000000000e7f1725e7734ce288f8367e1bb143e90bb3f05120000000000000000000000000000000000000000000000000000000000007a69000000000000000000000000000000000000000000000000000000000077c4f900000000000000000000000000000000000000000000000000000000000000044e440667f613a8a4cec1598557d76c9b3940fa27f35816d0f4746a076d3f65ec",
-          "verifyAnchorCalldata": "0x681aa94afbd4ed81d14a57c2f4b6cd55b637d0cea8196fa153894e461da6d465fb0277d8000000000000000000000000e7f1725e7734ce288f8367e1bb143e90bb3f05124e440667f613a8a4cec1598557d76c9b3940fa27f35816d0f4746a076d3f65ec",
-          "reportHash": "0x4e440667f613a8a4cec1598557d76c9b3940fa27f35816d0f4746a076d3f65ec"
+          "recordAuditCalldata": "0x97cdb786592671e5451752596ebf6b2d83b2931902dcb2118e9e6d162afd676ecd3b2d0e000000000000000000000000bbe3c849d90c63645f917be84a5b454fe858186f0000000000000000000000000000000000000000000000000000000000aa36a70000000000000000000000000000000000000000000000000000000000b5c342000000000000000000000000000000000000000000000000000000000000000492226c8e61bdf46ce5e47c1f9bc0aece8e499d1894c5be6a60f11766665ec080",
+          "verifyAnchorCalldata": "0x681aa94a592671e5451752596ebf6b2d83b2931902dcb2118e9e6d162afd676ecd3b2d0e000000000000000000000000bbe3c849d90c63645f917be84a5b454fe858186f92226c8e61bdf46ce5e47c1f9bc0aece8e499d1894c5be6a60f11766665ec080",
+          "reportHash": "0x92226c8e61bdf46ce5e47c1f9bc0aece8e499d1894c5be6a60f11766665ec080"
         },
-        "totalDurationMs": 21,
-        "executedAt": "2026-10-14T07:36:30.813Z",
+        "breachSimulations": [
+          {
+            "scenarioId": "breach_1_unauthorized_mint",
+            "order": 1,
+            "itemKey": "maxSupplyAndMintability",
+            "titleKo": "[시나리오 1] 무단 추가 발행 시도 (Unauthorized Minting)",
+            "titleEn": "Unauthorized 10M Token Mint Attempt",
+            "whitepaperPromiseKo": "총발행량 100,000,000 BLIX 영구 고정 및 추가 발행(Mint) 불가 공시",
+            "adversarialActionKo": "관리자(0x6C46f56a...) 계정으로 mint(attacker, 10,000,000 * 10^18) 강제 호출",
+            "callerAddress": "0x6C46f56a840B153B33d954bbCF1cd9843f372593",
+            "callerRole": "Owner EOA (단일 관리자 지갑)",
+            "targetFunction": "mint(address,uint256)",
+            "calldata": "0x40c10f190000000000000000000000009965507d1a55bcc2695c58ba16fb37d819b0a4dc000000000000000000000000000000000000000000084595161401484a000000",
+            "outcome": "BREACH_SUCCEEDED",
+            "badgeText": "BREACH_SUCCEEDED",
+            "txReverted": false,
+            "revertReason": null,
+            "returnDataHex": "0x",
+            "gasUsed": "26427",
+            "beforeState": "totalSupply = 100,000,000 BLIX | balanceOf(attacker) = 0 BLIX",
+            "afterState": "totalSupply = 110,000,000 BLIX (+1,000만 개 팽창) | balanceOf(attacker) = 10,000,000 BLIX",
+            "stateDeltaSummary": "단일 관리자 호출만으로 총발행량이 100,000,000 → 110,000,000 BLIX(+10%)로 즉시 증가하여 투자자 지분이 강제 희석됨",
+            "legalImpactKo": "백서의 '추가 발행 영구 불가' 공시와 정면 배치되는 무제한 발행이 실제 성공함 — 중요사항 거짓 기재 입증 증거"
+          },
+          {
+            "scenarioId": "breach_2_fee_hike_50pct",
+            "order": 2,
+            "itemKey": "transferFee",
+            "titleKo": "[시나리오 2] 전송 수수료 기습 50% 인상 시도 (Predatory 50% Fee Hike)",
+            "titleEn": "Predatory 50% Transfer Fee Hike Attempt",
+            "whitepaperPromiseKo": "전송 수수료 1.00% (100 bps) 영구 고정 및 사후 인상 불가 공시",
+            "adversarialActionKo": "관리자(0x6C46f56a...) 계정으로 setTransferFeeBps(5000) (50.00% 징수) 호출",
+            "callerAddress": "0x6C46f56a840B153B33d954bbCF1cd9843f372593",
+            "callerRole": "Owner EOA (단일 관리자 지갑)",
+            "targetFunction": "setTransferFeeBps(uint256)",
+            "calldata": "0x93a404e60000000000000000000000000000000000000000000000000000000000001388",
+            "outcome": "BREACH_SUCCEEDED",
+            "badgeText": "BREACH_SUCCEEDED",
+            "txReverted": false,
+            "revertReason": null,
+            "returnDataHex": "0x",
+            "gasUsed": "1983",
+            "beforeState": "transferFeeBps = 500 bps (5.00%, 공시 100 bps)",
+            "afterState": "transferFeeBps = 5,000 bps (50.00%로 기습 인상 완료)",
+            "stateDeltaSummary": "관리자 단일 트랜잭션으로 전송 수수료가 5.00% → 50.00%(5000 bps)로 변경되어 전송액의 절반이 강제 징수됨",
+            "legalImpactKo": "공시된 1% 고정 수수료와 달리 최대 100%(10,000 bps)까지 즉시 인상 가능함이 입증됨 — 사실상 매도 제한(Honeypot) 위험"
+          },
+          {
+            "scenarioId": "breach_3_investor_wallet_freeze",
+            "order": 3,
+            "itemKey": "transferRestrictions",
+            "titleKo": "[시나리오 3] 투자자 지갑 강제 동결 시도 (Targeted Investor Wallet Freeze)",
+            "titleEn": "Targeted Investor Wallet Freeze & Transfer Block",
+            "whitepaperPromiseKo": "특정 지갑 동결(Blacklist) 및 임의 전송 차단 기능 미탑재 공시",
+            "adversarialActionKo": "관리자가 setBlacklisted(investor, true) 호출 후, 해당 투자자가 transfer(recipient, 1,000) 실행",
+            "callerAddress": "0x6C46f56a840B153B33d954bbCF1cd9843f372593",
+            "callerRole": "Owner EOA -> Investor Wallet",
+            "targetFunction": "setBlacklisted(address,bool) → transfer(address,uint256)",
+            "calldata": "0xd01dd6d2000000000000000000000000976ea74026e726554db657fa54763abd0c3a0aa90000000000000000000000000000000000000000000000000000000000000001",
+            "secondaryCalldata": "0xa9059cbb00000000000000000000000014dc79964da2c08b23698b3d3cc7ca32193d995500000000000000000000000000000000000000000000003635c9adc5dea00000",
+            "outcome": "BREACH_SUCCEEDED",
+            "badgeText": "BREACH_SUCCEEDED",
+            "txReverted": false,
+            "revertReason": "Investor transfer() Reverted with custom error AddressBlacklisted(0x976EA74026E726554dB657fA54763abd0C3a0aa9) [selector: 0xdaf49ab9]",
+            "returnDataHex": "0xdaf49ab9000000000000000000000000976ea74026e726554db657fa54763abd0c3a0aa9",
+            "gasUsed": "23188",
+            "beforeState": "isBlacklisted(investor) = false | investor 보유량 = 9,500 BLIX",
+            "afterState": "isBlacklisted(investor) = true (강제 동결됨) | investor.transfer(1,000 BLIX) 즉시 Revert (AddressBlacklisted)",
+            "stateDeltaSummary": "관리자 단일 서명으로 특정 투자자 지갑이 즉시 블랙리스트에 등록되어 토큰 전송·매도가 전면 차단됨",
+            "legalImpactKo": "백서의 '검열 저항성·블랙리스트 부재' 공시와 달리 단일 관리자가 이용자 자산을 임의 동결할 수 있음이 입증됨"
+          },
+          {
+            "scenarioId": "breach_4_premature_team_dump",
+            "order": 4,
+            "itemKey": "teamLockup",
+            "titleKo": "[시나리오 4] 팀 락업 물량 조기 유출 시도 (Premature Team Token Dump)",
+            "titleEn": "Pre-2028 Team Wallet 5M Token Dump Attempt",
+            "whitepaperPromiseKo": "팀 할당 물량(20,000,000개) 2028-01-01 00:00:00 UTC(1830297600)까지 온체인 타임락 강제 동결 공시",
+            "adversarialActionKo": "락업 해제일 이전 블록(timestamp=1760419000)에서 teamWallet(0x3C44CdDd...)이 transfer(recipient, 5,000,000 * 10^18) 호출",
+            "callerAddress": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+            "callerRole": "Team Allocation Wallet",
+            "targetFunction": "transfer(address,uint256)",
+            "calldata": "0xa9059cbb00000000000000000000000014dc79964da2c08b23698b3d3cc7ca32193d99550000000000000000000000000000000000000000000422ca8b0a00a425000000",
+            "outcome": "BREACH_SUCCEEDED",
+            "badgeText": "BREACH_SUCCEEDED",
+            "txReverted": false,
+            "revertReason": null,
+            "returnDataHex": "0x0000000000000000000000000000000000000000000000000000000000000001",
+            "gasUsed": "52189",
+            "beforeState": "balanceOf(teamWallet) = 20,000,000 BLIX | teamLockupActive = false (timestamp=0)",
+            "afterState": "balanceOf(teamWallet) = 15,000,000 BLIX (-5,000,000 유출) | balanceOf(recipient) = +4,750,000 BLIX",
+            "stateDeltaSummary": "온체인 타임락 코드가 전무하여 2028년까지 동결된다던 팀 물량 500만 개가 즉시 외부 지갑으로 처분·유출됨",
+            "legalImpactKo": "백서의 '온체인 스마트계약을 통한 2028년까지 강제 락업' 공시가 허위임이 실제 출금 성공으로 입증됨"
+          }
+        ],
+        "totalDurationMs": 2151,
+        "executedAt": "2026-10-14T09:20:39.179Z",
         "steps": [
           {
             "stepNumber": 1,
@@ -459,10 +756,10 @@
             "title": "[Step 1: Trigger & Off-chain Disclosure Fetch]",
             "capability": "chainlink.capabilities.http_client@1.0.0 + llm_extractor",
             "status": "SUCCESS",
-            "startedAt": "2026-10-14T07:36:30.802Z",
-            "completedAt": "2026-10-14T07:36:30.806Z",
+            "startedAt": "2026-10-14T09:20:37.037Z",
+            "completedAt": "2026-10-14T09:20:37.041Z",
             "durationMs": 4,
-            "summary": "Fetched SHA-256 documentHash (0xfbd4ed81d14a...) & extracted 5 structured disclosure claims via deterministic-rule-parser engine.",
+            "summary": "Fetched SHA-256 documentHash (0x592671e54517...) & extracted 5 structured disclosure claims via deterministic-rule-parser engine.",
             "inputPayload": {
               "triggerType": "cre.triggers.http_webhook@1.0.0",
               "auditCaseId": "audit-mismatched-blix",
@@ -471,7 +768,7 @@
               "whitepaperCharLength": 1252
             },
             "outputPayload": {
-              "documentHash": "0xfbd4ed81d14a57c2f4b6cd55b637d0cea8196fa153894e461da6d465fb0277d8",
+              "documentHash": "0x592671e5451752596ebf6b2d83b2931902dcb2118e9e6d162afd676ecd3b2d0e",
               "extractionEngine": "deterministic-rule-parser",
               "claimCount": 5,
               "disclosedClaims": [
@@ -531,18 +828,18 @@
           {
             "stepNumber": 2,
             "stepId": "step_2_onchain_evm_read",
-            "title": "[Step 2: On-chain EVM State Inspection]",
-            "capability": "chainlink.capabilities.evm_read@1.0.0",
+            "title": "[Step 2: On-chain EVM State Inspection & Breach Simulation]",
+            "capability": "chainlink.capabilities.evm_read@1.0.0 + evm_sandbox_sim",
             "status": "SUCCESS",
-            "startedAt": "2026-10-14T07:36:30.802Z",
-            "completedAt": "2026-10-14T07:36:30.810Z",
-            "durationMs": 8,
-            "summary": "Executed 22 ABI eth_call reads + EIP-1967 slot inspection on BLIX (0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512) at Block #7849209.",
+            "startedAt": "2026-10-14T09:20:37.037Z",
+            "completedAt": "2026-10-14T09:20:38.115Z",
+            "durationMs": 1078,
+            "summary": "Executed 22 ABI eth_call reads + EIP-1967 slot inspection + 4 counterfactual breach simulations (Defended=0, Breached=4) on BLIX (0xbbE3c849D90c63645F917Be84a5b454FE858186F) at Block #11912002.",
             "inputPayload": {
-              "chainId": 31337,
-              "chainName": "Local Embedded EVM (Chain ID: 31337)",
+              "chainId": 11155111,
+              "chainName": "Ethereum Sepolia",
               "executionMode": "EMBEDDED_EVM",
-              "tokenAddress": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+              "tokenAddress": "0xbbE3c849D90c63645F917Be84a5b454FE858186F",
               "eip1967ImplementationSlot": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
               "viewFunctionsQueried": [
                 "name()",
@@ -567,16 +864,22 @@
                 "upgradeable()",
                 "adminAddress()",
                 "logicImplementation()"
+              ],
+              "adversarialScenariosSimulated": [
+                "breach_1_unauthorized_mint",
+                "breach_2_fee_hike_50pct",
+                "breach_3_investor_wallet_freeze",
+                "breach_4_premature_team_dump"
               ]
             },
             "outputPayload": {
-              "blockNumber": 7849209,
+              "blockNumber": 11912002,
               "name": "BLI Alpha Protocol Token",
               "symbol": "BLIX",
               "totalSupplyFormatted": "100000000",
               "maxSupplyFormatted": "UNLIMITED (type(uint256).max)",
               "mintable": true,
-              "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "owner": "0x6C46f56a840B153B33d954bbCF1cd9843f372593",
               "ownerIsContract": false,
               "transferFeeBps": 500,
               "maxTransferFeeBps": 10000,
@@ -589,11 +892,111 @@
               "teamLockupActive": false,
               "teamLockupReleaseTimestamp": 0,
               "upgradeable": true,
-              "adminAddress": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "adminAddress": "0x6C46f56a840B153B33d954bbCF1cd9843f372593",
               "adminIsContract": false,
               "logicImplementation": "0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF",
               "eip1967SlotValue": "0x0000000000000000000000000000000000000000000000000000000000000000",
-              "rawCallCount": 22
+              "rawCallCount": 22,
+              "breachSimulationSummary": {
+                "totalScenarios": 4,
+                "defendedCount": 0,
+                "breachSucceededCount": 4
+              },
+              "breachSimulations": [
+                {
+                  "scenarioId": "breach_1_unauthorized_mint",
+                  "order": 1,
+                  "itemKey": "maxSupplyAndMintability",
+                  "titleKo": "[시나리오 1] 무단 추가 발행 시도 (Unauthorized Minting)",
+                  "titleEn": "Unauthorized 10M Token Mint Attempt",
+                  "whitepaperPromiseKo": "총발행량 100,000,000 BLIX 영구 고정 및 추가 발행(Mint) 불가 공시",
+                  "adversarialActionKo": "관리자(0x6C46f56a...) 계정으로 mint(attacker, 10,000,000 * 10^18) 강제 호출",
+                  "callerAddress": "0x6C46f56a840B153B33d954bbCF1cd9843f372593",
+                  "callerRole": "Owner EOA (단일 관리자 지갑)",
+                  "targetFunction": "mint(address,uint256)",
+                  "calldata": "0x40c10f190000000000000000000000009965507d1a55bcc2695c58ba16fb37d819b0a4dc000000000000000000000000000000000000000000084595161401484a000000",
+                  "outcome": "BREACH_SUCCEEDED",
+                  "badgeText": "BREACH_SUCCEEDED",
+                  "txReverted": false,
+                  "revertReason": null,
+                  "returnDataHex": "0x",
+                  "gasUsed": "26427",
+                  "beforeState": "totalSupply = 100,000,000 BLIX | balanceOf(attacker) = 0 BLIX",
+                  "afterState": "totalSupply = 110,000,000 BLIX (+1,000만 개 팽창) | balanceOf(attacker) = 10,000,000 BLIX",
+                  "stateDeltaSummary": "단일 관리자 호출만으로 총발행량이 100,000,000 → 110,000,000 BLIX(+10%)로 즉시 증가하여 투자자 지분이 강제 희석됨",
+                  "legalImpactKo": "백서의 '추가 발행 영구 불가' 공시와 정면 배치되는 무제한 발행이 실제 성공함 — 중요사항 거짓 기재 입증 증거"
+                },
+                {
+                  "scenarioId": "breach_2_fee_hike_50pct",
+                  "order": 2,
+                  "itemKey": "transferFee",
+                  "titleKo": "[시나리오 2] 전송 수수료 기습 50% 인상 시도 (Predatory 50% Fee Hike)",
+                  "titleEn": "Predatory 50% Transfer Fee Hike Attempt",
+                  "whitepaperPromiseKo": "전송 수수료 1.00% (100 bps) 영구 고정 및 사후 인상 불가 공시",
+                  "adversarialActionKo": "관리자(0x6C46f56a...) 계정으로 setTransferFeeBps(5000) (50.00% 징수) 호출",
+                  "callerAddress": "0x6C46f56a840B153B33d954bbCF1cd9843f372593",
+                  "callerRole": "Owner EOA (단일 관리자 지갑)",
+                  "targetFunction": "setTransferFeeBps(uint256)",
+                  "calldata": "0x93a404e60000000000000000000000000000000000000000000000000000000000001388",
+                  "outcome": "BREACH_SUCCEEDED",
+                  "badgeText": "BREACH_SUCCEEDED",
+                  "txReverted": false,
+                  "revertReason": null,
+                  "returnDataHex": "0x",
+                  "gasUsed": "1983",
+                  "beforeState": "transferFeeBps = 500 bps (5.00%, 공시 100 bps)",
+                  "afterState": "transferFeeBps = 5,000 bps (50.00%로 기습 인상 완료)",
+                  "stateDeltaSummary": "관리자 단일 트랜잭션으로 전송 수수료가 5.00% → 50.00%(5000 bps)로 변경되어 전송액의 절반이 강제 징수됨",
+                  "legalImpactKo": "공시된 1% 고정 수수료와 달리 최대 100%(10,000 bps)까지 즉시 인상 가능함이 입증됨 — 사실상 매도 제한(Honeypot) 위험"
+                },
+                {
+                  "scenarioId": "breach_3_investor_wallet_freeze",
+                  "order": 3,
+                  "itemKey": "transferRestrictions",
+                  "titleKo": "[시나리오 3] 투자자 지갑 강제 동결 시도 (Targeted Investor Wallet Freeze)",
+                  "titleEn": "Targeted Investor Wallet Freeze & Transfer Block",
+                  "whitepaperPromiseKo": "특정 지갑 동결(Blacklist) 및 임의 전송 차단 기능 미탑재 공시",
+                  "adversarialActionKo": "관리자가 setBlacklisted(investor, true) 호출 후, 해당 투자자가 transfer(recipient, 1,000) 실행",
+                  "callerAddress": "0x6C46f56a840B153B33d954bbCF1cd9843f372593",
+                  "callerRole": "Owner EOA -> Investor Wallet",
+                  "targetFunction": "setBlacklisted(address,bool) → transfer(address,uint256)",
+                  "calldata": "0xd01dd6d2000000000000000000000000976ea74026e726554db657fa54763abd0c3a0aa90000000000000000000000000000000000000000000000000000000000000001",
+                  "secondaryCalldata": "0xa9059cbb00000000000000000000000014dc79964da2c08b23698b3d3cc7ca32193d995500000000000000000000000000000000000000000000003635c9adc5dea00000",
+                  "outcome": "BREACH_SUCCEEDED",
+                  "badgeText": "BREACH_SUCCEEDED",
+                  "txReverted": false,
+                  "revertReason": "Investor transfer() Reverted with custom error AddressBlacklisted(0x976EA74026E726554dB657fA54763abd0C3a0aa9) [selector: 0xdaf49ab9]",
+                  "returnDataHex": "0xdaf49ab9000000000000000000000000976ea74026e726554db657fa54763abd0c3a0aa9",
+                  "gasUsed": "23188",
+                  "beforeState": "isBlacklisted(investor) = false | investor 보유량 = 9,500 BLIX",
+                  "afterState": "isBlacklisted(investor) = true (강제 동결됨) | investor.transfer(1,000 BLIX) 즉시 Revert (AddressBlacklisted)",
+                  "stateDeltaSummary": "관리자 단일 서명으로 특정 투자자 지갑이 즉시 블랙리스트에 등록되어 토큰 전송·매도가 전면 차단됨",
+                  "legalImpactKo": "백서의 '검열 저항성·블랙리스트 부재' 공시와 달리 단일 관리자가 이용자 자산을 임의 동결할 수 있음이 입증됨"
+                },
+                {
+                  "scenarioId": "breach_4_premature_team_dump",
+                  "order": 4,
+                  "itemKey": "teamLockup",
+                  "titleKo": "[시나리오 4] 팀 락업 물량 조기 유출 시도 (Premature Team Token Dump)",
+                  "titleEn": "Pre-2028 Team Wallet 5M Token Dump Attempt",
+                  "whitepaperPromiseKo": "팀 할당 물량(20,000,000개) 2028-01-01 00:00:00 UTC(1830297600)까지 온체인 타임락 강제 동결 공시",
+                  "adversarialActionKo": "락업 해제일 이전 블록(timestamp=1760419000)에서 teamWallet(0x3C44CdDd...)이 transfer(recipient, 5,000,000 * 10^18) 호출",
+                  "callerAddress": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+                  "callerRole": "Team Allocation Wallet",
+                  "targetFunction": "transfer(address,uint256)",
+                  "calldata": "0xa9059cbb00000000000000000000000014dc79964da2c08b23698b3d3cc7ca32193d99550000000000000000000000000000000000000000000422ca8b0a00a425000000",
+                  "outcome": "BREACH_SUCCEEDED",
+                  "badgeText": "BREACH_SUCCEEDED",
+                  "txReverted": false,
+                  "revertReason": null,
+                  "returnDataHex": "0x0000000000000000000000000000000000000000000000000000000000000001",
+                  "gasUsed": "52189",
+                  "beforeState": "balanceOf(teamWallet) = 20,000,000 BLIX | teamLockupActive = false (timestamp=0)",
+                  "afterState": "balanceOf(teamWallet) = 15,000,000 BLIX (-5,000,000 유출) | balanceOf(recipient) = +4,750,000 BLIX",
+                  "stateDeltaSummary": "온체인 타임락 코드가 전무하여 2028년까지 동결된다던 팀 물량 500만 개가 즉시 외부 지갑으로 처분·유출됨",
+                  "legalImpactKo": "백서의 '온체인 스마트계약을 통한 2028년까지 강제 락업' 공시가 허위임이 실제 출금 성공으로 입증됨"
+                }
+              ]
             }
           },
           {
@@ -602,10 +1005,10 @@
             "title": "[Step 3: DON Consensus & Discrepancy Evaluation]",
             "capability": "chainlink.capabilities.ocr3_consensus@1.0.0",
             "status": "SUCCESS",
-            "startedAt": "2026-10-14T07:36:30.809Z",
-            "completedAt": "2026-10-14T07:36:30.814Z",
+            "startedAt": "2026-10-14T09:20:38.115Z",
+            "completedAt": "2026-10-14T09:20:38.120Z",
             "durationMs": 5,
-            "summary": "DON (4/4 nodes, OCR3-BFT) reached consensus: MISMATCH (MATCH=0, MISMATCH=4, NEEDS_HUMAN_REVIEW=1) | reportHash=0x4e440667f613...",
+            "summary": "DON (4/4 nodes, OCR3-BFT) reached consensus: MISMATCH (MATCH=0, MISMATCH=4, NEEDS_HUMAN_REVIEW=1) | reportHash=0x92226c8e61bd...",
             "inputPayload": {
               "donId": "don-bli-legaltech-cre-01",
               "protocol": "OCR3-BFT",
@@ -625,14 +1028,14 @@
                 "mismatchCount": 4,
                 "needsReviewCount": 1
               },
-              "consensusDigest": "0x5fa30c2588602222412644f53edcab696b48e7c220ec6fc6db4450576e37b7dd",
-              "reportHash": "0x4e440667f613a8a4cec1598557d76c9b3940fa27f35816d0f4746a076d3f65ec",
+              "consensusDigest": "0x1885601571dfc49b43a3fa2433ecdc1f2df056baf28fe0e7fad7ac475ece7e6e",
+              "reportHash": "0x92226c8e61bdf46ce5e47c1f9bc0aece8e499d1894c5be6a60f11766665ec080",
               "itemVerdicts": [
                 {
                   "itemKey": "maxSupplyAndMintability",
                   "status": "MISMATCH",
                   "severity": "CRITICAL",
-                  "onchainState": "totalSupply() = 100,000,000 BLIX | MAX_SUPPLY() = type(uint256).max (무제한) | mintable() = true | owner() = 0xf39F...2266 (단일 EOA)"
+                  "onchainState": "totalSupply() = 100,000,000 BLIX | MAX_SUPPLY() = type(uint256).max (무제한) | mintable() = true | owner() = 0x6C46...2593 (단일 EOA)"
                 },
                 {
                   "itemKey": "transferFee",
@@ -644,7 +1047,7 @@
                   "itemKey": "transferRestrictions",
                   "status": "MISMATCH",
                   "severity": "HIGH",
-                  "onchainState": "paused() = false | pausable() = true | blacklistable() = true | owner() = 0xf39F...2266"
+                  "onchainState": "paused() = false | pausable() = true | blacklistable() = true | owner() = 0x6C46...2593"
                 },
                 {
                   "itemKey": "teamLockup",
@@ -656,7 +1059,7 @@
                   "itemKey": "upgradeability",
                   "status": "NEEDS_HUMAN_REVIEW",
                   "severity": "HIGH",
-                  "onchainState": "upgradeable() = true | logicImplementation() = 0xDeaD...beeF | adminAddress() = 0xf39F...2266 (단일 EOA) | owner() = 0xf39F...2266 | EIP-1967 = 0xDeaD...beeF"
+                  "onchainState": "upgradeable() = true | logicImplementation() = 0xDeaD...beeF | adminAddress() = 0x6C46...2593 (단일 EOA) | owner() = 0x6C46...2593 | EIP-1967 = 0xDeaD...beeF"
                 }
               ],
               "nodeSignatures": [
@@ -664,29 +1067,29 @@
                   "nodeId": "cre-node-01.chainlink.don",
                   "operator": "BLI RegTech Oracle Node #1",
                   "signerAddress": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-                  "observationHash": "0x77bb91c71b85d092c7c9c5dde063b484d507ad8573f62c322a41007f625e9c63",
-                  "signature": "0x17b113c9a69b44740e9959f46b8a4704c945180422304a487275114df9777b5ae792f14fa0715b4b93f7aeb488e2452ed0df567743efc103ecb3ebf70742ced61b"
+                  "observationHash": "0xdd7372663b66ad33ee0a09dc0c98ef993e3b3e600604f8efefdb7e18e086f061",
+                  "signature": "0x6999fbb8bf2dbe73533aaf255a258ab8d5e97d1c2e7ea4d85de3dd3894bfa25c4579cd168f9b8837c889aec15baf3de8ecc89039f57a839141cc4fd8b1a065a01b"
                 },
                 {
                   "nodeId": "cre-node-02.chainlink.don",
                   "operator": "BLI RegTech Oracle Node #2",
                   "signerAddress": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
-                  "observationHash": "0xa37dc9cca632c7d57fa6733f9ab08d6937e07dfa9e56556048d348988af889c5",
-                  "signature": "0xd4a959d5b2c505bb3867f7341d1487bafc4500f290c7f07881126c0aae879cd764ffae0dbf5571ee7eca29a60ce58c17bdf2d44fc00c619963e2476098f090101c"
+                  "observationHash": "0x1a440bfcbbf6da88d6fad6f588a60fead56d8b5f39ef45436d2c345d942dcd24",
+                  "signature": "0x231b43b2525e6ae868427b0b33ef350bbe330f0013e6fd5c86db609eabd5e027b2acec74ffd148289c6506406f9d4fa7c7d72d3e0516e1dc675a6a54e67314651c"
                 },
                 {
                   "nodeId": "cre-node-03.chainlink.don",
                   "operator": "BLI RegTech Oracle Node #3",
                   "signerAddress": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
-                  "observationHash": "0x185c740eae833685bd7657a24dcc853923e0aec25e36b3122556dba5b6ebdea6",
-                  "signature": "0xd32e58510a48df35b4619711a718cb85f4e53dc00e603e0dbf4ddbe62573a42a79267bd11a3bb0b3eb9504bc24f4a8baa9954d793c14bd4357712094053b897e1b"
+                  "observationHash": "0x1cb93af743d18e6ee8ab84e5579ca8129bad5d6904212bdec466ff6d966cfe2b",
+                  "signature": "0x527c5e131a5c139f4c4a7f67a88c74e1933f59a69623314dae2d6e6c589a0490a3d44111ffdd9e43ccf4f001f242517d65e0a999afdbb1007d8cb92159fa713f1b"
                 },
                 {
                   "nodeId": "cre-node-04.chainlink.don",
                   "operator": "BLI RegTech Oracle Node #4",
                   "signerAddress": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-                  "observationHash": "0x6bb663baaae910f939374cde44d6f10929ced73f05d9e52bfaeb1422c6d3ddb1",
-                  "signature": "0x932a0322ad0ddb50392077f11e6662da97da20259b6bf14491e72a05e1978824368c421a4fce02a3ae589ec612367865d1f82cd9acf70a1a1936c6fab16dc44b1c"
+                  "observationHash": "0xf5e3f33bbcdc9cac8d3d9d7c3c19a255365a5d5fbc7b2ef66d8f481fc7a5325b",
+                  "signature": "0xec9068d7703e6f68ea180e9b787e79c21aced12176786e105ea77f73cc5a7a748fb27dfa49532395b85e7cefc94893d4b9ca82de8af960df5a9e2973ae53cabb1c"
                 }
               ]
             }
@@ -697,27 +1100,28 @@
             "title": "[Step 4: On-chain AuditRegistry Write / Verification Readiness]",
             "capability": "chainlink.capabilities.evm_write@1.0.0",
             "status": "SUCCESS",
-            "startedAt": "2026-10-14T07:36:30.809Z",
-            "completedAt": "2026-10-14T07:36:30.813Z",
-            "durationMs": 4,
-            "summary": "Anchored to AuditRegistry (0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0) in tx 0x12f8cdc2b29f... & verified on-chain (verified=true).",
+            "startedAt": "2026-10-14T09:20:38.115Z",
+            "completedAt": "2026-10-14T09:20:39.179Z",
+            "durationMs": 1064,
+            "summary": "Anchored to AuditRegistry (0x5B0547C68bc608E6A9b94C515B5B66215981856c) in tx 0x188772527fdd... & verified on-chain (verified=true).",
             "inputPayload": {
-              "auditRegistryAddress": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
-              "documentHash": "0xfbd4ed81d14a57c2f4b6cd55b637d0cea8196fa153894e461da6d465fb0277d8",
-              "tokenAddress": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
-              "chainId": 31337,
-              "blockNumber": 7849209,
+              "auditRegistryAddress": "0x5B0547C68bc608E6A9b94C515B5B66215981856c",
+              "documentHash": "0x592671e5451752596ebf6b2d83b2931902dcb2118e9e6d162afd676ecd3b2d0e",
+              "tokenAddress": "0xbbE3c849D90c63645F917Be84a5b454FE858186F",
+              "chainId": 11155111,
+              "chainName": "Ethereum Sepolia",
+              "blockNumber": 11912002,
               "mismatchCount": 4,
-              "reportHash": "0x4e440667f613a8a4cec1598557d76c9b3940fa27f35816d0f4746a076d3f65ec",
+              "reportHash": "0x92226c8e61bdf46ce5e47c1f9bc0aece8e499d1894c5be6a60f11766665ec080",
               "executeOnchainAnchor": true
             },
             "outputPayload": {
-              "auditRegistryAddress": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+              "auditRegistryAddress": "0x5B0547C68bc608E6A9b94C515B5B66215981856c",
               "functionSignature": "recordAudit(bytes32,address,uint256,uint256,uint8,bytes32)",
-              "recordAuditCalldata": "0x97cdb786fbd4ed81d14a57c2f4b6cd55b637d0cea8196fa153894e461da6d465fb0277d8000000000000000000000000e7f1725e7734ce288f8367e1bb143e90bb3f05120000000000000000000000000000000000000000000000000000000000007a69000000000000000000000000000000000000000000000000000000000077c4f900000000000000000000000000000000000000000000000000000000000000044e440667f613a8a4cec1598557d76c9b3940fa27f35816d0f4746a076d3f65ec",
-              "verifyAnchorCalldata": "0x681aa94afbd4ed81d14a57c2f4b6cd55b637d0cea8196fa153894e461da6d465fb0277d8000000000000000000000000e7f1725e7734ce288f8367e1bb143e90bb3f05124e440667f613a8a4cec1598557d76c9b3940fa27f35816d0f4746a076d3f65ec",
+              "recordAuditCalldata": "0x97cdb786592671e5451752596ebf6b2d83b2931902dcb2118e9e6d162afd676ecd3b2d0e000000000000000000000000bbe3c849d90c63645f917be84a5b454fe858186f0000000000000000000000000000000000000000000000000000000000aa36a70000000000000000000000000000000000000000000000000000000000b5c342000000000000000000000000000000000000000000000000000000000000000492226c8e61bdf46ce5e47c1f9bc0aece8e499d1894c5be6a60f11766665ec080",
+              "verifyAnchorCalldata": "0x681aa94a592671e5451752596ebf6b2d83b2931902dcb2118e9e6d162afd676ecd3b2d0e000000000000000000000000bbe3c849d90c63645f917be84a5b454fe858186f92226c8e61bdf46ce5e47c1f9bc0aece8e499d1894c5be6a60f11766665ec080",
               "anchoredOnchain": true,
-              "anchorTxHash": "0x12f8cdc2b29f4124e2b86734c205b3d6f9c1f46b6a4b2f780133c7b2aa12bff0",
+              "anchorTxHash": "0x188772527fdd3707444450a0c8fc440ed6c98989cffd86cd8459d545b792c4ec",
               "verifyAnchorPassed": true
             }
           }

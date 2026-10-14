@@ -25,7 +25,7 @@ Chainlink CRE workflow that cross-examines whitepaper claims against live EVM sm
 ```text
 Token issuers frequently publish whitepapers promising fixed token supply, 0% transfer tax, no wallet freeze privileges, locked team tokens, and immutable contracts—while deploying smart contracts with hidden minting rights, mutable fees, blacklists, or upgradeable proxies.
 
-Disclosure vs. Smart Contract Mismatch Auditor is a LegalTech & RegTech compliance evidence platform orchestrated by a 4-stage Chainlink Runtime Environment (CRE) workflow. It extracts 5 mandatory disclosure claims from off-chain whitepapers, reads 16 live EVM view functions and EIP-1967 proxy slots, reaches DON consensus on factual discrepancies (MATCH / MISMATCH / NEEDS_HUMAN_REVIEW), and anchors tamper-evident SHA-256 report hashes on-chain via AuditRegistry.sol.
+Disclosure vs. Smart Contract Mismatch Auditor is a LegalTech & RegTech compliance evidence platform orchestrated by a 4-stage Chainlink Runtime Environment (CRE) workflow. Beyond static view calls, it runs Adversarial On-Chain Breach Simulations (executing actual exploit calls against forked EVM state to prove whether code blocks or permits whitepaper violations), maps discrepancies to KR/EU/US regulatory statutes with Solidity vs. Whitepaper remediation diffs, reaches DON consensus, and anchors tamper-evident SHA-256 report hashes on-chain via AuditRegistry.sol.
 ```
 
 ### 5. Full BUIDL Description (Markdown for DoraHacks Description Field)
@@ -39,17 +39,31 @@ Under global digital asset frameworks (EU MiCA, Korean Virtual Asset User Protec
 1. **`/audits` (Audit Repository):** Tracks all ongoing and anchored compliance audits with SHA-256 document hashes and mismatch KPIs.
 2. **`/audits/new` (Case Registration):** Uploads raw whitepapers (`.md`/`.txt`), computes deterministic `documentHash`, and binds target EVM contract address & chain ID.
 3. **`/audits/[id]/extract` (Off-Chain Claim Extraction):** Uses structured AI / deterministic rule extraction to pull the **5 core disclosure claims**, exact quotes (`sourceQuote`), and section references (`sectionRef`), with full human-in-the-loop editing.
-4. **`/audits/[id]/compare` (Chainlink CRE 4-Stage Workflow & 1:1 Comparison):**
+4. **`/audits/[id]/compare` (Chainlink CRE 4-Stage Workflow, Adversarial Breach Simulation & 1:1 Comparison):**
    - **Step 1 (`capabilities.http.client`):** Fetches off-chain whitepaper claims & SHA-256 digest.
-   - **Step 2 (`capabilities.blockchain.evm.read`):** Reads 16 EVM functions (`totalSupply`, `MAX_SUPPLY`, `mintable`, `transferFeeBps`, `feeMutable`, `pausable`, `blacklistable`, `teamWallet`, `teamAllocation`, `teamLockupActive`, `teamLockupReleaseTimestamp`, `upgradeable`, `adminAddress`, `logicImplementation`, etc.) + raw EIP-1967 implementation storage slot (`0x360894...bbc`).
-   - **Step 3 (`capabilities.compute.consensus`):** Executes OCR3-BFT DON consensus (`4/4 nodes (quorum >= 3)`) to evaluate `MATCH` / `MISMATCH` / `NEEDS_HUMAN_REVIEW` and compute a deterministic `reportHash`.
+   - **Step 2 (`capabilities.blockchain.evm.read` + Counterfactual EVM Sandbox):** Reads 16 EVM functions (`totalSupply`, `MAX_SUPPLY`, `mintable`, `transferFeeBps`, `feeMutable`, `pausable`, `blacklistable`, `teamWallet`, `teamAllocation`, `teamLockupActive`, `teamLockupReleaseTimestamp`, `upgradeable`, `adminAddress`, `logicImplementation`, etc.) + raw EIP-1967 implementation storage slot (`0x360894...bbc`), and executes **4 Adversarial On-Chain Breach Simulations** (`mint`, `setTransferFeeBps(5000)`, `setBlacklisted` + `transfer`, and premature `teamWallet.transfer`) on cloned EVM state.
+   - **Step 3 (`capabilities.compute.consensus`):** Executes OCR3-BFT DON consensus (`4/4 nodes (quorum >= 3)`) to evaluate `MATCH` / `MISMATCH` / `NEEDS_HUMAN_REVIEW`, attach **Multi-Jurisdiction Legal Mapping (KR/EU/US)** & **Solidity Remediation Diffs**, and compute a deterministic `reportHash`.
    - **Step 4 (`capabilities.blockchain.evm.write`):** Generates `AuditRegistry.recordAudit` payload and verifies on-chain integrity.
-5. **`/audits/[id]/review` (Legal Sign-Off & On-Chain Hash Anchoring):** Allows legal counsel to record item-by-item review notes, finalize statuses, execute `AuditRegistry.recordAudit()` on-chain, verify `verifyAnchor() === true`, and export JSON/PDF compliance evidence packages.
+5. **`/audits/[id]/review` (Legal Sign-Off, Automated Legal Cure Notice & On-Chain Hash Anchoring):** Generates an **Automated Legal Cure Notice (법무 소명 및 시정 권고서)**, allows legal counsel to record item-by-item review notes, finalize statuses, execute `AuditRegistry.recordAudit()` on-chain, verify `verifyAnchor() === true`, and export JSON/PDF compliance evidence packages.
+
+## Two Key Differentiating Pillars
+
+### Pillar 1: Adversarial On-Chain Breach Simulation (Counterfactual EVM Sandbox)
+Instead of relying solely on static `eth_call` getters, CRE Step 2 forks the contract's live EVM state into an isolated sandbox (`@ethereumjs/evm` state checkpoint) and dispatches **4 adversarial transactions** that deliberately attempt to violate the whitepaper's promises:
+- **Unauthorized Supply Inflation:** `mint(attacker, 10,000,000 * 10^18)` -> Reverts (`DEFENDED`) on `CompliantToken (BLIC)` vs. succeeds (`BREACH_SUCCEEDED`, inflating supply from `100M` to `110M`) on `MismatchedToken (BLIX)`.
+- **Predatory 50% Tax Hike:** `setTransferFeeBps(5000)` -> Reverts (`DEFENDED`) on `BLIC` vs. succeeds (`BREACH_SUCCEEDED`, hiking tax to `50%`) on `BLIX`.
+- **Arbitrary Holder Freeze:** `setBlacklisted(holder, true)` + `transfer(100)` -> Reverts (`DEFENDED`) on `BLIC` vs. freezes holder transfers (`BREACH_SUCCEEDED`) on `BLIX`.
+- **Premature Team Token Dump:** `teamWallet.transfer(marketBuyer, 1,000,000 * 10^18)` -> Blocked by on-chain lockup (`DEFENDED`) on `BLIC` vs. dumps immediately (`BREACH_SUCCEEDED`) on `BLIX`.
+
+### Pillar 2: Multi-Jurisdiction Legal Mapping (KR / EU / US), Solidity Remediation Diff & Automated Legal Cure Notice
+- **3-Jurisdiction Regulatory Mapping:** Maps each technical mismatch to review checkpoints under **South Korea** (가상자산이용자보호법 제10조 제4항 제2호 & DAXA 상장심사 가이드라인), **European Union** (MiCA Regulation (EU) 2023/1114 Articles 6 & 15), and **United States** (SEC CorpFin Framework for Investment Contract Analysis of Digital Assets).
+- **Actionable Dual-Track Remediation (`- MismatchedToken.sol` vs `+ CompliantToken.sol`):** Provides exact Solidity code patches (Option A: Re-deploy/patch contract) alongside ready-to-insert Whitepaper Redline Clauses (Option B: Amend risk disclosure).
+- **One-Click Legal Cure Notice Generator:** Automatically drafts a formal Korean/English Legal Cure Notice & Exchange Listing Review Memo on `/audits/[id]/review` summarizing all detected mismatches, successful breach simulations, and remediation options.
 
 ## Chainlink CRE Bounty Integration (`cre-workflow/`)
 - **Manifest & Config:** `cre-workflow/workflow.yaml` & `cre-workflow/config.json`
 - **Orchestrator Module:** `cre-workflow/src/index.ts`
-- **CLI Simulation (`npm run cre:simulate`):** Runs the 4-stage CRE workflow end-to-end against both `CompliantToken (BLIC)` and `MismatchedToken (BLIX)`, outputting step latencies, DON consensus digests, and deterministic report hashes.
+- **CLI Simulation (`npm run cre:simulate`):** Runs the 4-stage CRE workflow end-to-end against both `CompliantToken (BLIC)` and `MismatchedToken (BLIX)`, outputting step latencies, 4 adversarial breach simulation results, DON consensus digests, and deterministic report hashes.
 
 ## Live Ethereum Sepolia Deployments (`chainId: 11155111`)
 - **CompliantToken (`BLIC`):** `https://sepolia.etherscan.io/address/0x534c51921913a8717Ca2db550b77fFabf168f71e`
@@ -88,7 +102,7 @@ npm run dev   # Opens on http://localhost:3300 (redirects to /audits)
 #### [0:00 ~ 0:25] 1단계: 문제 정의 및 `/audits` 대시보드 소개 (`http://localhost:3300/audits`)
 - **화면 동선:**
   - `http://localhost:3300` 접속 → `/audits` 페이지 표시
-  - 상단 LegalTech & RegTech 면책 배너("위법 여부 자동 판정 도구가 아닌 사실 불일치 증빙 도구")와 SQLite에 저장된 2건의 시연 케이스(`BLIC` 정상 일치 건, `BLIX` 4건 불일치 건)를 마우스로 짚어줌.
+  - 상단 LegalTech & RegTech 면책 배너("위법 여부 자동 판정 도구가 아닌 사실 불일치 증빙 도구")와 SQLite에 저장된 2건의 시연 케이스(`BLIC` 정상 일치 건, `BLIX` 4건 불일치 건) 및 Sepolia Etherscan 외부 링크를 마우스로 짚어줌.
 - **내레이션 (KR):**
   > "안녕하세요. 저희는 가상자산 백서의 공시 약속과 실제 배포된 스마트계약 설정 간의 불일치를 검증하는 **스마트계약·공시자료 불일치 점검기**를 구현했습니다. 이 도구는 위법성을 자동 판정하는 대신, 법무·컴플라이언스 담당자가 백서 주장과 온체인 사실을 1:1로 대조하고 증빙 해시를 온체인에 앵커링할 수 있도록 설계된 멀티 페이지 증빙 플랫폼입니다."
 - **Narration (EN Subtitle):**
@@ -120,25 +134,24 @@ npm run dev   # Opens on http://localhost:3300 (redirects to /audits)
 
 ---
 
-#### [1:15 ~ 1:55] 4단계: Chainlink CRE 4단계 워크플로 CLI 시뮬레이션 & 웹 대조 (`/audits/[id]/compare`)
+#### [1:15 ~ 1:55] 4단계: Chainlink CRE 4단계 워크플로, 온체인 배신 행위 재현 시뮬레이션 & 3개국 법령·코드 패치 대조 (`/audits/[id]/compare`)
 - **화면 동선:**
-  - 먼저 터미널 창을 잠깐 띄워 `npm run cre:simulate` 실행 결과를 보여줌 (`cre-workflow/workflow.yaml` 기반 Step 1~4 실행 시간, OCR3-BFT `4/4 nodes (quorum >= 3)` DON 합의 다이제스트, BLIC vs BLIX 대조 요약표 출력).
-  - 다시 브라우저 `/audits/[id]/compare`로 돌아와 **`Chainlink CRE 워크플로 실행 (온체인 스냅샷 & 1:1 대조)`** 버튼 클릭.
-  - 화면 중앙 **`Chainlink CRE Workflow Execution Trace`** 패널에서 STEP 1~4 카드와 DON Consensus Digest, Deterministic Report Hash를 클릭해 보여주고, 아래 5개 항목 카드에서 **4건의 `MISMATCH`(무제한 추가 발행 활성화, 5% 전송세 부과 및 100%까지 인상 가능, 블랙리스트/일시정지 활성화, 팀 락업 미설정)** 및 **1건의 `NEEDS_HUMAN_REVIEW`(단일 EOA 프록시 업그레이드 권한 법무 소명 필요)**를 스크롤하며 강조.
+  - 먼저 터미널 창을 잠깐 띄워 `npm run cre:simulate` 실행 결과를 보여줌 (`cre-workflow/workflow.yaml` 기반 Step 1~4 실행 시간, 4대 배신 시뮬레이션 `DEFENDED` vs `BREACH_SUCCEEDED` 표, OCR3-BFT `4/4 nodes (quorum >= 3)` DON 합의 다이제스트).
+  - 브라우저 `/audits/[id]/compare`에서 **`Chainlink CRE 워크플로 실행`** 버튼 클릭 후, **`Counterfactual Breach Simulation (백서 약속 위반 행위 재현 시뮬레이터)`** 섹션에서 1,000만 개 무단 발행·50% 기습 세율 인상·지갑 동결·팀 물량 조기 매도의 4건이 모두 `BREACH_SUCCEEDED`로 뚫리는 상태 변화 증거(전후 수치, 가스량, calldata)를 보여줌.
+  - 이어서 아래 항목 카드의 **`글로벌 3개국 규제 매핑 (KR/EU/US) 및 시정 조치 가이드`** 아코디언을 펼쳐 한국 가상자산이용자보호법·EU MiCA·미국 SEC 체크포인트와 `- MismatchedToken.sol` vs `+ CompliantToken.sol` 코드 패치 Diff를 강조.
 - **내레이션 (KR):**
-  > "핵심 오케스트레이션 레이어인 **Chainlink CRE 워크플로**입니다. 터미널에서 `npm run cre:simulate`로 즉시 재현할 수 있고, 웹 `/compare` 페이지에서도 동일하게 실행됩니다. CRE 워크플로는 오프체인 백서 주장을 가져온 뒤, EVM Read Capability로 토큰 컨트랙트의 view 함수들과 EIP-1967 프록시 슬롯을 조회하고 DON 합의를 거쳐 1:1 대조 결과를 산출합니다. 백서 약속과 달리 5% 전송 수수료, 무제한 추가 발행 권한, 블랙리스트 권한, 팀 물량 락업 미설정의 4건 불일치(`MISMATCH`)와 프록시 업그레이드 권한에 대한 1건의 법무 검토 대상(`NEEDS_HUMAN_REVIEW`)이 정확히 검출되었습니다."
+  > "핵심 오케스트레이션 레이어인 **Chainlink CRE 워크플로**입니다. 단순 view 함수 조회에 그치지 않고, 복제된 EVM 샌드박스에서 1,000만 개 무단 추가 발행, 50% 수수료 기습 인상, 특정 지갑 동결, 팀 물량 즉시 처분이라는 4가지 배신 트랜잭션을 직접 실행합니다. 정상 토큰 BLIC은 코드 수준에서 모두 Revert로 방어하지만, BLIX는 4건 모두 위반 행위가 실제로 성공하는 결정적 증거를 포착합니다. 또한 각 불일치 항목마다 한국·EU MiCA·미국 SEC 법령 체크포인트와 Solidity 수정 Diff 및 백서 정정 문안을 동시에 제시합니다."
 - **Narration (EN Subtitle):**
-  > "Here is our Chainlink CRE 4-stage workflow in action—both via `npm run cre:simulate` in the CLI and live on `/compare`. CRE fetches the off-chain claims, queries 16 EVM view functions plus the EIP-1967 proxy slot, and reaches OCR3-BFT DON consensus—flagging 4 critical MISMATCHES and 1 NEEDS_HUMAN_REVIEW item."
+  > "Beyond reading view functions, our Chainlink CRE workflow runs 4 Adversarial Breach Simulations in a forked EVM sandbox—proving that BLIX allows 10M unauthorized minting, a 50% tax hike, wallet freezing, and premature team token dumps. Each finding maps directly to KR, EU MiCA, and US SEC checkpoints alongside exact Solidity remediation diffs and whitepaper redlines."
 
 ---
 
-#### [1:55 ~ 2:30] 5단계: 법무 검토 확정, `AuditRegistry` 온체인 해시 앵커링 및 증빙 리포트 내보내기 (`/audits/[id]/review`)
+#### [1:55 ~ 2:30] 5단계: 법무 소명 권고서 자동 생성, `AuditRegistry` 온체인 해시 앵커링 및 증빙 리포트 내보내기 (`/audits/[id]/review`)
 - **화면 동선:**
   - 우측 상단 **`법무 검토 및 온체인 앵커링으로 이동`** 클릭 → `/audits/[id]/review` 진입
-  - 검토 담당자 성명과 종합 검토 의견을 확인하고 **`온체인 앵커링 실행 (recordAudit & verifyAnchor)`** 버튼 클릭
-  - 녹색 배지 **`verifyAnchor() === true (온체인 검증 완료)`**와 생성된 `anchorTxHash`, `documentHash`, `reportHash`를 하이라이트.
-  - **`인쇄/PDF용 리포트 뷰`** 버튼과 **`증빙 패키지(JSON) 다운로드`** 버튼을 차례로 클릭해 최종 증빙 리포트 화면을 보여주며 마무리.
+  - **`법무 소명 및 시정 권고서 초안 자동 생성`** 버튼을 클릭해 불일치 4건·배신 시뮬레이션 결과·3개국 법령 근거가 담긴 공식 소명 요구서가 즉시 작성됨을 보여줌.
+  - **`온체인 앵커링 실행 (recordAudit & verifyAnchor)`** 버튼 클릭 → 녹색 배지 **`verifyAnchor() === true (온체인 검증 완료)`**와 Sepolia Etherscan 링크, **`인쇄/PDF용 리포트 뷰`** 및 **`증빙 패키지(JSON) 다운로드`**를 차례로 보여주며 마무리.
 - **내레이션 (KR):**
-  > "마지막 `/review` 페이지에서 법무·컴플라이언스 담당자가 항목별 검토 메모와 최종 판정을 확정하고 **온체인 앵커링**을 실행합니다. 개인정보나 백서 원문 노출 없이 오직 SHA-256 문서 해시와 리포트 해시만 `AuditRegistry.sol` 컨트랙트에 기록되며, 즉시 `verifyAnchor() === true`로 무결성이 검증됩니다. 완료된 결과는 JSON 증빙 패키지와 인쇄용 PDF 리포트로 즉시 내보낼 수 있습니다. 감사합니다."
+  > "마지막 `/review` 페이지에서는 원클릭으로 **법무 소명 및 시정 권고서 초안**을 자동 생성하고 최종 판정을 확정합니다. 온체인 앵커링을 실행하면 민감 정보 노출 없이 오직 SHA-256 문서 해시와 리포트 해시만 `AuditRegistry.sol`에 기록되며, `verifyAnchor() === true`로 무결성이 검증됩니다. 완료된 결과는 JSON 증빙 패키지와 인쇄용 PDF 리포트로 즉시 내보낼 수 있습니다. 감사합니다."
 - **Narration (EN Subtitle):**
-  > "Finally, on `/review`, legal counsel records their review notes and triggers on-chain anchoring. Only the SHA-256 `documentHash` and `reportHash` are recorded on `AuditRegistry.sol` with zero PII exposure, verified live via `verifyAnchor() === true`, and exported as a complete JSON/PDF compliance evidence package. Thank you!"
+  > "Finally, on `/review`, legal counsel auto-generates a formal Legal Cure Notice, finalizes review notes, and anchors the SHA-256 `documentHash` and `reportHash` on `AuditRegistry.sol` with zero PII exposure—verified live via `verifyAnchor() === true` and exported as a complete JSON/PDF evidence package. Thank you!"
