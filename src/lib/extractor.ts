@@ -6,6 +6,7 @@ import {
   type UpdateExtractedItemInput,
 } from "@/types/audit";
 import { extractWhitepaperClaimsWithGemini } from "@/lib/llm";
+import { verifyAndGuardStep1Extraction } from "@/lib/hallucination-guard";
 
 export interface ExtractedClaimItem extends UpdateExtractedItemInput {
   disclosedData: DisclosedClaimStructured;
@@ -396,35 +397,22 @@ export async function extractFiveCoreItemsFromWhitepaper(
   const ruleItems = extractClaimsWithRuleParser(whitepaperText);
   const geminiRes = await extractWhitepaperClaimsWithGemini(whitepaperText);
 
-  if (!geminiRes.ok || !geminiRes.items) {
-    return {
-      engine: "DETERMINISTIC_RULE_PARSER",
-      items: ruleItems,
-      geminiTelemetry: geminiRes.telemetry,
-    };
-  }
-
-  const merged: ExtractedClaimItem[] = ruleItems.map((fallback) => {
-    const found = geminiRes.items!.find((x) => x.itemKey === fallback.itemKey);
-    if (!found) return fallback;
-    const mergedStructured: DisclosedClaimStructured = {
-      ...fallback.disclosedData,
-      ...(found.structured || {}),
-    };
-    return {
-      itemKey: fallback.itemKey,
-      disclosedClaim: found.disclosedClaim || fallback.disclosedClaim,
-      sourceQuote: found.sourceQuote || fallback.sourceQuote,
-      sectionRef: found.sectionRef || fallback.sectionRef,
-      disclosedData: mergedStructured,
-      disclosedDataJson: JSON.stringify(mergedStructured),
-    };
+  const guarded = verifyAndGuardStep1Extraction({
+    whitepaperText,
+    ruleItems,
+    geminiItems: geminiRes.ok && geminiRes.items ? geminiRes.items : null,
   });
 
   return {
-    engine: "GOOGLE_GEMINI_LLM",
-    items: merged,
-    geminiTelemetry: geminiRes.telemetry,
+    engine:
+      geminiRes.ok && geminiRes.items
+        ? "GOOGLE_GEMINI_LLM"
+        : "DETERMINISTIC_RULE_PARSER",
+    items: guarded.verifiedItems,
+    geminiTelemetry: {
+      ...geminiRes.telemetry,
+      guardrail: guarded.guardrail,
+    },
   };
 }
 

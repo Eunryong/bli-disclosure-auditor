@@ -10,10 +10,15 @@ import type {
 } from "@/types/audit";
 import { AUDIT_CHECK_ITEM_KEYS } from "@/types/audit";
 import { LEGAL_STATUTE_MAP, generateLegalCureNotice } from "@/lib/legal-knowledge";
+import {
+  createDefaultGuardrailReport,
+  verifyAndGuardStep2Rationales,
+  verifyAndGuardStep3LegalDraft,
+} from "@/lib/hallucination-guard";
 
 const ENV_FILE_PATH = path.join(process.cwd(), ".env");
-export const DEFAULT_GEMINI_MODEL = "gemini-3.8-flash";
-export const FALLBACK_GEMINI_MODEL = "gemini-2.5-flash";
+export const DEFAULT_GEMINI_MODEL = "gemini-2.5-flash";
+export const FALLBACK_GEMINI_MODEL = "gemini-2.0-flash";
 
 export interface GeminiRuntimeConfig {
   apiKey: string;
@@ -136,6 +141,7 @@ export interface CallGeminiLlmParams {
   apiKeyOverride?: string;
   modelOverride?: string;
   temperature?: number;
+  responseSchema?: Record<string, unknown>;
 }
 
 export interface CallGeminiLlmResult<T = Record<string, any>> {
@@ -153,7 +159,6 @@ function extractJsonFromText<T = Record<string, any>>(text: string): T | null {
   try {
     return JSON.parse(trimmed) as T;
   } catch {
-    // Strip markdown code fences if present
     const fenceMatch = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/i);
     if (fenceMatch?.[1]) {
       try {
@@ -177,8 +182,8 @@ function extractJsonFromText<T = Record<string, any>>(text: string): T | null {
 
 /**
  * Calls the Google Gemini REST API (`v1beta/models/${model}:generateContent`)
- * and returns parsed JSON along with real token & latency telemetry.
- * Automatically falls back from `gemini-3.8-flash` to `gemini-2.5-flash` / `gemini-2.0-flash` if needed.
+ * with deterministic `temperature: 0` and JSON Schema structured output (`responseMimeType: "application/json"`).
+ * Automatically falls back from `gemini-2.5-flash` to `gemini-2.0-flash` if the primary model is unavailable.
  */
 export async function callGeminiLlm<T = Record<string, any>>(
   params: CallGeminiLlmParams
@@ -186,7 +191,9 @@ export async function callGeminiLlm<T = Record<string, any>>(
   const startMs = Date.now();
   const config = getGeminiConfig();
   const apiKey = (params.apiKeyOverride ?? config.apiKey).trim();
-  const requestedModel = (params.modelOverride ?? config.model).trim() || DEFAULT_GEMINI_MODEL;
+  const requestedModel =
+    (params.modelOverride ?? config.model).trim() || DEFAULT_GEMINI_MODEL;
+  const defaultGuardrail = createDefaultGuardrailReport();
 
   if (!apiKey) {
     return {
@@ -203,7 +210,8 @@ export async function callGeminiLlm<T = Record<string, any>>(
         invokedAt: new Date().toISOString(),
         task: params.task,
         fallbackReason:
-          "GEMINI_API_KEY is not set. Configure your key via [Gemini AI Status / Key Setup] in the top header to enable live Gemini inference.",
+          "GEMINI_API_KEY is not set. Configure your key via [Gemini AI Key / Guardrail Status] in the top header to enable live Gemini inference.",
+        guardrail: defaultGuardrail,
       },
       error: "GEMINI_API_KEY is not configured.",
     };
@@ -212,9 +220,8 @@ export async function callGeminiLlm<T = Record<string, any>>(
   const candidateModels = Array.from(
     new Set([
       requestedModel,
-      "gemini-3.8-flash",
+      DEFAULT_GEMINI_MODEL,
       FALLBACK_GEMINI_MODEL,
-      "gemini-2.0-flash",
       "gemini-1.5-flash",
     ])
   );
@@ -227,6 +234,14 @@ export async function callGeminiLlm<T = Record<string, any>>(
     )}:generateContent?key=${encodeURIComponent(apiKey)}`;
 
     try {
+      const generationConfig: Record<string, unknown> = {
+        temperature: params.temperature ?? 0,
+        responseMimeType: "application/json",
+      };
+      if (params.responseSchema) {
+        generationConfig.responseSchema = params.responseSchema;
+      }
+
       const response = await fetch(endpoint, {
         method: "POST",
         headers: {
@@ -242,10 +257,7 @@ export async function callGeminiLlm<T = Record<string, any>>(
               parts: [{ text: params.userPrompt }],
             },
           ],
-          generationConfig: {
-            temperature: params.temperature ?? 0.1,
-            responseMimeType: "application/json",
-          },
+          generationConfig,
         }),
       });
 
@@ -257,7 +269,6 @@ export async function callGeminiLlm<T = Record<string, any>>(
           data?.error?.message ||
           `HTTP ${response.status} from Gemini model ${modelName}`;
         lastError = apiErrMsg;
-        // If 404 or model not found/supported, try next fallback model
         if (
           response.status === 404 ||
           response.status === 400 ||
@@ -279,6 +290,7 @@ export async function callGeminiLlm<T = Record<string, any>>(
             invokedAt: new Date().toISOString(),
             task: params.task,
             fallbackReason: apiErrMsg,
+            guardrail: defaultGuardrail,
           },
           error: apiErrMsg,
         };
@@ -313,6 +325,7 @@ export async function callGeminiLlm<T = Record<string, any>>(
           ...(parsedJson === null
             ? { fallbackReason: "Gemini returned non-JSON text payload" }
             : {}),
+          guardrail: defaultGuardrail,
         },
         ...(parsedJson === null
           ? { error: "Failed to parse JSON from Gemini response" }
@@ -337,13 +350,14 @@ export async function callGeminiLlm<T = Record<string, any>>(
       invokedAt: new Date().toISOString(),
       task: params.task,
       fallbackReason: lastError,
+      guardrail: defaultGuardrail,
     },
     error: lastError,
   };
 }
 
 // ============================================================================
-// Step 1: Gemini AI Whitepaper 5-Clause Extraction
+// Step 1: Gemini AI Whitepaper 5-Clause Extraction (Structured JSON Schema)
 // ============================================================================
 export interface GeminiExtractedClause {
   itemKey: AuditCheckItemKey;
@@ -353,6 +367,44 @@ export interface GeminiExtractedClause {
   structured: DisclosedClaimStructured;
 }
 
+const STEP1_EXTRACTION_SCHEMA = {
+  type: "OBJECT",
+  properties: {
+    items: {
+      type: "ARRAY",
+      items: {
+        type: "OBJECT",
+        properties: {
+          itemKey: { type: "STRING" },
+          disclosedClaim: { type: "STRING" },
+          sourceQuote: { type: "STRING" },
+          sectionRef: { type: "STRING" },
+          structured: {
+            type: "OBJECT",
+            properties: {
+              maxSupply: { type: "STRING" },
+              mintable: { type: "BOOLEAN" },
+              transferFeeBps: { type: "INTEGER" },
+              feeMutable: { type: "BOOLEAN" },
+              maxTransferFeeBps: { type: "INTEGER" },
+              pausable: { type: "BOOLEAN" },
+              blacklistable: { type: "BOOLEAN" },
+              teamWallet: { type: "STRING" },
+              teamLockupActive: { type: "BOOLEAN" },
+              teamLockupReleaseTimestamp: { type: "INTEGER" },
+              teamLockupReleaseDateIso: { type: "STRING" },
+              upgradeable: { type: "BOOLEAN" },
+              governanceType: { type: "STRING" },
+            },
+          },
+        },
+        required: ["itemKey", "disclosedClaim", "sourceQuote", "sectionRef"],
+      },
+    },
+  },
+  required: ["items"],
+};
+
 export async function extractWhitepaperClaimsWithGemini(
   whitepaperText: string
 ): Promise<{
@@ -360,60 +412,20 @@ export async function extractWhitepaperClaimsWithGemini(
   items: GeminiExtractedClause[] | null;
   telemetry: GeminiCallMetadata;
 }> {
-  const systemInstruction = `You are a digital asset regulatory compliance counsel and smart contract forensic auditor.
+  const systemInstruction = `You are a digital asset regulatory compliance counsel and smart contract forensic auditor operating under a Zero-Hallucination Guardrail.
 Analyze the provided Token Disclosure Whitepaper and extract the 5 mandatory audit items.
 For each item, identify:
 1. "disclosedClaim": A precise English summary of what the whitepaper promises. IMPORTANT: If a clause contains internal contradictions, legal ambiguity, or emergency caveats (e.g., Clause 1 states wallet freeze/pause is not implemented, while Clause 2 reserves a 5-of-9 Multi-Sig emergency freeze exception), explicitly highlight that ambiguity/exception in "disclosedClaim".
-2. "sourceQuote": The exact verbatim quote excerpted from the whitepaper text.
+2. "sourceQuote": MUST BE an exact verbatim substring excerpted directly from the whitepaper text (do NOT paraphrase or invent words; Guard 1 will reject any non-verbatim quote).
 3. "sectionRef": The specific Article and Clause citation (e.g., "Article 1, Clauses 1–3").
-4. "structured": Normalized machine-readable parameters matching the schema below.
-
-Return strictly valid JSON matching this structure:
-{
-  "items": [
-    {
-      "itemKey": "maxSupplyAndMintability",
-      "disclosedClaim": "...",
-      "sourceQuote": "...",
-      "sectionRef": "...",
-      "structured": { "maxSupply": "100000000", "mintable": false }
-    },
-    {
-      "itemKey": "transferFee",
-      "disclosedClaim": "...",
-      "sourceQuote": "...",
-      "sectionRef": "...",
-      "structured": { "transferFeeBps": 100, "feeMutable": false, "maxTransferFeeBps": 100 }
-    },
-    {
-      "itemKey": "transferRestrictions",
-      "disclosedClaim": "...",
-      "sourceQuote": "...",
-      "sectionRef": "...",
-      "structured": { "pausable": false, "blacklistable": false }
-    },
-    {
-      "itemKey": "teamLockup",
-      "disclosedClaim": "...",
-      "sourceQuote": "...",
-      "sectionRef": "...",
-      "structured": { "teamWallet": "0x...", "teamLockupActive": true, "teamLockupReleaseTimestamp": 1830297600, "teamLockupReleaseDateIso": "2028-01-01T00:00:00Z" }
-    },
-    {
-      "itemKey": "upgradeability",
-      "disclosedClaim": "...",
-      "sourceQuote": "...",
-      "sectionRef": "...",
-      "structured": { "upgradeable": false, "governanceType": "..." }
-    }
-  ]
-}`;
+4. "structured": Normalized machine-readable parameters matching the JSON schema.`;
 
   const res = await callGeminiLlm<{ items?: GeminiExtractedClause[] }>({
     systemInstruction,
     userPrompt: `Extract the 5 core disclosure commitments from the following whitepaper:\n\n${whitepaperText}`,
     task: "step_1_extract",
-    temperature: 0.1,
+    temperature: 0,
+    responseSchema: STEP1_EXTRACTION_SCHEMA,
   });
 
   if (
@@ -465,12 +477,37 @@ Return strictly valid JSON matching this structure:
 }
 
 // ============================================================================
-// Step 2: Chainlink CRE + Gemini AI Discrepancy Reasoning
+// Step 2: Chainlink CRE + Gemini AI Discrepancy Reasoning (with 4-Layer Guardrail)
 // ============================================================================
+const STEP2_COMPARE_SCHEMA = {
+  type: "OBJECT",
+  properties: {
+    rationales: {
+      type: "OBJECT",
+      properties: {
+        maxSupplyAndMintability: { type: "STRING" },
+        transferFee: { type: "STRING" },
+        transferRestrictions: { type: "STRING" },
+        teamLockup: { type: "STRING" },
+        upgradeability: { type: "STRING" },
+      },
+      required: [
+        "maxSupplyAndMintability",
+        "transferFee",
+        "transferRestrictions",
+        "teamLockup",
+        "upgradeability",
+      ],
+    },
+  },
+  required: ["rationales"],
+};
+
 export async function synthesizeCreComparisonRationalesWithGemini(params: {
   tokenSymbol: string;
   tokenAddress: string;
   blockNumber: number;
+  whitepaperText?: string;
   items: Array<{
     itemKey: AuditCheckItemKey;
     disclosedClaim: string;
@@ -485,28 +522,18 @@ export async function synthesizeCreComparisonRationalesWithGemini(params: {
   rationalesByKey: Partial<Record<AuditCheckItemKey, string>>;
   telemetry: GeminiCallMetadata;
 }> {
-  const systemInstruction = `You are the AI Legal & Forensic Reasoning Engine inside a Chainlink Runtime Environment (CRE) workflow.
+  const systemInstruction = `You are the AI Legal & Forensic Reasoning Engine inside a Chainlink Runtime Environment (CRE) workflow operating under a 4-Layer Hallucination Guardrail.
 You receive:
 1. The 5 whitepaper disclosure claims ("disclosedClaim" and "sourceQuote").
 2. The empirical on-chain state read from the smart contract at a specific block ("onchainState").
 3. The counterfactual breach simulation outcomes ("DEFENDED" vs "BREACH_SUCCEEDED").
-4. The deterministic compliance status ("MATCH", "MISMATCH", or "NEEDS_HUMAN_REVIEW").
+4. The locked deterministic compliance status ("MATCH", "MISMATCH", or "NEEDS_HUMAN_REVIEW").
 
-For each of the 5 items, write a concise, authoritative 2-3 sentence forensic legal rationale ("rationale") in English that:
-- Explicitly contrasts the whitepaper promise against the exact on-chain state variables/functions.
-- References the counterfactual breach simulation proof where applicable (e.g., unauthorized mint of +10M tokens, 50% transfer fee hike, investor wallet freeze, or premature 20M team token dump).
-- Explains why the clause is a MATCH, CRITICAL/HIGH MISMATCH, or NEEDS_HUMAN_REVIEW (such as contradictory multi-sig exception language vs. single EOA control).
+STRICT GUARDRAIL RULES:
+- Guard 2 (Fact Lock): Never alter or contradict the deterministic status (MATCH / MISMATCH / NEEDS_HUMAN_REVIEW) or on-chain numbers (100,000,000, 100 bps, 500 bps, 1830297600, contract addresses, blockNumber).
+- Guard 3 (Statute Whitelist): If referencing statutes, ONLY cite whitelisted provisions: KR VAUPA Art. 10(4)(2), DAXA Listing Standards, EU MiCA Art. 6 & 15, or US SEC CorpFin Guidance / Rule 10b-5.
 
-Return strictly valid JSON:
-{
-  "rationales": {
-    "maxSupplyAndMintability": "...",
-    "transferFee": "...",
-    "transferRestrictions": "...",
-    "teamLockup": "...",
-    "upgradeability": "..."
-  }
-}`;
+For each of the 5 items, write a concise, authoritative 2-3 sentence forensic legal rationale ("rationale") in English.`;
 
   const userPrompt = JSON.stringify(
     {
@@ -534,25 +561,58 @@ Return strictly valid JSON:
     systemInstruction,
     userPrompt,
     task: "step_2_cre_compare",
-    temperature: 0.15,
+    temperature: 0,
+    responseSchema: STEP2_COMPARE_SCHEMA,
   });
 
-  if (!res.ok || !res.parsedJson?.rationales) {
-    return {
-      rationalesByKey: {},
-      telemetry: res.telemetry,
-    };
-  }
+  const guardResult = verifyAndGuardStep2Rationales({
+    whitepaperText:
+      params.whitepaperText ||
+      params.items.map((i) => i.sourceQuote).join("\n"),
+    tokenAddress: params.tokenAddress,
+    blockNumber: params.blockNumber,
+    items: params.items,
+    geminiRationales: res.parsedJson?.rationales || {},
+  });
 
   return {
-    rationalesByKey: res.parsedJson.rationales,
-    telemetry: res.telemetry,
+    rationalesByKey: guardResult.verifiedRationales,
+    telemetry: {
+      ...res.telemetry,
+      guardrail: guardResult.guardrail,
+    },
   };
 }
 
 // ============================================================================
 // Step 3: Gemini AI Legal Opinion, Per-Clause Counsel Notes & Cure Notice Draft
 // ============================================================================
+const STEP3_REVIEW_SCHEMA = {
+  type: "OBJECT",
+  properties: {
+    overallSummary: { type: "STRING" },
+    itemReviewerNotes: {
+      type: "OBJECT",
+      properties: {
+        maxSupplyAndMintability: { type: "STRING" },
+        transferFee: { type: "STRING" },
+        transferRestrictions: { type: "STRING" },
+        teamLockup: { type: "STRING" },
+        upgradeability: { type: "STRING" },
+      },
+      required: [
+        "maxSupplyAndMintability",
+        "transferFee",
+        "transferRestrictions",
+        "teamLockup",
+        "upgradeability",
+      ],
+    },
+    cureNoticeText: { type: "STRING" },
+  },
+  required: ["overallSummary", "itemReviewerNotes", "cureNoticeText"],
+};
+
 export interface GeminiLegalReviewDraftResult {
   overallSummary: string;
   itemReviewerNotes: Record<AuditCheckItemKey, string>;
@@ -571,6 +631,7 @@ export async function generateLegalReviewDraftWithGemini(params: {
   documentHash: string;
   reportHash: string;
   overallStatus: AuditComparisonStatus;
+  whitepaperText?: string;
   checkItems: AuditCheckItemDTO[];
   breachSimulations: CounterfactualBreachSimulation[];
   lang?: "en" | "ko";
@@ -580,33 +641,27 @@ export async function generateLegalReviewDraftWithGemini(params: {
     statutes: LEGAL_STATUTE_MAP[key].statutes,
   }));
 
-  const systemInstruction = `You are Senior Digital Asset Regulatory & Smart Contract Forensic Counsel advising a Digital Asset Exchange Listing Committee and Financial Regulator.
-Based on the provided Chainlink CRE on-chain audit evidence, counterfactual breach simulation proofs, and tri-jurisdictional statutory mapping (South Korea VAUPA, EU MiCA Regulation 2023/1114, US SEC Securities Act / Exchange Act Rule 10b-5), generate a comprehensive legal review package in ${
+  const systemInstruction = `You are Senior Digital Asset Regulatory & Smart Contract Forensic Counsel advising a Digital Asset Exchange Listing Committee and Financial Regulator under a strict 4-Layer Hallucination Guardrail.
+Based on the provided Chainlink CRE on-chain audit evidence, counterfactual breach simulation proofs, and tri-jurisdictional statutory mapping, generate a comprehensive legal review package in ${
     params.lang === "ko" ? "Korean (한국어)" : "English"
-  }:
+  }.
 
-1. "overallSummary": An authoritative 2-paragraph Executive Legal Opinion summarizing the overall compliance posture of ${
-    params.projectName
-  } (${params.tokenSymbol}), citing the exact on-chain snapshot block (#${
-    params.snapshotBlockNumber
-  }), the number of material mismatches, the counterfactual exploit proofs, and the regulatory consequences under KR VAUPA, EU MiCA, and US SEC antifraud standards.
-2. "itemReviewerNotes": An object mapping all 5 itemKeys ("maxSupplyAndMintability", "transferFee", "transferRestrictions", "teamLockup", "upgradeability") to a specific 2-3 sentence legal counsel review note ("reviewerNote") citing the exact on-chain findings, applicable statutes, and required remediation before listing/supervisory clearance.
+STRICT GUARDRAIL RULES:
+- Guard 2 (Numerical & On-Chain Fact Lock): Do NOT alter any numerical fact (100,000,000, 100 bps, 500 bps, 1830297600, ${
+    params.tokenAddress
+  }, Block #${params.snapshotBlockNumber}) or verdict status (MATCH / MISMATCH / NEEDS_HUMAN_REVIEW).
+- Guard 3 (Closed-World Statute Whitelist): Cite ONLY the whitelisted statutes provided in statutoryFramework:
+  * KR: Virtual Asset User Protection Act (VAUPA) Art. 10(4)(2) & DAXA Listing Review Guidelines
+  * EU: Regulation (EU) 2023/1114 (MiCA) Article 6 & Article 15 (Annex I)
+  * US: SEC Division of Corporation Finance (CorpFin) Digital Asset Disclosure Guidance & Exchange Act Rule 10b-5
+  Never invent or cite any other statute numbers.
+
+Generate:
+1. "overallSummary": An authoritative 2-paragraph Executive Legal Opinion.
+2. "itemReviewerNotes": An object mapping all 5 itemKeys to a 2-3 sentence legal counsel review note citing the exact on-chain findings and whitelisted statutes.
 3. "cureNoticeText": A formal, ready-to-issue "NOTICE OF MATERIAL DISCLOSURE-CONTRACT DISCREPANCY & DEMAND FOR CURE" addressed to ${
     params.projectName
-  }, structured with Document Reference, Docket Metadata, Summary of On-Chain Findings & Counterfactual Breach Proofs, Tri-Jurisdictional Statutory Citations (KR VAUPA / EU MiCA / US SEC), and Mandatory Cure Directives (Option A: Smart Contract Code Remediation vs. Option B: Whitepaper Risk Redline Amendment).
-
-Return strictly valid JSON with keys:
-{
-  "overallSummary": "...",
-  "itemReviewerNotes": {
-    "maxSupplyAndMintability": "...",
-    "transferFee": "...",
-    "transferRestrictions": "...",
-    "teamLockup": "...",
-    "upgradeability": "..."
-  },
-  "cureNoticeText": "..."
-}`;
+  }.`;
 
   const userPrompt = JSON.stringify(
     {
@@ -654,10 +709,10 @@ Return strictly valid JSON with keys:
     systemInstruction,
     userPrompt,
     task: "step_3_legal_review",
-    temperature: 0.15,
+    temperature: 0,
+    responseSchema: STEP3_REVIEW_SCHEMA,
   });
 
-  // Prepare deterministic fallback values for any missing fields
   const mismatchCount = params.checkItems.filter(
     (i) => i.status === "MISMATCH"
   ).length;
@@ -674,7 +729,7 @@ Return strictly valid JSON with keys:
     projectName: params.projectName,
     tokenSymbol: params.tokenSymbol,
     whitepaperFileName: `${params.tokenSymbol.toLowerCase()}-whitepaper.md`,
-    whitepaperText: "",
+    whitepaperText: params.whitepaperText || "",
     documentHash: params.documentHash,
     tokenAddress: params.tokenAddress,
     chainId: params.chainId,
@@ -701,33 +756,46 @@ Return strictly valid JSON with keys:
 
   const fallbackOverallSummary =
     mismatchCount === 0 && needsReviewCount === 0
-      ? `[Executive Legal & Forensic Opinion — ${params.tokenSymbol}] Cross-examination of the registered disclosure whitepaper (SHA-256: ${params.documentHash.slice(0, 18)}...) against on-chain contract ${params.tokenAddress} at Block #${params.snapshotBlockNumber} confirms 100% alignment across all 5 core governance and tokenomics clauses. All 4 counterfactual breach simulations (unauthorized minting, 50% fee hike, investor wallet freeze, and premature team token transfer) reverted at the EVM bytecode level (DEFENDED / BLOCKED_BY_CODE). The asset satisfies technical-disclosure consistency requirements under KR VAUPA Art. 10, EU MiCA Art. 6 & 51, and US SEC Rule 10b-5.`
-      : `[Executive Legal & Forensic Opinion — ${params.tokenSymbol} ADVERSE FINDING] Forensic audit of ${params.projectName} (${params.tokenSymbol}, ${params.tokenAddress}) at Block #${params.snapshotBlockNumber} identified ${mismatchCount} material disclosure-contract mismatch(es) (MISMATCH) and ${needsReviewCount} unverified governance exception clause(s) (NEEDS_HUMAN_REVIEW). Counterfactual EVM sandbox simulations proved that ${breachSucceededCount} of 4 adversarial breach scenarios succeeded on-chain despite explicit whitepaper assurances to the contrary. These discrepancies constitute material misrepresentations carrying severe regulatory exposure under South Korea VAUPA Art. 10 & Art. 19, EU MiCA Art. 6, 15 & 51, and US SEC Section 10(b) / Rule 10b-5. Immediate issuance of the Formal Cure Notice and smart contract remediation (or whitepaper risk redline disclosure) are required prior to listing or supervisory approval.`;
+      ? `[Executive Legal & Forensic Opinion — ${params.tokenSymbol}] Cross-examination of the registered disclosure whitepaper (SHA-256: ${params.documentHash.slice(0, 18)}...) against on-chain contract ${params.tokenAddress} at Block #${params.snapshotBlockNumber} confirms 100% alignment across all 5 core governance and tokenomics clauses. All 4 counterfactual breach simulations (unauthorized minting, 50% fee hike, investor wallet freeze, and premature team token transfer) reverted at the EVM bytecode level (DEFENDED / BLOCKED_BY_CODE). The asset satisfies technical-disclosure consistency requirements under KR VAUPA Art. 10(4)(2) & DAXA Standards, EU MiCA Art. 6 & 15, and US SEC CorpFin Guidance.`
+      : `[Executive Legal & Forensic Opinion — ${params.tokenSymbol} ADVERSE FINDING] Forensic audit of ${params.projectName} (${params.tokenSymbol}, ${params.tokenAddress}) at Block #${params.snapshotBlockNumber} identified ${mismatchCount} material disclosure-contract mismatch(es) (MISMATCH) and ${needsReviewCount} unverified governance exception clause(s) (NEEDS_HUMAN_REVIEW). Counterfactual EVM sandbox simulations proved that ${breachSucceededCount} of 4 adversarial breach scenarios succeeded on-chain despite explicit whitepaper assurances to the contrary. These discrepancies constitute material misrepresentations carrying severe regulatory exposure under South Korea VAUPA Art. 10(4)(2) & DAXA Guidelines, EU MiCA Art. 6 & 15, and US SEC CorpFin Guidance / Rule 10b-5. Immediate issuance of the Formal Cure Notice and smart contract remediation (or whitepaper risk redline disclosure) are required prior to listing or supervisory approval.`;
 
-  const finalItemNotes = {} as Record<AuditCheckItemKey, string>;
+  const rawItemNotes = {} as Record<AuditCheckItemKey, string>;
   for (const key of AUDIT_CHECK_ITEM_KEYS) {
     const item = params.checkItems.find((i) => i.itemKey === key);
     const statute = LEGAL_STATUTE_MAP[key]?.statutes;
     const aiNote = res.parsedJson?.itemReviewerNotes?.[key];
     if (aiNote && String(aiNote).trim().length > 0) {
-      finalItemNotes[key] = String(aiNote).trim();
+      rawItemNotes[key] = String(aiNote).trim();
     } else if (item) {
-      finalItemNotes[key] =
+      rawItemNotes[key] =
         item.status === "MATCH"
-          ? `[Counsel Verified — MATCH] On-chain state (${item.onchainState}) strictly enforces the whitepaper commitment (${item.sectionRef}). Compliant with ${statute?.KR.articleRef} and ${statute?.EU.articleRef}.`
+          ? `[Counsel Verified — MATCH] On-chain state (${item.onchainState}) strictly enforces the whitepaper commitment (${item.sectionRef}). Compliant with ${statute?.KR.articleRef}, ${statute?.EU.articleRef}, and ${statute?.US.articleRef}.`
           : `[Counsel Adverse Finding — ${item.status}] ${item.rationale} Triggers material disclosure liability under KR (${statute?.KR.articleRef}), EU (${statute?.EU.articleRef}), and US (${statute?.US.articleRef}). Mandatory smart contract remediation or disclosure redline required.`;
     } else {
-      finalItemNotes[key] = "";
+      rawItemNotes[key] = "";
     }
   }
 
+  const guardResult = verifyAndGuardStep3LegalDraft({
+    whitepaperText: params.whitepaperText,
+    tokenAddress: params.tokenAddress,
+    snapshotBlockNumber: params.snapshotBlockNumber,
+    overallStatus: params.overallStatus,
+    checkItems: params.checkItems,
+    rawOverallSummary: res.parsedJson?.overallSummary || "",
+    fallbackOverallSummary,
+    rawItemNotes,
+    rawCureNoticeText: res.parsedJson?.cureNoticeText || "",
+    fallbackCureNoticeText: fallbackCureNotice.fullNoticeTextKo,
+  });
+
   return {
-    overallSummary:
-      res.parsedJson?.overallSummary?.trim() || fallbackOverallSummary,
-    itemReviewerNotes: finalItemNotes,
-    cureNoticeText:
-      res.parsedJson?.cureNoticeText?.trim() ||
-      fallbackCureNotice.fullNoticeTextKo,
-    telemetry: res.telemetry,
+    overallSummary: guardResult.overallSummary,
+    itemReviewerNotes: guardResult.itemReviewerNotes,
+    cureNoticeText: guardResult.cureNoticeText,
+    telemetry: {
+      ...res.telemetry,
+      guardrail: guardResult.guardrail,
+    },
   };
 }

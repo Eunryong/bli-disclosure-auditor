@@ -401,6 +401,7 @@ export async function executeCreAuditWorkflow(
     tokenSymbol: snapshot.symbol,
     tokenAddress: snapshot.tokenAddress,
     blockNumber: snapshot.blockNumber,
+    whitepaperText: params.whitepaperText,
     items: rawComparisons.map((c) => {
       const checkItem = enrichedCheckItems.find((i) => i.itemKey === c.itemKey);
       return {

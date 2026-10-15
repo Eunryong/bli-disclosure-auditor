@@ -6,8 +6,8 @@
   "configPath": "cre-workflow/config.json",
   "cliBinaryDetected": false,
   "runtimeEngine": "chainlink-cre-local-simulator",
-  "executedAt": "2026-10-15T00:24:05.851Z",
-  "totalDurationMs": 35369,
+  "executedAt": "2026-10-15T01:07:38.351Z",
+  "totalDurationMs": 26161,
   "casesSimulated": 2,
   "runs": [
     {
@@ -16,19 +16,19 @@
       "tokenSymbol": "BLIC",
       "tokenAddress": "0x534c51921913a8717Ca2db550b77fFabf168f71e",
       "documentHash": "0xa7226b6ec726cba689e606e106c848f1fc221189559e0b6b1f0ac1b8008488c1",
-      "workflowRunId": "cre-blic-b11916826-fa56f360",
+      "workflowRunId": "cre-blic-b11917044-e55e3d47",
       "overallStatus": "MATCH",
       "counts": {
         "matchCount": 5,
         "mismatchCount": 0,
         "needsReviewCount": 0
       },
-      "reportHash": "0xe9dfe57c0e548260384507f6b6f2984b83ecd6702a1c83eaa6a80b84b50b88c7",
-      "consensusDigest": "0xfa56f36079f860a2f326ba7d251bc05169ac26fd48f864b4299e9bb2361c6ee9",
-      "anchorTxHash": "0xc52933e311c0ce88556d8eb8405e88037c68fc43dba69ceeba2f975bca179db3",
+      "reportHash": "0xdff4b1d5cbc76707e336a997bd21205e6f56c8833255422dc99b6d94eca2b753",
+      "consensusDigest": "0xe55e3d4752aade766de0a79ba703051b6a6624e4550e31ef6e97d8f659294d9f",
+      "anchorTxHash": "0xa0e0d5c477859b61f057039368fae80692bfaee2156f228ade5a34b4a64cde07",
       "verifyAnchorVerified": true,
       "trace": {
-        "workflowRunId": "cre-blic-b11916826-fa56f360",
+        "workflowRunId": "cre-blic-b11917044-e55e3d47",
         "workflowName": "bli-disclosure-smart-contract-mismatch-auditor",
         "workflowVersion": "1.0.0",
         "manifestPath": "cre-workflow/workflow.yaml",
@@ -39,7 +39,7 @@
         "tokenAddress": "0x534c51921913a8717Ca2db550b77fFabf168f71e",
         "chainId": 11155111,
         "chainName": "Ethereum Sepolia",
-        "snapshotBlockNumber": 11916826,
+        "snapshotBlockNumber": 11917044,
         "documentHash": "0xa7226b6ec726cba689e606e106c848f1fc221189559e0b6b1f0ac1b8008488c1",
         "overallStatus": "MATCH",
         "counts": {
@@ -53,45 +53,45 @@
           "nodeCount": 4,
           "quorumRequired": 3,
           "quorumReached": 4,
-          "consensusDigest": "0xfa56f36079f860a2f326ba7d251bc05169ac26fd48f864b4299e9bb2361c6ee9",
-          "reportHash": "0xe9dfe57c0e548260384507f6b6f2984b83ecd6702a1c83eaa6a80b84b50b88c7",
+          "consensusDigest": "0xe55e3d4752aade766de0a79ba703051b6a6624e4550e31ef6e97d8f659294d9f",
+          "reportHash": "0xdff4b1d5cbc76707e336a997bd21205e6f56c8833255422dc99b6d94eca2b753",
           "nodeSignatures": [
             {
               "nodeId": "cre-node-01.chainlink.don",
               "operator": "BLI RegTech Oracle Node #1",
               "signerAddress": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-              "observationHash": "0x78e59a551b9bd38d7494a190c6549d0c117d44f95a903237db8e2085c6e54cb0",
-              "signature": "0x270644e26e824841e78aa8b5872e887e5d2f2c1d3569e607dd2c4415d36f24336d9e552ed1906119a6518b11a3921bec4343a1cd1b4b07be9fba510c121d83711b"
+              "observationHash": "0xdc6b6bd38be1a0ef18ed3043a8c27c576665541203ef792caf84ce2aa81fc9ff",
+              "signature": "0x2db64c6ffce5c39b7b0a70f47f04e475a7cd19e22b4392db86983659a737ed5f345dabee1bdc5f93403d2367f4e94d7d5a3a533cc0e1e34e44de7f7129ef434e1b"
             },
             {
               "nodeId": "cre-node-02.chainlink.don",
               "operator": "BLI RegTech Oracle Node #2",
               "signerAddress": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
-              "observationHash": "0x507ba80d9525b79ff3a9c6a68d575e267acdc37c779eaf33ac657dfeaa2791a0",
-              "signature": "0x9e59ad73b8910c040e949629b71a9217478d5597171dda4999442db8e7bcd446c1ee5f48b8f95e9a1585fddfdb5ddc94a52cb5022cd12be940a93c656ea28f321c"
+              "observationHash": "0x38a4295a1b9cc94e1803845753df69b867b19b7a1d5592ecd243cf34caf771c7",
+              "signature": "0x0e0268f3dd972e1aba3c0795724044d73a75de0e547e0d26a0bf3b512c87d1fb76f47bf5f534f5ab96f4e7d93d62fec4cec9a845a940f321dde0502e82dec6f91c"
             },
             {
               "nodeId": "cre-node-03.chainlink.don",
               "operator": "BLI RegTech Oracle Node #3",
               "signerAddress": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
-              "observationHash": "0x22f4c64d97edc51975c39e71d64472a9394a373a16a248f9d0080a2adaf12a62",
-              "signature": "0x6156d73ff26597d749320a4b92df2b3a52bd7c3bf2ba89d640a69349a0990f235b852efd07fb7e7576b7c7f3baad722a2b92a18a8b5672f294f14ef1224cb8621b"
+              "observationHash": "0xaaf4801b1861012300ec68b03cdee645faa91a33ea01f69fe64e402a2ab52a38",
+              "signature": "0xc810e664e69faabe86d32752d6ffc3aa5d66fdd312ea42f18600677655f795637a32d227a47e83beff7818ac50cbcf4351efe6200fdd09732d302a9478e20cc11b"
             },
             {
               "nodeId": "cre-node-04.chainlink.don",
               "operator": "BLI RegTech Oracle Node #4",
               "signerAddress": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-              "observationHash": "0x6dc8f2f5751195a46f8630493fc5252c22f9dec3f36eda1e61b93b9ac1e2914d",
-              "signature": "0xf1191b77b95aa1c520d72bbba2ece12927c176424b5cacff769cb4688a6a95b44188d2b78e8c7e6f04d3b06f05e2f29a86197e9a331483c3636a8e35219e70b41c"
+              "observationHash": "0xebc81bdf931a32bc8b90642d97d019c9507a46ef9592fbeb08e55b56889b932b",
+              "signature": "0x531052376fededfdf5d8bce0a43aee7abc440ff333c6e18fd80e69f54de3a90b126f01c95396622bc94418d6c711b59c80b452865de45c3d05b3f9af1615e3701c"
             }
           ]
         },
         "auditRegistryPayload": {
           "auditRegistryAddress": "0x5B0547C68bc608E6A9b94C515B5B66215981856c",
           "functionSignature": "recordAudit(bytes32,address,uint256,uint256,uint8,bytes32)",
-          "recordAuditCalldata": "0x97cdb786a7226b6ec726cba689e606e106c848f1fc221189559e0b6b1f0ac1b8008488c1000000000000000000000000534c51921913a8717ca2db550b77ffabf168f71e0000000000000000000000000000000000000000000000000000000000aa36a70000000000000000000000000000000000000000000000000000000000b5d61a0000000000000000000000000000000000000000000000000000000000000000e9dfe57c0e548260384507f6b6f2984b83ecd6702a1c83eaa6a80b84b50b88c7",
-          "verifyAnchorCalldata": "0x681aa94aa7226b6ec726cba689e606e106c848f1fc221189559e0b6b1f0ac1b8008488c1000000000000000000000000534c51921913a8717ca2db550b77ffabf168f71ee9dfe57c0e548260384507f6b6f2984b83ecd6702a1c83eaa6a80b84b50b88c7",
-          "reportHash": "0xe9dfe57c0e548260384507f6b6f2984b83ecd6702a1c83eaa6a80b84b50b88c7"
+          "recordAuditCalldata": "0x97cdb786a7226b6ec726cba689e606e106c848f1fc221189559e0b6b1f0ac1b8008488c1000000000000000000000000534c51921913a8717ca2db550b77ffabf168f71e0000000000000000000000000000000000000000000000000000000000aa36a70000000000000000000000000000000000000000000000000000000000b5d6f40000000000000000000000000000000000000000000000000000000000000000dff4b1d5cbc76707e336a997bd21205e6f56c8833255422dc99b6d94eca2b753",
+          "verifyAnchorCalldata": "0x681aa94aa7226b6ec726cba689e606e106c848f1fc221189559e0b6b1f0ac1b8008488c1000000000000000000000000534c51921913a8717ca2db550b77ffabf168f71edff4b1d5cbc76707e336a997bd21205e6f56c8833255422dc99b6d94eca2b753",
+          "reportHash": "0xdff4b1d5cbc76707e336a997bd21205e6f56c8833255422dc99b6d94eca2b753"
         },
         "breachSimulations": [
           {
@@ -190,30 +190,130 @@
         ],
         "geminiTelemetry": {
           "step1": {
-            "model": "gemini-3.8-flash (API Key Not Configured)",
+            "model": "gemini-2.5-flash (API Key Not Configured)",
             "promptTokens": 0,
             "completionTokens": 0,
             "totalTokens": 0,
             "latencyMs": 0,
             "liveApiCalled": false,
-            "invokedAt": "2026-10-15T00:24:05.909Z",
+            "invokedAt": "2026-10-15T01:07:38.395Z",
             "task": "step_1_extract",
-            "fallbackReason": "GEMINI_API_KEY is not set. Configure your key via [Gemini AI Status / Key Setup] in the top header to enable live Gemini inference."
+            "fallbackReason": "GEMINI_API_KEY is not set. Configure your key via [Gemini AI Key / Guardrail Status] in the top header to enable live Gemini inference.",
+            "guardrail": {
+              "passed": true,
+              "badgeText": "Hallucination Guardrail: PASSED (Quote Grounded ✓ · EVM Facts Locked ✓ · Statutes Whitelisted ✓)",
+              "quoteGrounded": true,
+              "factsLocked": true,
+              "statutesWhitelisted": true,
+              "humanGateEnforced": true,
+              "signoffStatus": "AI_DRAFT_VERIFIED",
+              "verifiedAt": "2026-10-15T01:07:38.395Z",
+              "guards": {
+                "guard1QuoteGrounding": {
+                  "passed": true,
+                  "checkedQuotesCount": 5,
+                  "exactMatchedCount": 5,
+                  "restoredExactSpanCount": 0,
+                  "detail": "All 5/5 extracted sourceQuote spans verified as exact normalized substrings of whitepaperText."
+                },
+                "guard2FactLock": {
+                  "passed": true,
+                  "lockedParametersCount": 13,
+                  "overriddenDriftCount": 0,
+                  "lockedAnchors": [
+                    "100,000,000",
+                    "100 bps",
+                    "1830297600",
+                    "0x1111111111111111111111111111111111111111"
+                  ],
+                  "detail": "Locked 13 deterministic parameters & verdicts (100,000,000, 100 bps, 1830297600, 0x1111111111111111111111111111111111111111) against LLM modification."
+                },
+                "guard3StatuteWhitelist": {
+                  "passed": true,
+                  "whitelistedStatutesCount": 4,
+                  "blockedFabricatedCitationsCount": 0,
+                  "allowedStatutes": [
+                    "Virtual Asset User Protection Act (VAUPA) Art. 10(4)(2)",
+                    "DAXA Joint Listing Review Guidelines (Supply, Fee, Lockup & Governance Standards)",
+                    "Regulation (EU) 2023/1114 (MiCA) Article 6 & Article 15 (Annex I Parts D, E, F, G)",
+                    "US SEC Division of Corporation Finance (CorpFin) Digital Asset Disclosure Guidance & Rule 10b-5"
+                  ],
+                  "detail": "100% of statutory citations verified against Closed-World Whitelist (KR VAUPA Art. 10(4)(2), DAXA, EU MiCA Art. 6 & 15, US SEC CorpFin)."
+                },
+                "guard4HumanSignoffGate": {
+                  "passed": true,
+                  "signoffStatus": "AI_DRAFT_VERIFIED",
+                  "requiresCounselApprovalBeforeAnchor": true,
+                  "detail": "Output tagged [AI_DRAFT_VERIFIED] — mandatory Human-in-the-Loop Counsel sign-off required prior to AuditRegistry.sol on-chain anchoring."
+                }
+              }
+            }
           },
           "step3": {
-            "model": "gemini-3.8-flash (API Key Not Configured)",
+            "model": "gemini-2.5-flash (API Key Not Configured)",
             "promptTokens": 0,
             "completionTokens": 0,
             "totalTokens": 0,
             "latencyMs": 0,
             "liveApiCalled": false,
-            "invokedAt": "2026-10-15T00:24:07.471Z",
+            "invokedAt": "2026-10-15T01:07:39.795Z",
             "task": "step_2_cre_compare",
-            "fallbackReason": "GEMINI_API_KEY is not set. Configure your key via [Gemini AI Status / Key Setup] in the top header to enable live Gemini inference."
+            "fallbackReason": "GEMINI_API_KEY is not set. Configure your key via [Gemini AI Key / Guardrail Status] in the top header to enable live Gemini inference.",
+            "guardrail": {
+              "passed": true,
+              "badgeText": "Hallucination Guardrail: PASSED (Quote Grounded ✓ · EVM Facts Locked ✓ · Statutes Whitelisted ✓)",
+              "quoteGrounded": true,
+              "factsLocked": true,
+              "statutesWhitelisted": true,
+              "humanGateEnforced": true,
+              "signoffStatus": "AI_DRAFT_VERIFIED",
+              "verifiedAt": "2026-10-15T01:07:39.795Z",
+              "guards": {
+                "guard1QuoteGrounding": {
+                  "passed": true,
+                  "checkedQuotesCount": 5,
+                  "exactMatchedCount": 5,
+                  "restoredExactSpanCount": 0,
+                  "detail": "All 5/5 extracted sourceQuote spans verified as exact normalized substrings of whitepaperText."
+                },
+                "guard2FactLock": {
+                  "passed": true,
+                  "lockedParametersCount": 16,
+                  "overriddenDriftCount": 0,
+                  "lockedAnchors": [
+                    "100,000,000",
+                    "100 bps",
+                    "500 bps",
+                    "1830297600",
+                    "0x534c51921913a8717Ca2db550b77fFabf168f71e",
+                    "Block #11917044"
+                  ],
+                  "detail": "Locked 16 deterministic parameters & verdicts (100,000,000, 100 bps, 500 bps, 1830297600, 0x534c51921913a8717Ca2db550b77fFabf168f71e, Block #11917044) against LLM modification."
+                },
+                "guard3StatuteWhitelist": {
+                  "passed": true,
+                  "whitelistedStatutesCount": 4,
+                  "blockedFabricatedCitationsCount": 0,
+                  "allowedStatutes": [
+                    "Virtual Asset User Protection Act (VAUPA) Art. 10(4)(2)",
+                    "DAXA Joint Listing Review Guidelines (Supply, Fee, Lockup & Governance Standards)",
+                    "Regulation (EU) 2023/1114 (MiCA) Article 6 & Article 15 (Annex I Parts D, E, F, G)",
+                    "US SEC Division of Corporation Finance (CorpFin) Digital Asset Disclosure Guidance & Rule 10b-5"
+                  ],
+                  "detail": "100% of statutory citations verified against Closed-World Whitelist (KR VAUPA Art. 10(4)(2), DAXA, EU MiCA Art. 6 & 15, US SEC CorpFin)."
+                },
+                "guard4HumanSignoffGate": {
+                  "passed": true,
+                  "signoffStatus": "AI_DRAFT_VERIFIED",
+                  "requiresCounselApprovalBeforeAnchor": true,
+                  "detail": "Output tagged [AI_DRAFT_VERIFIED] — mandatory Human-in-the-Loop Counsel sign-off required prior to AuditRegistry.sol on-chain anchoring."
+                }
+              }
+            }
           }
         },
-        "totalDurationMs": 10168,
-        "executedAt": "2026-10-15T00:24:16.055Z",
+        "totalDurationMs": 13953,
+        "executedAt": "2026-10-15T01:07:52.337Z",
         "steps": [
           {
             "stepNumber": 1,
@@ -221,10 +321,10 @@
             "title": "[Step 1: Trigger & Off-chain Disclosure Fetch (Google Gemini AI)]",
             "capability": "chainlink.capabilities.http_client@1.0.0 + google_gemini_llm_extractor",
             "status": "SUCCESS",
-            "startedAt": "2026-10-15T00:24:05.891Z",
-            "completedAt": "2026-10-15T00:24:05.909Z",
-            "durationMs": 18,
-            "summary": "Fetched SHA-256 documentHash (0xa7226b6ec726...) & extracted 5 structured disclosure claims via DETERMINISTIC_RULE_PARSER (gemini-3.8-flash (API Key Not Configured), 0ms).",
+            "startedAt": "2026-10-15T01:07:38.387Z",
+            "completedAt": "2026-10-15T01:07:38.395Z",
+            "durationMs": 8,
+            "summary": "Fetched SHA-256 documentHash (0xa7226b6ec726...) & extracted 5 structured disclosure claims via DETERMINISTIC_RULE_PARSER (gemini-2.5-flash (API Key Not Configured), 0ms).",
             "inputPayload": {
               "triggerType": "cre.triggers.http_webhook@1.0.0",
               "auditCaseId": "audit-compliant-blic",
@@ -236,15 +336,64 @@
               "documentHash": "0xa7226b6ec726cba689e606e106c848f1fc221189559e0b6b1f0ac1b8008488c1",
               "extractionEngine": "DETERMINISTIC_RULE_PARSER",
               "geminiTelemetry": {
-                "model": "gemini-3.8-flash (API Key Not Configured)",
+                "model": "gemini-2.5-flash (API Key Not Configured)",
                 "promptTokens": 0,
                 "completionTokens": 0,
                 "totalTokens": 0,
                 "latencyMs": 0,
                 "liveApiCalled": false,
-                "invokedAt": "2026-10-15T00:24:05.909Z",
+                "invokedAt": "2026-10-15T01:07:38.395Z",
                 "task": "step_1_extract",
-                "fallbackReason": "GEMINI_API_KEY is not set. Configure your key via [Gemini AI Status / Key Setup] in the top header to enable live Gemini inference."
+                "fallbackReason": "GEMINI_API_KEY is not set. Configure your key via [Gemini AI Key / Guardrail Status] in the top header to enable live Gemini inference.",
+                "guardrail": {
+                  "passed": true,
+                  "badgeText": "Hallucination Guardrail: PASSED (Quote Grounded ✓ · EVM Facts Locked ✓ · Statutes Whitelisted ✓)",
+                  "quoteGrounded": true,
+                  "factsLocked": true,
+                  "statutesWhitelisted": true,
+                  "humanGateEnforced": true,
+                  "signoffStatus": "AI_DRAFT_VERIFIED",
+                  "verifiedAt": "2026-10-15T01:07:38.395Z",
+                  "guards": {
+                    "guard1QuoteGrounding": {
+                      "passed": true,
+                      "checkedQuotesCount": 5,
+                      "exactMatchedCount": 5,
+                      "restoredExactSpanCount": 0,
+                      "detail": "All 5/5 extracted sourceQuote spans verified as exact normalized substrings of whitepaperText."
+                    },
+                    "guard2FactLock": {
+                      "passed": true,
+                      "lockedParametersCount": 13,
+                      "overriddenDriftCount": 0,
+                      "lockedAnchors": [
+                        "100,000,000",
+                        "100 bps",
+                        "1830297600",
+                        "0x1111111111111111111111111111111111111111"
+                      ],
+                      "detail": "Locked 13 deterministic parameters & verdicts (100,000,000, 100 bps, 1830297600, 0x1111111111111111111111111111111111111111) against LLM modification."
+                    },
+                    "guard3StatuteWhitelist": {
+                      "passed": true,
+                      "whitelistedStatutesCount": 4,
+                      "blockedFabricatedCitationsCount": 0,
+                      "allowedStatutes": [
+                        "Virtual Asset User Protection Act (VAUPA) Art. 10(4)(2)",
+                        "DAXA Joint Listing Review Guidelines (Supply, Fee, Lockup & Governance Standards)",
+                        "Regulation (EU) 2023/1114 (MiCA) Article 6 & Article 15 (Annex I Parts D, E, F, G)",
+                        "US SEC Division of Corporation Finance (CorpFin) Digital Asset Disclosure Guidance & Rule 10b-5"
+                      ],
+                      "detail": "100% of statutory citations verified against Closed-World Whitelist (KR VAUPA Art. 10(4)(2), DAXA, EU MiCA Art. 6 & 15, US SEC CorpFin)."
+                    },
+                    "guard4HumanSignoffGate": {
+                      "passed": true,
+                      "signoffStatus": "AI_DRAFT_VERIFIED",
+                      "requiresCounselApprovalBeforeAnchor": true,
+                      "detail": "Output tagged [AI_DRAFT_VERIFIED] — mandatory Human-in-the-Loop Counsel sign-off required prior to AuditRegistry.sol on-chain anchoring."
+                    }
+                  }
+                }
               },
               "claimCount": 5,
               "disclosedClaims": [
@@ -305,10 +454,10 @@
             "title": "[Step 2: On-chain EVM State Inspection & Breach Simulation]",
             "capability": "chainlink.capabilities.evm_read@1.0.0 + evm_sandbox_sim",
             "status": "SUCCESS",
-            "startedAt": "2026-10-15T00:24:05.909Z",
-            "completedAt": "2026-10-15T00:24:07.471Z",
-            "durationMs": 1562,
-            "summary": "Executed 22 ABI eth_call reads + EIP-1967 slot inspection + 4 counterfactual breach simulations (Defended=4, Breached=0) on BLIC (0x534c51921913a8717Ca2db550b77fFabf168f71e) at Block #11916826.",
+            "startedAt": "2026-10-15T01:07:38.395Z",
+            "completedAt": "2026-10-15T01:07:39.794Z",
+            "durationMs": 1399,
+            "summary": "Executed 22 ABI eth_call reads + EIP-1967 slot inspection + 4 counterfactual breach simulations (Defended=4, Breached=0) on BLIC (0x534c51921913a8717Ca2db550b77fFabf168f71e) at Block #11917044.",
             "inputPayload": {
               "chainId": 11155111,
               "chainName": "Ethereum Sepolia",
@@ -347,7 +496,7 @@
               ]
             },
             "outputPayload": {
-              "blockNumber": 11916826,
+              "blockNumber": 11917044,
               "name": "BLI Compliant Utility Token",
               "symbol": "BLIC",
               "totalSupplyFormatted": "100000000",
@@ -479,15 +628,15 @@
             "title": "[Step 3: DON Consensus & Gemini AI Discrepancy Evaluation]",
             "capability": "chainlink.capabilities.ocr3_consensus@1.0.0 + google_gemini_legal_reasoning",
             "status": "SUCCESS",
-            "startedAt": "2026-10-15T00:24:07.471Z",
-            "completedAt": "2026-10-15T00:24:07.476Z",
+            "startedAt": "2026-10-15T01:07:39.794Z",
+            "completedAt": "2026-10-15T01:07:39.799Z",
             "durationMs": 5,
-            "summary": "DON (4/4 nodes, OCR3-BFT) + Gemini AI (gemini-3.8-flash (API Key Not Configured), 0ms) reached consensus: MATCH (MATCH=5, MISMATCH=0, NEEDS_HUMAN_REVIEW=0) | reportHash=0xe9dfe57c0e54...",
+            "summary": "DON (4/4 nodes, OCR3-BFT) + Gemini AI (gemini-2.5-flash (API Key Not Configured), 0ms) reached consensus: MATCH (MATCH=5, MISMATCH=0, NEEDS_HUMAN_REVIEW=0) | reportHash=0xdff4b1d5cbc7...",
             "inputPayload": {
               "donId": "don-bli-legaltech-cre-01",
               "protocol": "OCR3-BFT",
               "quorumRequired": 3,
-              "geminiModel": "gemini-3.8-flash (API Key Not Configured)",
+              "geminiModel": "gemini-2.5-flash (API Key Not Configured)",
               "evaluatedItemKeys": [
                 "maxSupplyAndMintability",
                 "transferFee",
@@ -504,18 +653,69 @@
                 "needsReviewCount": 0
               },
               "geminiReasoningTelemetry": {
-                "model": "gemini-3.8-flash (API Key Not Configured)",
+                "model": "gemini-2.5-flash (API Key Not Configured)",
                 "promptTokens": 0,
                 "completionTokens": 0,
                 "totalTokens": 0,
                 "latencyMs": 0,
                 "liveApiCalled": false,
-                "invokedAt": "2026-10-15T00:24:07.471Z",
+                "invokedAt": "2026-10-15T01:07:39.795Z",
                 "task": "step_2_cre_compare",
-                "fallbackReason": "GEMINI_API_KEY is not set. Configure your key via [Gemini AI Status / Key Setup] in the top header to enable live Gemini inference."
+                "fallbackReason": "GEMINI_API_KEY is not set. Configure your key via [Gemini AI Key / Guardrail Status] in the top header to enable live Gemini inference.",
+                "guardrail": {
+                  "passed": true,
+                  "badgeText": "Hallucination Guardrail: PASSED (Quote Grounded ✓ · EVM Facts Locked ✓ · Statutes Whitelisted ✓)",
+                  "quoteGrounded": true,
+                  "factsLocked": true,
+                  "statutesWhitelisted": true,
+                  "humanGateEnforced": true,
+                  "signoffStatus": "AI_DRAFT_VERIFIED",
+                  "verifiedAt": "2026-10-15T01:07:39.795Z",
+                  "guards": {
+                    "guard1QuoteGrounding": {
+                      "passed": true,
+                      "checkedQuotesCount": 5,
+                      "exactMatchedCount": 5,
+                      "restoredExactSpanCount": 0,
+                      "detail": "All 5/5 extracted sourceQuote spans verified as exact normalized substrings of whitepaperText."
+                    },
+                    "guard2FactLock": {
+                      "passed": true,
+                      "lockedParametersCount": 16,
+                      "overriddenDriftCount": 0,
+                      "lockedAnchors": [
+                        "100,000,000",
+                        "100 bps",
+                        "500 bps",
+                        "1830297600",
+                        "0x534c51921913a8717Ca2db550b77fFabf168f71e",
+                        "Block #11917044"
+                      ],
+                      "detail": "Locked 16 deterministic parameters & verdicts (100,000,000, 100 bps, 500 bps, 1830297600, 0x534c51921913a8717Ca2db550b77fFabf168f71e, Block #11917044) against LLM modification."
+                    },
+                    "guard3StatuteWhitelist": {
+                      "passed": true,
+                      "whitelistedStatutesCount": 4,
+                      "blockedFabricatedCitationsCount": 0,
+                      "allowedStatutes": [
+                        "Virtual Asset User Protection Act (VAUPA) Art. 10(4)(2)",
+                        "DAXA Joint Listing Review Guidelines (Supply, Fee, Lockup & Governance Standards)",
+                        "Regulation (EU) 2023/1114 (MiCA) Article 6 & Article 15 (Annex I Parts D, E, F, G)",
+                        "US SEC Division of Corporation Finance (CorpFin) Digital Asset Disclosure Guidance & Rule 10b-5"
+                      ],
+                      "detail": "100% of statutory citations verified against Closed-World Whitelist (KR VAUPA Art. 10(4)(2), DAXA, EU MiCA Art. 6 & 15, US SEC CorpFin)."
+                    },
+                    "guard4HumanSignoffGate": {
+                      "passed": true,
+                      "signoffStatus": "AI_DRAFT_VERIFIED",
+                      "requiresCounselApprovalBeforeAnchor": true,
+                      "detail": "Output tagged [AI_DRAFT_VERIFIED] — mandatory Human-in-the-Loop Counsel sign-off required prior to AuditRegistry.sol on-chain anchoring."
+                    }
+                  }
+                }
               },
-              "consensusDigest": "0xfa56f36079f860a2f326ba7d251bc05169ac26fd48f864b4299e9bb2361c6ee9",
-              "reportHash": "0xe9dfe57c0e548260384507f6b6f2984b83ecd6702a1c83eaa6a80b84b50b88c7",
+              "consensusDigest": "0xe55e3d4752aade766de0a79ba703051b6a6624e4550e31ef6e97d8f659294d9f",
+              "reportHash": "0xdff4b1d5cbc76707e336a997bd21205e6f56c8833255422dc99b6d94eca2b753",
               "itemVerdicts": [
                 {
                   "itemKey": "maxSupplyAndMintability",
@@ -558,29 +758,29 @@
                   "nodeId": "cre-node-01.chainlink.don",
                   "operator": "BLI RegTech Oracle Node #1",
                   "signerAddress": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-                  "observationHash": "0x78e59a551b9bd38d7494a190c6549d0c117d44f95a903237db8e2085c6e54cb0",
-                  "signature": "0x270644e26e824841e78aa8b5872e887e5d2f2c1d3569e607dd2c4415d36f24336d9e552ed1906119a6518b11a3921bec4343a1cd1b4b07be9fba510c121d83711b"
+                  "observationHash": "0xdc6b6bd38be1a0ef18ed3043a8c27c576665541203ef792caf84ce2aa81fc9ff",
+                  "signature": "0x2db64c6ffce5c39b7b0a70f47f04e475a7cd19e22b4392db86983659a737ed5f345dabee1bdc5f93403d2367f4e94d7d5a3a533cc0e1e34e44de7f7129ef434e1b"
                 },
                 {
                   "nodeId": "cre-node-02.chainlink.don",
                   "operator": "BLI RegTech Oracle Node #2",
                   "signerAddress": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
-                  "observationHash": "0x507ba80d9525b79ff3a9c6a68d575e267acdc37c779eaf33ac657dfeaa2791a0",
-                  "signature": "0x9e59ad73b8910c040e949629b71a9217478d5597171dda4999442db8e7bcd446c1ee5f48b8f95e9a1585fddfdb5ddc94a52cb5022cd12be940a93c656ea28f321c"
+                  "observationHash": "0x38a4295a1b9cc94e1803845753df69b867b19b7a1d5592ecd243cf34caf771c7",
+                  "signature": "0x0e0268f3dd972e1aba3c0795724044d73a75de0e547e0d26a0bf3b512c87d1fb76f47bf5f534f5ab96f4e7d93d62fec4cec9a845a940f321dde0502e82dec6f91c"
                 },
                 {
                   "nodeId": "cre-node-03.chainlink.don",
                   "operator": "BLI RegTech Oracle Node #3",
                   "signerAddress": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
-                  "observationHash": "0x22f4c64d97edc51975c39e71d64472a9394a373a16a248f9d0080a2adaf12a62",
-                  "signature": "0x6156d73ff26597d749320a4b92df2b3a52bd7c3bf2ba89d640a69349a0990f235b852efd07fb7e7576b7c7f3baad722a2b92a18a8b5672f294f14ef1224cb8621b"
+                  "observationHash": "0xaaf4801b1861012300ec68b03cdee645faa91a33ea01f69fe64e402a2ab52a38",
+                  "signature": "0xc810e664e69faabe86d32752d6ffc3aa5d66fdd312ea42f18600677655f795637a32d227a47e83beff7818ac50cbcf4351efe6200fdd09732d302a9478e20cc11b"
                 },
                 {
                   "nodeId": "cre-node-04.chainlink.don",
                   "operator": "BLI RegTech Oracle Node #4",
                   "signerAddress": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-                  "observationHash": "0x6dc8f2f5751195a46f8630493fc5252c22f9dec3f36eda1e61b93b9ac1e2914d",
-                  "signature": "0xf1191b77b95aa1c520d72bbba2ece12927c176424b5cacff769cb4688a6a95b44188d2b78e8c7e6f04d3b06f05e2f29a86197e9a331483c3636a8e35219e70b41c"
+                  "observationHash": "0xebc81bdf931a32bc8b90642d97d019c9507a46ef9592fbeb08e55b56889b932b",
+                  "signature": "0x531052376fededfdf5d8bce0a43aee7abc440ff333c6e18fd80e69f54de3a90b126f01c95396622bc94418d6c711b59c80b452865de45c3d05b3f9af1615e3701c"
                 }
               ]
             }
@@ -591,28 +791,28 @@
             "title": "[Step 4: On-chain AuditRegistry Write / Verification Readiness]",
             "capability": "chainlink.capabilities.evm_write@1.0.0",
             "status": "SUCCESS",
-            "startedAt": "2026-10-15T00:24:07.472Z",
-            "completedAt": "2026-10-15T00:24:16.055Z",
-            "durationMs": 8583,
-            "summary": "Anchored to AuditRegistry (0x5B0547C68bc608E6A9b94C515B5B66215981856c) in tx 0xc52933e311c0... & verified on-chain (verified=true).",
+            "startedAt": "2026-10-15T01:07:39.796Z",
+            "completedAt": "2026-10-15T01:07:52.337Z",
+            "durationMs": 12541,
+            "summary": "Anchored to AuditRegistry (0x5B0547C68bc608E6A9b94C515B5B66215981856c) in tx 0xa0e0d5c47785... & verified on-chain (verified=true).",
             "inputPayload": {
               "auditRegistryAddress": "0x5B0547C68bc608E6A9b94C515B5B66215981856c",
               "documentHash": "0xa7226b6ec726cba689e606e106c848f1fc221189559e0b6b1f0ac1b8008488c1",
               "tokenAddress": "0x534c51921913a8717Ca2db550b77fFabf168f71e",
               "chainId": 11155111,
               "chainName": "Ethereum Sepolia",
-              "blockNumber": 11916826,
+              "blockNumber": 11917044,
               "mismatchCount": 0,
-              "reportHash": "0xe9dfe57c0e548260384507f6b6f2984b83ecd6702a1c83eaa6a80b84b50b88c7",
+              "reportHash": "0xdff4b1d5cbc76707e336a997bd21205e6f56c8833255422dc99b6d94eca2b753",
               "executeOnchainAnchor": true
             },
             "outputPayload": {
               "auditRegistryAddress": "0x5B0547C68bc608E6A9b94C515B5B66215981856c",
               "functionSignature": "recordAudit(bytes32,address,uint256,uint256,uint8,bytes32)",
-              "recordAuditCalldata": "0x97cdb786a7226b6ec726cba689e606e106c848f1fc221189559e0b6b1f0ac1b8008488c1000000000000000000000000534c51921913a8717ca2db550b77ffabf168f71e0000000000000000000000000000000000000000000000000000000000aa36a70000000000000000000000000000000000000000000000000000000000b5d61a0000000000000000000000000000000000000000000000000000000000000000e9dfe57c0e548260384507f6b6f2984b83ecd6702a1c83eaa6a80b84b50b88c7",
-              "verifyAnchorCalldata": "0x681aa94aa7226b6ec726cba689e606e106c848f1fc221189559e0b6b1f0ac1b8008488c1000000000000000000000000534c51921913a8717ca2db550b77ffabf168f71ee9dfe57c0e548260384507f6b6f2984b83ecd6702a1c83eaa6a80b84b50b88c7",
+              "recordAuditCalldata": "0x97cdb786a7226b6ec726cba689e606e106c848f1fc221189559e0b6b1f0ac1b8008488c1000000000000000000000000534c51921913a8717ca2db550b77ffabf168f71e0000000000000000000000000000000000000000000000000000000000aa36a70000000000000000000000000000000000000000000000000000000000b5d6f40000000000000000000000000000000000000000000000000000000000000000dff4b1d5cbc76707e336a997bd21205e6f56c8833255422dc99b6d94eca2b753",
+              "verifyAnchorCalldata": "0x681aa94aa7226b6ec726cba689e606e106c848f1fc221189559e0b6b1f0ac1b8008488c1000000000000000000000000534c51921913a8717ca2db550b77ffabf168f71edff4b1d5cbc76707e336a997bd21205e6f56c8833255422dc99b6d94eca2b753",
               "anchoredOnchain": true,
-              "anchorTxHash": "0xc52933e311c0ce88556d8eb8405e88037c68fc43dba69ceeba2f975bca179db3",
+              "anchorTxHash": "0xa0e0d5c477859b61f057039368fae80692bfaee2156f228ade5a34b4a64cde07",
               "verifyAnchorPassed": true
             }
           }
@@ -625,19 +825,19 @@
       "tokenSymbol": "BLIX",
       "tokenAddress": "0xbbE3c849D90c63645F917Be84a5b454FE858186F",
       "documentHash": "0x3e37772e7fa79f3b2edf789ae477d60ff0935086f18fe3101f10c36048264d20",
-      "workflowRunId": "cre-blix-b11916827-29cfe6f6",
+      "workflowRunId": "cre-blix-b11917045-349eeef0",
       "overallStatus": "MISMATCH",
       "counts": {
         "matchCount": 0,
         "mismatchCount": 4,
         "needsReviewCount": 1
       },
-      "reportHash": "0x405a698c913ba0b644ece71bf7598ce7ad6d203e5ab2ec308da146fba4413f86",
-      "consensusDigest": "0x29cfe6f6d9fe4a5ec54d72fab5e650faa9466055296cdd8b91ddd1342a28bd87",
-      "anchorTxHash": "0x2749e63c5d963a44c0489eb0ecfbf560370bcdec002dcaea2cd208d46b62182e",
+      "reportHash": "0xe569f340da6ef154976393250b4f355ac5537f0a0efba23a0ed9ecdee34da029",
+      "consensusDigest": "0x349eeef050f6a7be5830481be5dc58583156f9a96b63acbc1bdc81507aa24bcd",
+      "anchorTxHash": "0x4c1678c0e7029bfe98f0ff0888d65b3afb57c4ed53311a287f855bbbca9dbd5c",
       "verifyAnchorVerified": true,
       "trace": {
-        "workflowRunId": "cre-blix-b11916827-29cfe6f6",
+        "workflowRunId": "cre-blix-b11917045-349eeef0",
         "workflowName": "bli-disclosure-smart-contract-mismatch-auditor",
         "workflowVersion": "1.0.0",
         "manifestPath": "cre-workflow/workflow.yaml",
@@ -648,7 +848,7 @@
         "tokenAddress": "0xbbE3c849D90c63645F917Be84a5b454FE858186F",
         "chainId": 11155111,
         "chainName": "Ethereum Sepolia",
-        "snapshotBlockNumber": 11916827,
+        "snapshotBlockNumber": 11917045,
         "documentHash": "0x3e37772e7fa79f3b2edf789ae477d60ff0935086f18fe3101f10c36048264d20",
         "overallStatus": "MISMATCH",
         "counts": {
@@ -662,45 +862,45 @@
           "nodeCount": 4,
           "quorumRequired": 3,
           "quorumReached": 4,
-          "consensusDigest": "0x29cfe6f6d9fe4a5ec54d72fab5e650faa9466055296cdd8b91ddd1342a28bd87",
-          "reportHash": "0x405a698c913ba0b644ece71bf7598ce7ad6d203e5ab2ec308da146fba4413f86",
+          "consensusDigest": "0x349eeef050f6a7be5830481be5dc58583156f9a96b63acbc1bdc81507aa24bcd",
+          "reportHash": "0xe569f340da6ef154976393250b4f355ac5537f0a0efba23a0ed9ecdee34da029",
           "nodeSignatures": [
             {
               "nodeId": "cre-node-01.chainlink.don",
               "operator": "BLI RegTech Oracle Node #1",
               "signerAddress": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-              "observationHash": "0xd52f3b2d4bbaa80fff752432f6436277c28e007664885b75bd79da8d84751408",
-              "signature": "0xe982c918b5ad13fa285a15c038deda7f5b3e9496858e43fbf2c5bfad44e3c832457a7850f8550f1d02a577f4885d7aee77dd223f311cdd29015556133ea410681b"
+              "observationHash": "0x21a08057b679af0c596aa2cae2851cb832e59a16576e505533b80edcba7850d5",
+              "signature": "0xf6fa0df9d9a1344d9e613025412219df602693d3c8ededaa88ba2bd7bfd4ef79d8d22f38932ee8038f57804376de6ca32b9c43d2fea3dbede652526b47449c7c1b"
             },
             {
               "nodeId": "cre-node-02.chainlink.don",
               "operator": "BLI RegTech Oracle Node #2",
               "signerAddress": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
-              "observationHash": "0xca3c6d22d34cf33f03fdeb48f4cad4817e5800da88fb64a755fedb4cab262fb0",
-              "signature": "0xbb1f82ee98f4eddf01ecac4e1081eb23abbfdf3999d67e3b0e215993b57a5c04cdebbd9283c435ffbfa8a5b4eab1fd4c6a16639a97b72b40ce4f1db13226a7131c"
+              "observationHash": "0x52655bfb40d053db1666daab264d4618cf2c608d9859f1c77c97c59ea12a30d4",
+              "signature": "0x27d2e25f81309d1b93c4d30c1be5e46bcca314d77735ecff03624125e1952819a75d7d07f28f747e91287f4ebd642809de55564bd811d62d5b21b1e7aad928b01c"
             },
             {
               "nodeId": "cre-node-03.chainlink.don",
               "operator": "BLI RegTech Oracle Node #3",
               "signerAddress": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
-              "observationHash": "0x553505118cb0e73d41b4ba9dc65c2740505d40c581d0fa0d1d6b47a53d78dc5a",
-              "signature": "0xb86237f97c0dc17c11d8415c954c3266ad6e88081cdcb188a52c4e8859fec9ecdf81e6101fe28ee3332e04a1b04a01e0d54d978816fbef7eb65f5ac42f8050851b"
+              "observationHash": "0x8ef6cc08c1943d114f88611fd5b828c9dba0eaaadc5fd509d0f2bc721ca4d8ea",
+              "signature": "0x0d08b07c31d1d3d54a8eb165368df980491df169daa130ea74324813e82693770909c44eecf74a278de96e4ef7cbe173d27a8b6de8fda66feacea2e4e1e356391b"
             },
             {
               "nodeId": "cre-node-04.chainlink.don",
               "operator": "BLI RegTech Oracle Node #4",
               "signerAddress": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-              "observationHash": "0x84000b8ac39224c84500ac977f5da51bd1d98e71ff29f55e07938de926e3f168",
-              "signature": "0xb571678f203661e9efa89994b168c89641fa6fb6c1cea2fd4ad7d3f98b36c9d8a7d83635390e9fb3301c34070f68e0cc7f7a19be0c65fc1b738d4bebb8dfe1041c"
+              "observationHash": "0x04a8b24ec67bbd55c85b533f1f21fcba948385be7fe6e8e41785521fb91c4c14",
+              "signature": "0x24120a4429f0f16b29611f98f56ed6e65c3e2c4233f501b2cd513cbd361e2780cd548bf968e9c0bdfaa42882e2242d3bee3f70f42df9827b8575cd222b445f451c"
             }
           ]
         },
         "auditRegistryPayload": {
           "auditRegistryAddress": "0x5B0547C68bc608E6A9b94C515B5B66215981856c",
           "functionSignature": "recordAudit(bytes32,address,uint256,uint256,uint8,bytes32)",
-          "recordAuditCalldata": "0x97cdb7863e37772e7fa79f3b2edf789ae477d60ff0935086f18fe3101f10c36048264d20000000000000000000000000bbe3c849d90c63645f917be84a5b454fe858186f0000000000000000000000000000000000000000000000000000000000aa36a70000000000000000000000000000000000000000000000000000000000b5d61b0000000000000000000000000000000000000000000000000000000000000004405a698c913ba0b644ece71bf7598ce7ad6d203e5ab2ec308da146fba4413f86",
-          "verifyAnchorCalldata": "0x681aa94a3e37772e7fa79f3b2edf789ae477d60ff0935086f18fe3101f10c36048264d20000000000000000000000000bbe3c849d90c63645f917be84a5b454fe858186f405a698c913ba0b644ece71bf7598ce7ad6d203e5ab2ec308da146fba4413f86",
-          "reportHash": "0x405a698c913ba0b644ece71bf7598ce7ad6d203e5ab2ec308da146fba4413f86"
+          "recordAuditCalldata": "0x97cdb7863e37772e7fa79f3b2edf789ae477d60ff0935086f18fe3101f10c36048264d20000000000000000000000000bbe3c849d90c63645f917be84a5b454fe858186f0000000000000000000000000000000000000000000000000000000000aa36a70000000000000000000000000000000000000000000000000000000000b5d6f50000000000000000000000000000000000000000000000000000000000000004e569f340da6ef154976393250b4f355ac5537f0a0efba23a0ed9ecdee34da029",
+          "verifyAnchorCalldata": "0x681aa94a3e37772e7fa79f3b2edf789ae477d60ff0935086f18fe3101f10c36048264d20000000000000000000000000bbe3c849d90c63645f917be84a5b454fe858186fe569f340da6ef154976393250b4f355ac5537f0a0efba23a0ed9ecdee34da029",
+          "reportHash": "0xe569f340da6ef154976393250b4f355ac5537f0a0efba23a0ed9ecdee34da029"
         },
         "breachSimulations": [
           {
@@ -799,30 +999,130 @@
         ],
         "geminiTelemetry": {
           "step1": {
-            "model": "gemini-3.8-flash (API Key Not Configured)",
+            "model": "gemini-2.5-flash (API Key Not Configured)",
             "promptTokens": 0,
             "completionTokens": 0,
             "totalTokens": 0,
             "latencyMs": 0,
             "liveApiCalled": false,
-            "invokedAt": "2026-10-15T00:24:17.459Z",
+            "invokedAt": "2026-10-15T01:07:53.518Z",
             "task": "step_1_extract",
-            "fallbackReason": "GEMINI_API_KEY is not set. Configure your key via [Gemini AI Status / Key Setup] in the top header to enable live Gemini inference."
+            "fallbackReason": "GEMINI_API_KEY is not set. Configure your key via [Gemini AI Key / Guardrail Status] in the top header to enable live Gemini inference.",
+            "guardrail": {
+              "passed": true,
+              "badgeText": "Hallucination Guardrail: PASSED (Quote Grounded ✓ · EVM Facts Locked ✓ · Statutes Whitelisted ✓)",
+              "quoteGrounded": true,
+              "factsLocked": true,
+              "statutesWhitelisted": true,
+              "humanGateEnforced": true,
+              "signoffStatus": "AI_DRAFT_VERIFIED",
+              "verifiedAt": "2026-10-15T01:07:53.518Z",
+              "guards": {
+                "guard1QuoteGrounding": {
+                  "passed": true,
+                  "checkedQuotesCount": 5,
+                  "exactMatchedCount": 5,
+                  "restoredExactSpanCount": 0,
+                  "detail": "All 5/5 extracted sourceQuote spans verified as exact normalized substrings of whitepaperText."
+                },
+                "guard2FactLock": {
+                  "passed": true,
+                  "lockedParametersCount": 13,
+                  "overriddenDriftCount": 0,
+                  "lockedAnchors": [
+                    "100,000,000",
+                    "100 bps",
+                    "1830297600",
+                    "0x2222222222222222222222222222222222222222"
+                  ],
+                  "detail": "Locked 13 deterministic parameters & verdicts (100,000,000, 100 bps, 1830297600, 0x2222222222222222222222222222222222222222) against LLM modification."
+                },
+                "guard3StatuteWhitelist": {
+                  "passed": true,
+                  "whitelistedStatutesCount": 4,
+                  "blockedFabricatedCitationsCount": 0,
+                  "allowedStatutes": [
+                    "Virtual Asset User Protection Act (VAUPA) Art. 10(4)(2)",
+                    "DAXA Joint Listing Review Guidelines (Supply, Fee, Lockup & Governance Standards)",
+                    "Regulation (EU) 2023/1114 (MiCA) Article 6 & Article 15 (Annex I Parts D, E, F, G)",
+                    "US SEC Division of Corporation Finance (CorpFin) Digital Asset Disclosure Guidance & Rule 10b-5"
+                  ],
+                  "detail": "100% of statutory citations verified against Closed-World Whitelist (KR VAUPA Art. 10(4)(2), DAXA, EU MiCA Art. 6 & 15, US SEC CorpFin)."
+                },
+                "guard4HumanSignoffGate": {
+                  "passed": true,
+                  "signoffStatus": "AI_DRAFT_VERIFIED",
+                  "requiresCounselApprovalBeforeAnchor": true,
+                  "detail": "Output tagged [AI_DRAFT_VERIFIED] — mandatory Human-in-the-Loop Counsel sign-off required prior to AuditRegistry.sol on-chain anchoring."
+                }
+              }
+            }
           },
           "step3": {
-            "model": "gemini-3.8-flash (API Key Not Configured)",
+            "model": "gemini-2.5-flash (API Key Not Configured)",
             "promptTokens": 0,
             "completionTokens": 0,
             "totalTokens": 0,
             "latencyMs": 0,
             "liveApiCalled": false,
-            "invokedAt": "2026-10-15T00:24:18.953Z",
+            "invokedAt": "2026-10-15T01:07:54.755Z",
             "task": "step_2_cre_compare",
-            "fallbackReason": "GEMINI_API_KEY is not set. Configure your key via [Gemini AI Status / Key Setup] in the top header to enable live Gemini inference."
+            "fallbackReason": "GEMINI_API_KEY is not set. Configure your key via [Gemini AI Key / Guardrail Status] in the top header to enable live Gemini inference.",
+            "guardrail": {
+              "passed": true,
+              "badgeText": "Hallucination Guardrail: PASSED (Quote Grounded ✓ · EVM Facts Locked ✓ · Statutes Whitelisted ✓)",
+              "quoteGrounded": true,
+              "factsLocked": true,
+              "statutesWhitelisted": true,
+              "humanGateEnforced": true,
+              "signoffStatus": "AI_DRAFT_VERIFIED",
+              "verifiedAt": "2026-10-15T01:07:54.755Z",
+              "guards": {
+                "guard1QuoteGrounding": {
+                  "passed": true,
+                  "checkedQuotesCount": 5,
+                  "exactMatchedCount": 5,
+                  "restoredExactSpanCount": 0,
+                  "detail": "All 5/5 extracted sourceQuote spans verified as exact normalized substrings of whitepaperText."
+                },
+                "guard2FactLock": {
+                  "passed": true,
+                  "lockedParametersCount": 16,
+                  "overriddenDriftCount": 0,
+                  "lockedAnchors": [
+                    "100,000,000",
+                    "100 bps",
+                    "500 bps",
+                    "1830297600",
+                    "0xbbE3c849D90c63645F917Be84a5b454FE858186F",
+                    "Block #11917045"
+                  ],
+                  "detail": "Locked 16 deterministic parameters & verdicts (100,000,000, 100 bps, 500 bps, 1830297600, 0xbbE3c849D90c63645F917Be84a5b454FE858186F, Block #11917045) against LLM modification."
+                },
+                "guard3StatuteWhitelist": {
+                  "passed": true,
+                  "whitelistedStatutesCount": 4,
+                  "blockedFabricatedCitationsCount": 0,
+                  "allowedStatutes": [
+                    "Virtual Asset User Protection Act (VAUPA) Art. 10(4)(2)",
+                    "DAXA Joint Listing Review Guidelines (Supply, Fee, Lockup & Governance Standards)",
+                    "Regulation (EU) 2023/1114 (MiCA) Article 6 & Article 15 (Annex I Parts D, E, F, G)",
+                    "US SEC Division of Corporation Finance (CorpFin) Digital Asset Disclosure Guidance & Rule 10b-5"
+                  ],
+                  "detail": "100% of statutory citations verified against Closed-World Whitelist (KR VAUPA Art. 10(4)(2), DAXA, EU MiCA Art. 6 & 15, US SEC CorpFin)."
+                },
+                "guard4HumanSignoffGate": {
+                  "passed": true,
+                  "signoffStatus": "AI_DRAFT_VERIFIED",
+                  "requiresCounselApprovalBeforeAnchor": true,
+                  "detail": "Output tagged [AI_DRAFT_VERIFIED] — mandatory Human-in-the-Loop Counsel sign-off required prior to AuditRegistry.sol on-chain anchoring."
+                }
+              }
+            }
           }
         },
-        "totalDurationMs": 22259,
-        "executedAt": "2026-10-15T00:24:39.710Z",
+        "totalDurationMs": 9745,
+        "executedAt": "2026-10-15T01:08:03.256Z",
         "steps": [
           {
             "stepNumber": 1,
@@ -830,10 +1130,10 @@
             "title": "[Step 1: Trigger & Off-chain Disclosure Fetch (Google Gemini AI)]",
             "capability": "chainlink.capabilities.http_client@1.0.0 + google_gemini_llm_extractor",
             "status": "SUCCESS",
-            "startedAt": "2026-10-15T00:24:17.458Z",
-            "completedAt": "2026-10-15T00:24:17.462Z",
+            "startedAt": "2026-10-15T01:07:53.518Z",
+            "completedAt": "2026-10-15T01:07:53.522Z",
             "durationMs": 4,
-            "summary": "Fetched SHA-256 documentHash (0x3e37772e7fa7...) & extracted 5 structured disclosure claims via DETERMINISTIC_RULE_PARSER (gemini-3.8-flash (API Key Not Configured), 0ms).",
+            "summary": "Fetched SHA-256 documentHash (0x3e37772e7fa7...) & extracted 5 structured disclosure claims via DETERMINISTIC_RULE_PARSER (gemini-2.5-flash (API Key Not Configured), 0ms).",
             "inputPayload": {
               "triggerType": "cre.triggers.http_webhook@1.0.0",
               "auditCaseId": "audit-mismatched-blix",
@@ -845,15 +1145,64 @@
               "documentHash": "0x3e37772e7fa79f3b2edf789ae477d60ff0935086f18fe3101f10c36048264d20",
               "extractionEngine": "DETERMINISTIC_RULE_PARSER",
               "geminiTelemetry": {
-                "model": "gemini-3.8-flash (API Key Not Configured)",
+                "model": "gemini-2.5-flash (API Key Not Configured)",
                 "promptTokens": 0,
                 "completionTokens": 0,
                 "totalTokens": 0,
                 "latencyMs": 0,
                 "liveApiCalled": false,
-                "invokedAt": "2026-10-15T00:24:17.459Z",
+                "invokedAt": "2026-10-15T01:07:53.518Z",
                 "task": "step_1_extract",
-                "fallbackReason": "GEMINI_API_KEY is not set. Configure your key via [Gemini AI Status / Key Setup] in the top header to enable live Gemini inference."
+                "fallbackReason": "GEMINI_API_KEY is not set. Configure your key via [Gemini AI Key / Guardrail Status] in the top header to enable live Gemini inference.",
+                "guardrail": {
+                  "passed": true,
+                  "badgeText": "Hallucination Guardrail: PASSED (Quote Grounded ✓ · EVM Facts Locked ✓ · Statutes Whitelisted ✓)",
+                  "quoteGrounded": true,
+                  "factsLocked": true,
+                  "statutesWhitelisted": true,
+                  "humanGateEnforced": true,
+                  "signoffStatus": "AI_DRAFT_VERIFIED",
+                  "verifiedAt": "2026-10-15T01:07:53.518Z",
+                  "guards": {
+                    "guard1QuoteGrounding": {
+                      "passed": true,
+                      "checkedQuotesCount": 5,
+                      "exactMatchedCount": 5,
+                      "restoredExactSpanCount": 0,
+                      "detail": "All 5/5 extracted sourceQuote spans verified as exact normalized substrings of whitepaperText."
+                    },
+                    "guard2FactLock": {
+                      "passed": true,
+                      "lockedParametersCount": 13,
+                      "overriddenDriftCount": 0,
+                      "lockedAnchors": [
+                        "100,000,000",
+                        "100 bps",
+                        "1830297600",
+                        "0x2222222222222222222222222222222222222222"
+                      ],
+                      "detail": "Locked 13 deterministic parameters & verdicts (100,000,000, 100 bps, 1830297600, 0x2222222222222222222222222222222222222222) against LLM modification."
+                    },
+                    "guard3StatuteWhitelist": {
+                      "passed": true,
+                      "whitelistedStatutesCount": 4,
+                      "blockedFabricatedCitationsCount": 0,
+                      "allowedStatutes": [
+                        "Virtual Asset User Protection Act (VAUPA) Art. 10(4)(2)",
+                        "DAXA Joint Listing Review Guidelines (Supply, Fee, Lockup & Governance Standards)",
+                        "Regulation (EU) 2023/1114 (MiCA) Article 6 & Article 15 (Annex I Parts D, E, F, G)",
+                        "US SEC Division of Corporation Finance (CorpFin) Digital Asset Disclosure Guidance & Rule 10b-5"
+                      ],
+                      "detail": "100% of statutory citations verified against Closed-World Whitelist (KR VAUPA Art. 10(4)(2), DAXA, EU MiCA Art. 6 & 15, US SEC CorpFin)."
+                    },
+                    "guard4HumanSignoffGate": {
+                      "passed": true,
+                      "signoffStatus": "AI_DRAFT_VERIFIED",
+                      "requiresCounselApprovalBeforeAnchor": true,
+                      "detail": "Output tagged [AI_DRAFT_VERIFIED] — mandatory Human-in-the-Loop Counsel sign-off required prior to AuditRegistry.sol on-chain anchoring."
+                    }
+                  }
+                }
               },
               "claimCount": 5,
               "disclosedClaims": [
@@ -914,10 +1263,10 @@
             "title": "[Step 2: On-chain EVM State Inspection & Breach Simulation]",
             "capability": "chainlink.capabilities.evm_read@1.0.0 + evm_sandbox_sim",
             "status": "SUCCESS",
-            "startedAt": "2026-10-15T00:24:17.459Z",
-            "completedAt": "2026-10-15T00:24:18.952Z",
-            "durationMs": 1493,
-            "summary": "Executed 22 ABI eth_call reads + EIP-1967 slot inspection + 4 counterfactual breach simulations (Defended=0, Breached=4) on BLIX (0xbbE3c849D90c63645F917Be84a5b454FE858186F) at Block #11916827.",
+            "startedAt": "2026-10-15T01:07:53.519Z",
+            "completedAt": "2026-10-15T01:07:54.755Z",
+            "durationMs": 1236,
+            "summary": "Executed 22 ABI eth_call reads + EIP-1967 slot inspection + 4 counterfactual breach simulations (Defended=0, Breached=4) on BLIX (0xbbE3c849D90c63645F917Be84a5b454FE858186F) at Block #11917045.",
             "inputPayload": {
               "chainId": 11155111,
               "chainName": "Ethereum Sepolia",
@@ -956,7 +1305,7 @@
               ]
             },
             "outputPayload": {
-              "blockNumber": 11916827,
+              "blockNumber": 11917045,
               "name": "BLI Alpha Protocol Token",
               "symbol": "BLIX",
               "totalSupplyFormatted": "100000000",
@@ -1088,15 +1437,15 @@
             "title": "[Step 3: DON Consensus & Gemini AI Discrepancy Evaluation]",
             "capability": "chainlink.capabilities.ocr3_consensus@1.0.0 + google_gemini_legal_reasoning",
             "status": "SUCCESS",
-            "startedAt": "2026-10-15T00:24:18.952Z",
-            "completedAt": "2026-10-15T00:24:18.957Z",
+            "startedAt": "2026-10-15T01:07:54.755Z",
+            "completedAt": "2026-10-15T01:07:54.760Z",
             "durationMs": 5,
-            "summary": "DON (4/4 nodes, OCR3-BFT) + Gemini AI (gemini-3.8-flash (API Key Not Configured), 0ms) reached consensus: MISMATCH (MATCH=0, MISMATCH=4, NEEDS_HUMAN_REVIEW=1) | reportHash=0x405a698c913b...",
+            "summary": "DON (4/4 nodes, OCR3-BFT) + Gemini AI (gemini-2.5-flash (API Key Not Configured), 0ms) reached consensus: MISMATCH (MATCH=0, MISMATCH=4, NEEDS_HUMAN_REVIEW=1) | reportHash=0xe569f340da6e...",
             "inputPayload": {
               "donId": "don-bli-legaltech-cre-01",
               "protocol": "OCR3-BFT",
               "quorumRequired": 3,
-              "geminiModel": "gemini-3.8-flash (API Key Not Configured)",
+              "geminiModel": "gemini-2.5-flash (API Key Not Configured)",
               "evaluatedItemKeys": [
                 "maxSupplyAndMintability",
                 "transferFee",
@@ -1113,18 +1462,69 @@
                 "needsReviewCount": 1
               },
               "geminiReasoningTelemetry": {
-                "model": "gemini-3.8-flash (API Key Not Configured)",
+                "model": "gemini-2.5-flash (API Key Not Configured)",
                 "promptTokens": 0,
                 "completionTokens": 0,
                 "totalTokens": 0,
                 "latencyMs": 0,
                 "liveApiCalled": false,
-                "invokedAt": "2026-10-15T00:24:18.953Z",
+                "invokedAt": "2026-10-15T01:07:54.755Z",
                 "task": "step_2_cre_compare",
-                "fallbackReason": "GEMINI_API_KEY is not set. Configure your key via [Gemini AI Status / Key Setup] in the top header to enable live Gemini inference."
+                "fallbackReason": "GEMINI_API_KEY is not set. Configure your key via [Gemini AI Key / Guardrail Status] in the top header to enable live Gemini inference.",
+                "guardrail": {
+                  "passed": true,
+                  "badgeText": "Hallucination Guardrail: PASSED (Quote Grounded ✓ · EVM Facts Locked ✓ · Statutes Whitelisted ✓)",
+                  "quoteGrounded": true,
+                  "factsLocked": true,
+                  "statutesWhitelisted": true,
+                  "humanGateEnforced": true,
+                  "signoffStatus": "AI_DRAFT_VERIFIED",
+                  "verifiedAt": "2026-10-15T01:07:54.755Z",
+                  "guards": {
+                    "guard1QuoteGrounding": {
+                      "passed": true,
+                      "checkedQuotesCount": 5,
+                      "exactMatchedCount": 5,
+                      "restoredExactSpanCount": 0,
+                      "detail": "All 5/5 extracted sourceQuote spans verified as exact normalized substrings of whitepaperText."
+                    },
+                    "guard2FactLock": {
+                      "passed": true,
+                      "lockedParametersCount": 16,
+                      "overriddenDriftCount": 0,
+                      "lockedAnchors": [
+                        "100,000,000",
+                        "100 bps",
+                        "500 bps",
+                        "1830297600",
+                        "0xbbE3c849D90c63645F917Be84a5b454FE858186F",
+                        "Block #11917045"
+                      ],
+                      "detail": "Locked 16 deterministic parameters & verdicts (100,000,000, 100 bps, 500 bps, 1830297600, 0xbbE3c849D90c63645F917Be84a5b454FE858186F, Block #11917045) against LLM modification."
+                    },
+                    "guard3StatuteWhitelist": {
+                      "passed": true,
+                      "whitelistedStatutesCount": 4,
+                      "blockedFabricatedCitationsCount": 0,
+                      "allowedStatutes": [
+                        "Virtual Asset User Protection Act (VAUPA) Art. 10(4)(2)",
+                        "DAXA Joint Listing Review Guidelines (Supply, Fee, Lockup & Governance Standards)",
+                        "Regulation (EU) 2023/1114 (MiCA) Article 6 & Article 15 (Annex I Parts D, E, F, G)",
+                        "US SEC Division of Corporation Finance (CorpFin) Digital Asset Disclosure Guidance & Rule 10b-5"
+                      ],
+                      "detail": "100% of statutory citations verified against Closed-World Whitelist (KR VAUPA Art. 10(4)(2), DAXA, EU MiCA Art. 6 & 15, US SEC CorpFin)."
+                    },
+                    "guard4HumanSignoffGate": {
+                      "passed": true,
+                      "signoffStatus": "AI_DRAFT_VERIFIED",
+                      "requiresCounselApprovalBeforeAnchor": true,
+                      "detail": "Output tagged [AI_DRAFT_VERIFIED] — mandatory Human-in-the-Loop Counsel sign-off required prior to AuditRegistry.sol on-chain anchoring."
+                    }
+                  }
+                }
               },
-              "consensusDigest": "0x29cfe6f6d9fe4a5ec54d72fab5e650faa9466055296cdd8b91ddd1342a28bd87",
-              "reportHash": "0x405a698c913ba0b644ece71bf7598ce7ad6d203e5ab2ec308da146fba4413f86",
+              "consensusDigest": "0x349eeef050f6a7be5830481be5dc58583156f9a96b63acbc1bdc81507aa24bcd",
+              "reportHash": "0xe569f340da6ef154976393250b4f355ac5537f0a0efba23a0ed9ecdee34da029",
               "itemVerdicts": [
                 {
                   "itemKey": "maxSupplyAndMintability",
@@ -1167,29 +1567,29 @@
                   "nodeId": "cre-node-01.chainlink.don",
                   "operator": "BLI RegTech Oracle Node #1",
                   "signerAddress": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-                  "observationHash": "0xd52f3b2d4bbaa80fff752432f6436277c28e007664885b75bd79da8d84751408",
-                  "signature": "0xe982c918b5ad13fa285a15c038deda7f5b3e9496858e43fbf2c5bfad44e3c832457a7850f8550f1d02a577f4885d7aee77dd223f311cdd29015556133ea410681b"
+                  "observationHash": "0x21a08057b679af0c596aa2cae2851cb832e59a16576e505533b80edcba7850d5",
+                  "signature": "0xf6fa0df9d9a1344d9e613025412219df602693d3c8ededaa88ba2bd7bfd4ef79d8d22f38932ee8038f57804376de6ca32b9c43d2fea3dbede652526b47449c7c1b"
                 },
                 {
                   "nodeId": "cre-node-02.chainlink.don",
                   "operator": "BLI RegTech Oracle Node #2",
                   "signerAddress": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
-                  "observationHash": "0xca3c6d22d34cf33f03fdeb48f4cad4817e5800da88fb64a755fedb4cab262fb0",
-                  "signature": "0xbb1f82ee98f4eddf01ecac4e1081eb23abbfdf3999d67e3b0e215993b57a5c04cdebbd9283c435ffbfa8a5b4eab1fd4c6a16639a97b72b40ce4f1db13226a7131c"
+                  "observationHash": "0x52655bfb40d053db1666daab264d4618cf2c608d9859f1c77c97c59ea12a30d4",
+                  "signature": "0x27d2e25f81309d1b93c4d30c1be5e46bcca314d77735ecff03624125e1952819a75d7d07f28f747e91287f4ebd642809de55564bd811d62d5b21b1e7aad928b01c"
                 },
                 {
                   "nodeId": "cre-node-03.chainlink.don",
                   "operator": "BLI RegTech Oracle Node #3",
                   "signerAddress": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
-                  "observationHash": "0x553505118cb0e73d41b4ba9dc65c2740505d40c581d0fa0d1d6b47a53d78dc5a",
-                  "signature": "0xb86237f97c0dc17c11d8415c954c3266ad6e88081cdcb188a52c4e8859fec9ecdf81e6101fe28ee3332e04a1b04a01e0d54d978816fbef7eb65f5ac42f8050851b"
+                  "observationHash": "0x8ef6cc08c1943d114f88611fd5b828c9dba0eaaadc5fd509d0f2bc721ca4d8ea",
+                  "signature": "0x0d08b07c31d1d3d54a8eb165368df980491df169daa130ea74324813e82693770909c44eecf74a278de96e4ef7cbe173d27a8b6de8fda66feacea2e4e1e356391b"
                 },
                 {
                   "nodeId": "cre-node-04.chainlink.don",
                   "operator": "BLI RegTech Oracle Node #4",
                   "signerAddress": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-                  "observationHash": "0x84000b8ac39224c84500ac977f5da51bd1d98e71ff29f55e07938de926e3f168",
-                  "signature": "0xb571678f203661e9efa89994b168c89641fa6fb6c1cea2fd4ad7d3f98b36c9d8a7d83635390e9fb3301c34070f68e0cc7f7a19be0c65fc1b738d4bebb8dfe1041c"
+                  "observationHash": "0x04a8b24ec67bbd55c85b533f1f21fcba948385be7fe6e8e41785521fb91c4c14",
+                  "signature": "0x24120a4429f0f16b29611f98f56ed6e65c3e2c4233f501b2cd513cbd361e2780cd548bf968e9c0bdfaa42882e2242d3bee3f70f42df9827b8575cd222b445f451c"
                 }
               ]
             }
@@ -1200,28 +1600,28 @@
             "title": "[Step 4: On-chain AuditRegistry Write / Verification Readiness]",
             "capability": "chainlink.capabilities.evm_write@1.0.0",
             "status": "SUCCESS",
-            "startedAt": "2026-10-15T00:24:18.953Z",
-            "completedAt": "2026-10-15T00:24:39.710Z",
-            "durationMs": 20757,
-            "summary": "Anchored to AuditRegistry (0x5B0547C68bc608E6A9b94C515B5B66215981856c) in tx 0x2749e63c5d96... & verified on-chain (verified=true).",
+            "startedAt": "2026-10-15T01:07:54.756Z",
+            "completedAt": "2026-10-15T01:08:03.256Z",
+            "durationMs": 8500,
+            "summary": "Anchored to AuditRegistry (0x5B0547C68bc608E6A9b94C515B5B66215981856c) in tx 0x4c1678c0e702... & verified on-chain (verified=true).",
             "inputPayload": {
               "auditRegistryAddress": "0x5B0547C68bc608E6A9b94C515B5B66215981856c",
               "documentHash": "0x3e37772e7fa79f3b2edf789ae477d60ff0935086f18fe3101f10c36048264d20",
               "tokenAddress": "0xbbE3c849D90c63645F917Be84a5b454FE858186F",
               "chainId": 11155111,
               "chainName": "Ethereum Sepolia",
-              "blockNumber": 11916827,
+              "blockNumber": 11917045,
               "mismatchCount": 4,
-              "reportHash": "0x405a698c913ba0b644ece71bf7598ce7ad6d203e5ab2ec308da146fba4413f86",
+              "reportHash": "0xe569f340da6ef154976393250b4f355ac5537f0a0efba23a0ed9ecdee34da029",
               "executeOnchainAnchor": true
             },
             "outputPayload": {
               "auditRegistryAddress": "0x5B0547C68bc608E6A9b94C515B5B66215981856c",
               "functionSignature": "recordAudit(bytes32,address,uint256,uint256,uint8,bytes32)",
-              "recordAuditCalldata": "0x97cdb7863e37772e7fa79f3b2edf789ae477d60ff0935086f18fe3101f10c36048264d20000000000000000000000000bbe3c849d90c63645f917be84a5b454fe858186f0000000000000000000000000000000000000000000000000000000000aa36a70000000000000000000000000000000000000000000000000000000000b5d61b0000000000000000000000000000000000000000000000000000000000000004405a698c913ba0b644ece71bf7598ce7ad6d203e5ab2ec308da146fba4413f86",
-              "verifyAnchorCalldata": "0x681aa94a3e37772e7fa79f3b2edf789ae477d60ff0935086f18fe3101f10c36048264d20000000000000000000000000bbe3c849d90c63645f917be84a5b454fe858186f405a698c913ba0b644ece71bf7598ce7ad6d203e5ab2ec308da146fba4413f86",
+              "recordAuditCalldata": "0x97cdb7863e37772e7fa79f3b2edf789ae477d60ff0935086f18fe3101f10c36048264d20000000000000000000000000bbe3c849d90c63645f917be84a5b454fe858186f0000000000000000000000000000000000000000000000000000000000aa36a70000000000000000000000000000000000000000000000000000000000b5d6f50000000000000000000000000000000000000000000000000000000000000004e569f340da6ef154976393250b4f355ac5537f0a0efba23a0ed9ecdee34da029",
+              "verifyAnchorCalldata": "0x681aa94a3e37772e7fa79f3b2edf789ae477d60ff0935086f18fe3101f10c36048264d20000000000000000000000000bbe3c849d90c63645f917be84a5b454fe858186fe569f340da6ef154976393250b4f355ac5537f0a0efba23a0ed9ecdee34da029",
               "anchoredOnchain": true,
-              "anchorTxHash": "0x2749e63c5d963a44c0489eb0ecfbf560370bcdec002dcaea2cd208d46b62182e",
+              "anchorTxHash": "0x4c1678c0e7029bfe98f0ff0888d65b3afb57c4ed53311a287f855bbbca9dbd5c",
               "verifyAnchorPassed": true
             }
           }

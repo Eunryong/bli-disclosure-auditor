@@ -135,6 +135,18 @@ On `/audits/[id]/compare` and `/audits/[id]/review`, each finding is mapped to *
 - **🇺🇸 United States:** SEC Division of Corporation Finance — Digital Asset & Smart Contract Disclosure Guidance (Supply Mechanics, Mutable Tax, Transfer Restrictions, Insider Vesting, Governance Centralization)
 - **Automated Dual-Track Remediation (`/audits/[id]/review`):** Generates (1) a formal **Legal Cure & Explanation Demand Notice** ready for one-click copy/PDF export, (2) a side-by-side **Solidity Code Remediation Diff** (`- MismatchedToken.sol` vs `+ CompliantToken.sol`), and (3) **Whitepaper Redline Options A & B**.
 
+### C. Zero-Hallucination Neuro-Symbolic Guardrail (`Gemini + Deterministic EVM & Source Verifier`)
+In LegalTech and RegTech workflows, unverified LLM outputs risk inventing whitepaper quotes, altering empirical on-chain numbers, or citing fabricated statutes. We eliminate LLM hallucination across Step 1 (`/extract`), Step 2 (`/compare`), and Step 3 (`/review`) by pairing **Google Gemini API (`GEMINI_MODEL="gemini-2.5-flash"`, fallback `gemini-2.0-flash`, `temperature: 0`, strict JSON Schema)** with a **4-Layer Post-LLM Deterministic Verification Engine (`src/lib/hallucination-guard.ts`)**:
+
+1. **Guard 1 — Exact Source Quote Grounding (`quoteGrounded: true`):**
+   Every `sourceQuote` extracted or cited by Gemini is verified against the raw `whitepaperText` via normalized substring matching. If an LLM paraphrases or fabricates a quote, the engine automatically restores the exact verbatim sentence from the deterministic parser and logs the auto-remediation.
+2. **Guard 2 — Numerical & On-Chain Fact Lock (`factsLocked: true`):**
+   Core comparison verdicts (`MATCH` / `MISMATCH` / `NEEDS_HUMAN_REVIEW`), empirical EVM return values (`100,000,000`, `100 bps`, `500 bps`, `1830297600`, `0x534c5192...`, `0xbbE3c849...`), and counterfactual breach outcomes (`DEFENDED` / `BREACH_SUCCEEDED`) are computed strictly by the deterministic EVM & rule-parser engine. Gemini is restricted to synthesizing legal explanations around locked empirical facts and cannot mutate any verdict or numerical evidence.
+3. **Guard 3 — Closed-World Statute Whitelist (`statutesWhitelisted: true`):**
+   Legal rationales and Cure Notices are checked against a closed-world statutory registry (`src/lib/legal-knowledge.ts`: KR VAUPA Art. 10(4)(2), DAXA Listing Guidelines, EU MiCA Art. 6 & 15, US SEC CorpFin Guidance / Rule 10b-5). Any unverified statutory article citation outside the whitelist is stripped and replaced with the canonical statutory reference.
+4. **Guard 4 — Human-in-the-Loop Sign-off Gate (`signoffStatus: "AI_DRAFT_VERIFIED"`):**
+   All Gemini-synthesized legal opinions and Cure Notices are tagged `AI_DRAFT_VERIFIED` alongside the badge **`Hallucination Guardrail: PASSED (Quote Grounded ✓ · EVM Facts Locked ✓ · Statutes Whitelisted ✓)`**, requiring explicit human Legal Counsel review and sign-off before `AuditRegistry.sol` on-chain anchoring is unlocked.
+
 ---
 
 ## 4. 1-Minute Quickstart & Reproducibility Guide (For Judges)

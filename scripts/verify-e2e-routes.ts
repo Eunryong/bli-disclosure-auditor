@@ -179,6 +179,21 @@ async function main() {
   const autoExtractData = await autoExtractRes.json();
   assert.equal(autoExtractData.audit.stage, "EXTRACTED", "Stage must transition to EXTRACTED");
   assert.ok(autoExtractData.geminiTelemetry, "Extract response must include geminiTelemetry");
+  assert.equal(
+    autoExtractData.geminiTelemetry.guardrail?.passed,
+    true,
+    "Step 1 Extract guardrail must pass"
+  );
+  assert.equal(
+    autoExtractData.geminiTelemetry.guardrail?.quoteGrounded,
+    true,
+    "Step 1 Guard 1 (Quote Grounding) must be true"
+  );
+  assert.equal(
+    autoExtractData.geminiTelemetry.guardrail?.signoffStatus,
+    "AI_DRAFT_VERIFIED",
+    "Step 1 Guard 4 signoffStatus must be AI_DRAFT_VERIFIED"
+  );
 
   // 3b. Manual adjustment save on `/audits/[id]/extract`
   const manualItems = autoExtractData.audit.checkItems.map((item: any) =>
@@ -224,11 +239,15 @@ async function main() {
     "Extract action button must render in English default"
   );
   assert.ok(
+    extractPageHtml.includes("Hallucination Guardrail: PASSED (Quote Grounded ✓ · EVM Facts Locked ✓ · Statutes Whitelisted ✓)"),
+    "Hallucination Guardrail badge must render on /extract"
+  );
+  assert.ok(
     extractPageHtml.includes("[Verified by Legal Counsel against Original Whitepaper]"),
     "Saved manual edit must render in SSR HTML"
   );
-  console.log(`  ✅ \`POST /api/audits/[id]/extract\` Gemini AI extraction & manual override saved to SQLite`);
-  console.log(`  ✅ \`GET /audits/[id]/extract\` SSR HTML rendered (${extractPageHtml.length.toLocaleString()} bytes)\n`);
+  console.log(`  ✅ \`POST /api/audits/[id]/extract\` Gemini AI extraction + 4-Layer Guardrail & manual override saved to SQLite`);
+  console.log(`  ✅ \`GET /audits/[id]/extract\` SSR HTML rendered (${extractPageHtml.length.toLocaleString()} bytes) with Hallucination Guardrail: PASSED badge\n`);
 
   // ---------------------------------------------------------------------------
   // 4. Page 4: `GET /audits/[id]/compare` & `POST /api/audits/[id]/compare`
@@ -252,6 +271,11 @@ async function main() {
   assert.ok(
     compareData.audit.creWorkflowTrace.geminiTelemetry,
     "CRE Workflow Trace must include geminiTelemetry"
+  );
+  assert.equal(
+    compareData.audit.creWorkflowTrace.geminiTelemetry.step3?.guardrail?.passed,
+    true,
+    "Step 2 CRE Compare Gemini Guardrail must pass"
   );
   assert.equal(
     compareData.audit.creWorkflowTrace.steps.length,
@@ -280,6 +304,10 @@ async function main() {
     "CRE 4-Step Pipeline Inspector must render on /compare"
   );
   assert.ok(
+    comparePageHtml.includes("Hallucination Guardrail: PASSED (Quote Grounded ✓ · EVM Facts Locked ✓ · Statutes Whitelisted ✓)"),
+    "Hallucination Guardrail badge must render on /compare"
+  );
+  assert.ok(
     comparePageHtml.includes("Counterfactual Breach Simulation Proof"),
     "Counterfactual Breach Simulation Proof section must render on /compare"
   );
@@ -296,9 +324,9 @@ async function main() {
     "DON Consensus Digest must render on /compare"
   );
   console.log(
-    `  ✅ \`POST /api/audits/[id]/compare\` executed Chainlink CRE 4-step workflow + Gemini AI reasoning + 4 Breach Simulations (Run ID: ${compareData.audit.creWorkflowRunId})`
+    `  ✅ \`POST /api/audits/[id]/compare\` executed Chainlink CRE 4-step workflow + Gemini AI reasoning + 4 Breach Simulations + 4-Layer Guardrail (Run ID: ${compareData.audit.creWorkflowRunId})`
   );
-  console.log(`  ✅ \`GET /audits/[id]/compare\` SSR HTML rendered (${comparePageHtml.length.toLocaleString()} bytes) with CRE trace, 16 EVM reads, 4 Breach Proofs & KR/EU/US statutes\n`);
+  console.log(`  ✅ \`GET /audits/[id]/compare\` SSR HTML rendered (${comparePageHtml.length.toLocaleString()} bytes) with CRE trace, 16 EVM reads, 4 Breach Proofs & Hallucination Guardrail badge\n`);
 
   // ---------------------------------------------------------------------------
   // 5. Page 5: `GET /audits/[id]/review`, `POST /api/audits/[id]/review/ai-draft` & `POST /api/audits/[id]/review`
@@ -316,6 +344,16 @@ async function main() {
   assert.ok(aiDraftData.audit.overallSummary, "Gemini AI draft must populate overallSummary");
   assert.ok(aiDraftData.audit.aiCureNoticeText, "Gemini AI draft must populate aiCureNoticeText");
   assert.ok(aiDraftData.geminiTelemetry, "Gemini AI draft must return geminiTelemetry");
+  assert.equal(
+    aiDraftData.geminiTelemetry.guardrail?.passed,
+    true,
+    "Step 3 Legal Review Gemini Guardrail must pass"
+  );
+  assert.equal(
+    aiDraftData.geminiTelemetry.guardrail?.statutesWhitelisted,
+    true,
+    "Step 3 Guard 3 (Closed-World Statute Whitelist) must be true"
+  );
 
   // 5b. Anchor on AuditRegistry (`POST /api/audits/[id]/review`)
   const reviewReq = new NextRequest(`http://localhost:3300/api/audits/${createdId}/review`, {
@@ -358,6 +396,10 @@ async function main() {
     "Gemini AI Legal Opinion button must render on /review"
   );
   assert.ok(
+    reviewPageHtml.includes("Hallucination Guardrail: PASSED (Quote Grounded ✓ · EVM Facts Locked ✓ · Statutes Whitelisted ✓)"),
+    "Hallucination Guardrail badge must render on /review"
+  );
+  assert.ok(
     reviewPageHtml.includes("verifyAnchor() === true (On-Chain Verified)"),
     "On-chain verifyAnchor() badge must render on /review"
   );
@@ -375,12 +417,12 @@ async function main() {
     "Legal Cure Notice & Solidity Code Remediation Diff panel must render on /review"
   );
   console.log(
-    `  ✅ \`POST /api/audits/[id]/review/ai-draft\` synthesized Legal Opinion, 5 Clause Notes & Cure Notice via Gemini AI`
+    `  ✅ \`POST /api/audits/[id]/review/ai-draft\` synthesized Legal Opinion, 5 Clause Notes & Cure Notice via Gemini AI + 4-Layer Guardrail`
   );
   console.log(
     `  ✅ \`POST /api/audits/[id]/review\` anchored on AuditRegistry (tx: ${reviewData.audit.anchorTxHash.slice(0, 22)}..., verifyAnchor=true)`
   );
-  console.log(`  ✅ \`GET /audits/[id]/review\` SSR HTML rendered (${reviewPageHtml.length.toLocaleString()} bytes) with Legal Cure Notice & Solidity Diff\n`);
+  console.log(`  ✅ \`GET /audits/[id]/review\` SSR HTML rendered (${reviewPageHtml.length.toLocaleString()} bytes) with Legal Cure Notice, Solidity Diff & Hallucination Guardrail badge\n`);
 
   // ---------------------------------------------------------------------------
   // 6. Verify `GET /api/audits/[id]` & Clean Up Temporary Test Case (`DELETE /api/audits/[id]`)
@@ -409,6 +451,12 @@ async function main() {
       await AuditReviewPage({ params: Promise.resolve({ id: seedId }) })
     );
     assert.ok(seedExtractHtml.length > 1000 && seedCompareHtml.length > 1000 && seedReviewHtml.length > 1000);
+    assert.ok(
+      seedExtractHtml.includes("Hallucination Guardrail: PASSED") &&
+        seedCompareHtml.includes("Hallucination Guardrail: PASSED") &&
+        seedReviewHtml.includes("Hallucination Guardrail: PASSED"),
+      `Seed case ${seedId} must render Hallucination Guardrail: PASSED across /extract, /compare, and /review`
+    );
     if (seedId === "audit-compliant-blic") {
       assert.ok(
         seedCompareHtml.includes("DEFENDED / BLOCKED_BY_CODE"),
@@ -416,10 +464,10 @@ async function main() {
       );
     }
   }
-  console.log("  ✅ Canonical seed cases (`audit-compliant-blic`, `audit-mismatched-blix`) verified across all 5 routes\n");
+  console.log("  ✅ Canonical seed cases (`audit-compliant-blic`, `audit-mismatched-blix`) verified across all 5 routes with 4-Layer Hallucination Guardrail\n");
 
   console.log("================================================================================");
-  console.log("🎉 ALL 5 MULTI-PAGE ROUTES & API HANDLERS PASSED E2E VERIFICATION (0 ERRORS)");
+  console.log("🎉 ALL 5 MULTI-PAGE ROUTES, GEMINI AI & 4-LAYER GUARDRAIL PASSED E2E (0 ERRORS)");
   console.log("================================================================================");
 }
 

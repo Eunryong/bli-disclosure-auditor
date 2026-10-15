@@ -46,7 +46,7 @@ Under global digital asset frameworks (EU MiCA, Korean Virtual Asset User Protec
    - **Step 4 (`capabilities.blockchain.evm.write`):** Generates `AuditRegistry.recordAudit` payload and verifies on-chain integrity.
 5. **`/audits/[id]/review` (Legal Sign-Off, Automated Legal Cure Notice & On-Chain Hash Anchoring):** Generates an **Automated Legal Cure Notice (법무 소명 및 시정 권고서)**, allows legal counsel to record item-by-item review notes, finalize statuses, execute `AuditRegistry.recordAudit()` on-chain, verify `verifyAnchor() === true`, and export JSON/PDF compliance evidence packages.
 
-## Two Key Differentiating Pillars
+## Three Key Differentiating Pillars
 
 ### Pillar 1: Adversarial On-Chain Breach Simulation (Counterfactual EVM Sandbox)
 Instead of relying solely on static `eth_call` getters, CRE Step 2 forks the contract's live EVM state into an isolated sandbox (`@ethereumjs/evm` state checkpoint) and dispatches **4 adversarial transactions** that deliberately attempt to violate the whitepaper's promises:
@@ -59,6 +59,13 @@ Instead of relying solely on static `eth_call` getters, CRE Step 2 forks the con
 - **3-Jurisdiction Regulatory Mapping:** Maps each technical mismatch to review checkpoints under **South Korea** (가상자산이용자보호법 제10조 제4항 제2호 & DAXA 상장심사 가이드라인), **European Union** (MiCA Regulation (EU) 2023/1114 Articles 6 & 15), and **United States** (SEC CorpFin Framework for Investment Contract Analysis of Digital Assets).
 - **Actionable Dual-Track Remediation (`- MismatchedToken.sol` vs `+ CompliantToken.sol`):** Provides exact Solidity code patches (Option A: Re-deploy/patch contract) alongside ready-to-insert Whitepaper Redline Clauses (Option B: Amend risk disclosure).
 - **One-Click Legal Cure Notice Generator:** Automatically drafts a formal Korean/English Legal Cure Notice & Exchange Listing Review Memo on `/audits/[id]/review` summarizing all detected mismatches, successful breach simulations, and remediation options.
+
+### Pillar 3: Zero-Hallucination Neuro-Symbolic Guardrail (Gemini + Deterministic EVM & Source Verifier)
+To eliminate the risk of LLM hallucinations in legal compliance workflows, Google Gemini API (`gemini-2.5-flash` / fallback `gemini-2.0-flash`, `temperature: 0`, JSON Schema structured output) is wrapped in a **4-Layer Post-LLM Verification Engine (`src/lib/hallucination-guard.ts`)**:
+- **Guard 1 (Exact Source Quote Grounding):** Verifies every Gemini-extracted `sourceQuote` exists verbatim in `whitepaperText` via normalized substring checks, automatically restoring deterministic source spans if any paraphrase/hallucination is detected (`quoteGrounded: true`).
+- **Guard 2 (Numerical & On-Chain Fact Lock):** Locks `MATCH` / `MISMATCH` / `NEEDS_HUMAN_REVIEW` verdicts and core numerical/on-chain parameters (`100,000,000`, `100 bps`, `500 bps`, `1830297600`, contract addresses, block numbers) to empirical EVM & rule-parser values so the LLM can never alter factual verdicts (`factsLocked: true`).
+- **Guard 3 (Closed-World Statute Whitelist):** Enforces a strict statutory whitelist (`src/lib/legal-knowledge.ts`: KR VAUPA Art. 10(4)(2), DAXA, EU MiCA Art. 6 & 15, US SEC CorpFin / Rule 10b-5), stripping any unverified statute citation (`statutesWhitelisted: true`).
+- **Guard 4 (Human-in-the-Loop Sign-off Gate):** Marks AI outputs as `AI_DRAFT_VERIFIED` alongside the UI badge **`Hallucination Guardrail: PASSED (Quote Grounded ✓ · EVM Facts Locked ✓ · Statutes Whitelisted ✓)`**, requiring human Counsel sign-off before `AuditRegistry.sol` on-chain anchoring.
 
 ## Chainlink CRE Bounty Integration (`cre-workflow/`)
 - **Manifest & Config:** `cre-workflow/workflow.yaml` & `cre-workflow/config.json`
@@ -74,7 +81,7 @@ Instead of relying solely on static `eth_call` getters, CRE Step 2 forks the con
 
 ### 6. Tech Stack Tags
 ```text
-Next.js 15 (App Router), TypeScript, Chainlink CRE, Solidity 0.8.28, Viem, EthereumJS EVM, Prisma ORM, SQLite, Tailwind CSS
+Next.js 15 (App Router), TypeScript, Chainlink CRE, Google Gemini API (4-Layer Guardrail), Solidity 0.8.28, Viem, EthereumJS EVM, Prisma ORM, SQLite, Tailwind CSS
 ```
 
 ### 7. Reproducibility & Verification Commands

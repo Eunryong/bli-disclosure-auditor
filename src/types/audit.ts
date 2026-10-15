@@ -304,6 +304,46 @@ export interface LegalCureNoticeDraft {
   fullNoticeTextKo: string;
 }
 
+export interface HallucinationGuardrailReport {
+  passed: boolean;
+  badgeText: string;
+  quoteGrounded: boolean;
+  factsLocked: boolean;
+  statutesWhitelisted: boolean;
+  humanGateEnforced: boolean;
+  signoffStatus: "AI_DRAFT_VERIFIED" | "COUNSEL_ANCHORED";
+  verifiedAt: string;
+  guards: {
+    guard1QuoteGrounding: {
+      passed: boolean;
+      checkedQuotesCount: number;
+      exactMatchedCount: number;
+      restoredExactSpanCount: number;
+      detail: string;
+    };
+    guard2FactLock: {
+      passed: boolean;
+      lockedParametersCount: number;
+      overriddenDriftCount: number;
+      lockedAnchors: string[];
+      detail: string;
+    };
+    guard3StatuteWhitelist: {
+      passed: boolean;
+      whitelistedStatutesCount: number;
+      blockedFabricatedCitationsCount: number;
+      allowedStatutes: string[];
+      detail: string;
+    };
+    guard4HumanSignoffGate: {
+      passed: boolean;
+      signoffStatus: "AI_DRAFT_VERIFIED" | "COUNSEL_ANCHORED";
+      requiresCounselApprovalBeforeAnchor: boolean;
+      detail: string;
+    };
+  };
+}
+
 export interface GeminiCallMetadata {
   model: string;
   promptTokens: number;
@@ -311,13 +351,15 @@ export interface GeminiCallMetadata {
   totalTokens: number;
   latencyMs: number;
   liveApiCalled: boolean;
-  invokedAt: string;
-  task:
+  invokedAt?: string;
+  task?:
     | "step_1_extract"
     | "step_2_cre_compare"
     | "step_3_legal_review"
     | "connection_test";
   fallbackReason?: string;
+  fallbackNote?: string;
+  guardrail?: HallucinationGuardrailReport;
 }
 
 export interface CreWorkflowExecutionTrace {

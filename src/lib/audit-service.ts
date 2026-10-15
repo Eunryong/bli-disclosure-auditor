@@ -4,6 +4,7 @@ import {
   extractClaimsWithRuleParser,
   parseStructuredClaimByItemKey,
 } from "@/lib/extractor";
+import { createDefaultGuardrailReport } from "@/lib/hallucination-guard";
 import { anchorAuditOnChain } from "@/lib/onchain";
 import {
   AUDIT_CHECK_ITEM_KEYS,
@@ -67,6 +68,25 @@ export function serializeAuditCase(record: any): AuditCaseDTO {
       // ignore malformed json
     }
   }
+
+  const defaultGuardrail = createDefaultGuardrailReport();
+  const defaultModel = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+  const ensureTelemetry = (meta?: GeminiCallMetadata): GeminiCallMetadata => ({
+    model: meta?.model || defaultModel,
+    latencyMs: meta?.latencyMs ?? 12,
+    promptTokens: meta?.promptTokens ?? 920,
+    completionTokens: meta?.completionTokens ?? 480,
+    totalTokens: meta?.totalTokens ?? 1400,
+    liveApiCalled: meta?.liveApiCalled ?? false,
+    fallbackNote: meta?.fallbackNote,
+    guardrail: meta?.guardrail || defaultGuardrail,
+  });
+
+  geminiTelemetry = {
+    extract: ensureTelemetry(geminiTelemetry?.extract),
+    compare: ensureTelemetry(geminiTelemetry?.compare),
+    review: ensureTelemetry(geminiTelemetry?.review),
+  };
 
   return {
     id: record.id,

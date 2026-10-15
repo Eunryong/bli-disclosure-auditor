@@ -44,6 +44,7 @@ export async function POST(
         existing.creWorkflowTrace?.consensus?.reportHash ||
         "0x0000000000000000000000000000000000000000000000000000000000000000",
       overallStatus: existing.overallStatus,
+      whitepaperText: existing.whitepaperText,
       checkItems: existing.checkItems,
       breachSimulations,
       lang,
