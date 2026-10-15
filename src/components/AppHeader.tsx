@@ -21,7 +21,7 @@ export function AppHeader() {
   );
   const [modalOpen, setModalOpen] = useState(false);
   const [apiKeyInput, setApiKeyInput] = useState("");
-  const [modelInput, setModelInput] = useState("gemini-2.5-flash");
+  const [modelInput, setModelInput] = useState("gemini-3.8-flash");
   const [savingKey, setSavingKey] = useState(false);
   const [testResult, setTestResult] = useState<{
     ok: boolean;
@@ -107,7 +107,7 @@ export function AppHeader() {
             <span className="text-[#D8D4CC]">|</span>
             <span>ORCHESTRATOR: CHAINLINK CRE (OCR3-BFT)</span>
             <span className="text-[#D8D4CC]">|</span>
-            <span>AI ENGINE: GOOGLE GEMINI ({geminiStatus?.model || "gemini-2.5-flash"})</span>
+            <span>AI ENGINE: GOOGLE GEMINI ({geminiStatus?.model || "gemini-3.8-flash"})</span>
             <span className="text-[#D8D4CC]">|</span>
             <span>JURISDICTIONS: KR · EU (MiCA) · US (SEC)</span>
           </div>
@@ -328,8 +328,11 @@ export function AppHeader() {
                   onChange={(e) => setModelInput(e.target.value)}
                   className="mt-1.5 w-full rounded-[2px] border border-[#111315] bg-white px-3 py-2 font-mono text-xs text-[#111315] focus:outline-none"
                 >
+                  <option value="gemini-3.8-flash">
+                    gemini-3.8-flash (Recommended — High-Speed Legal &amp; Forensic Reasoning)
+                  </option>
                   <option value="gemini-2.5-flash">
-                    gemini-2.5-flash (Recommended — Fast &amp; High Legal Accuracy)
+                    gemini-2.5-flash (Fallback — Fast &amp; High Legal Accuracy)
                   </option>
                   <option value="gemini-2.0-flash">
                     gemini-2.0-flash (Fallback Model)

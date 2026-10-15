@@ -12,8 +12,8 @@ import { AUDIT_CHECK_ITEM_KEYS } from "@/types/audit";
 import { LEGAL_STATUTE_MAP, generateLegalCureNotice } from "@/lib/legal-knowledge";
 
 const ENV_FILE_PATH = path.join(process.cwd(), ".env");
-export const DEFAULT_GEMINI_MODEL = "gemini-2.5-flash";
-export const FALLBACK_GEMINI_MODEL = "gemini-2.0-flash";
+export const DEFAULT_GEMINI_MODEL = "gemini-3.8-flash";
+export const FALLBACK_GEMINI_MODEL = "gemini-2.5-flash";
 
 export interface GeminiRuntimeConfig {
   apiKey: string;
@@ -178,7 +178,7 @@ function extractJsonFromText<T = Record<string, any>>(text: string): T | null {
 /**
  * Calls the Google Gemini REST API (`v1beta/models/${model}:generateContent`)
  * and returns parsed JSON along with real token & latency telemetry.
- * Automatically falls back from `gemini-2.5-flash` to `gemini-2.0-flash` if the primary model is unavailable.
+ * Automatically falls back from `gemini-3.8-flash` to `gemini-2.5-flash` / `gemini-2.0-flash` if needed.
  */
 export async function callGeminiLlm<T = Record<string, any>>(
   params: CallGeminiLlmParams
@@ -210,7 +210,13 @@ export async function callGeminiLlm<T = Record<string, any>>(
   }
 
   const candidateModels = Array.from(
-    new Set([requestedModel, FALLBACK_GEMINI_MODEL, "gemini-1.5-flash"])
+    new Set([
+      requestedModel,
+      "gemini-3.8-flash",
+      FALLBACK_GEMINI_MODEL,
+      "gemini-2.0-flash",
+      "gemini-1.5-flash",
+    ])
   );
 
   let lastError = "Unknown Gemini API error";
@@ -264,7 +270,7 @@ export async function callGeminiLlm<T = Record<string, any>>(
           parsedJson: null,
           rawText: "",
           telemetry: {
-            model: modelName,
+            model: requestedModel,
             promptTokens: 0,
             completionTokens: 0,
             totalTokens: 0,
@@ -296,7 +302,7 @@ export async function callGeminiLlm<T = Record<string, any>>(
         parsedJson,
         rawText: candidateText,
         telemetry: {
-          model: modelName,
+          model: requestedModel,
           promptTokens,
           completionTokens,
           totalTokens,
