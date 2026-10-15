@@ -6,8 +6,8 @@
   "configPath": "cre-workflow/config.json",
   "cliBinaryDetected": false,
   "runtimeEngine": "chainlink-cre-local-simulator",
-  "executedAt": "2026-10-15T01:07:38.351Z",
-  "totalDurationMs": 26161,
+  "executedAt": "2026-10-15T01:23:31.559Z",
+  "totalDurationMs": 20202,
   "casesSimulated": 2,
   "runs": [
     {
@@ -16,19 +16,19 @@
       "tokenSymbol": "BLIC",
       "tokenAddress": "0x534c51921913a8717Ca2db550b77fFabf168f71e",
       "documentHash": "0xa7226b6ec726cba689e606e106c848f1fc221189559e0b6b1f0ac1b8008488c1",
-      "workflowRunId": "cre-blic-b11917044-e55e3d47",
+      "workflowRunId": "cre-blic-b11917123-9ab019ba",
       "overallStatus": "MATCH",
       "counts": {
         "matchCount": 5,
         "mismatchCount": 0,
         "needsReviewCount": 0
       },
-      "reportHash": "0xdff4b1d5cbc76707e336a997bd21205e6f56c8833255422dc99b6d94eca2b753",
-      "consensusDigest": "0xe55e3d4752aade766de0a79ba703051b6a6624e4550e31ef6e97d8f659294d9f",
-      "anchorTxHash": "0xa0e0d5c477859b61f057039368fae80692bfaee2156f228ade5a34b4a64cde07",
+      "reportHash": "0xea0f160ae838c5660a3788468e1632e0a30ddb5593fb7eb571688b2704e507db",
+      "consensusDigest": "0x9ab019baed9254c1261999e817f751369428e47167e9f613a14696b830afc49d",
+      "anchorTxHash": "0x7672393d9442ebb64420a106e8ab879eb823bb36e6b32e5da0f74f2bdcb9f0ce",
       "verifyAnchorVerified": true,
       "trace": {
-        "workflowRunId": "cre-blic-b11917044-e55e3d47",
+        "workflowRunId": "cre-blic-b11917123-9ab019ba",
         "workflowName": "bli-disclosure-smart-contract-mismatch-auditor",
         "workflowVersion": "1.0.0",
         "manifestPath": "cre-workflow/workflow.yaml",
@@ -39,7 +39,7 @@
         "tokenAddress": "0x534c51921913a8717Ca2db550b77fFabf168f71e",
         "chainId": 11155111,
         "chainName": "Ethereum Sepolia",
-        "snapshotBlockNumber": 11917044,
+        "snapshotBlockNumber": 11917123,
         "documentHash": "0xa7226b6ec726cba689e606e106c848f1fc221189559e0b6b1f0ac1b8008488c1",
         "overallStatus": "MATCH",
         "counts": {
@@ -53,45 +53,45 @@
           "nodeCount": 4,
           "quorumRequired": 3,
           "quorumReached": 4,
-          "consensusDigest": "0xe55e3d4752aade766de0a79ba703051b6a6624e4550e31ef6e97d8f659294d9f",
-          "reportHash": "0xdff4b1d5cbc76707e336a997bd21205e6f56c8833255422dc99b6d94eca2b753",
+          "consensusDigest": "0x9ab019baed9254c1261999e817f751369428e47167e9f613a14696b830afc49d",
+          "reportHash": "0xea0f160ae838c5660a3788468e1632e0a30ddb5593fb7eb571688b2704e507db",
           "nodeSignatures": [
             {
               "nodeId": "cre-node-01.chainlink.don",
               "operator": "BLI RegTech Oracle Node #1",
               "signerAddress": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-              "observationHash": "0xdc6b6bd38be1a0ef18ed3043a8c27c576665541203ef792caf84ce2aa81fc9ff",
-              "signature": "0x2db64c6ffce5c39b7b0a70f47f04e475a7cd19e22b4392db86983659a737ed5f345dabee1bdc5f93403d2367f4e94d7d5a3a533cc0e1e34e44de7f7129ef434e1b"
+              "observationHash": "0x79095676b9ed5af4dd39f23155240c2737ebfee94d6b1c1d61a80c72b8ec9719",
+              "signature": "0x4cc58eb1703621ecdc3f25f127a050714a3a69534bff85ee20700e7ccb30f605f8a465ae6f22ccdd5e40b62de600198aa2d9d3e8f1031d93c22354971c9139771b"
             },
             {
               "nodeId": "cre-node-02.chainlink.don",
               "operator": "BLI RegTech Oracle Node #2",
               "signerAddress": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
-              "observationHash": "0x38a4295a1b9cc94e1803845753df69b867b19b7a1d5592ecd243cf34caf771c7",
-              "signature": "0x0e0268f3dd972e1aba3c0795724044d73a75de0e547e0d26a0bf3b512c87d1fb76f47bf5f534f5ab96f4e7d93d62fec4cec9a845a940f321dde0502e82dec6f91c"
+              "observationHash": "0x29745a4aec7fc57ebe39b56eb31ec16b32452a28548bd00d8346c0caeedc37bc",
+              "signature": "0x43fd5011a9306bc54e12903ee4aebed671172baccbe240f47a1e5b69a824e0637c098fcf9ab0ec5915536ea5ab098cf2e6aaed09cc9886886ebaad8c67c4e1e71c"
             },
             {
               "nodeId": "cre-node-03.chainlink.don",
               "operator": "BLI RegTech Oracle Node #3",
               "signerAddress": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
-              "observationHash": "0xaaf4801b1861012300ec68b03cdee645faa91a33ea01f69fe64e402a2ab52a38",
-              "signature": "0xc810e664e69faabe86d32752d6ffc3aa5d66fdd312ea42f18600677655f795637a32d227a47e83beff7818ac50cbcf4351efe6200fdd09732d302a9478e20cc11b"
+              "observationHash": "0xbf39af633fcb5f31269aee07e87df6e4fc1aba48a0ea54a01a58ab2aed59e2ce",
+              "signature": "0xbd22353765744c898e1b08f1d57379b8a83aef172b154a8bcaf4f7616f39976ab55b62ed454d1397929caf380a58a5a6fab01b926be9f234a77f0dbeef842d211b"
             },
             {
               "nodeId": "cre-node-04.chainlink.don",
               "operator": "BLI RegTech Oracle Node #4",
               "signerAddress": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-              "observationHash": "0xebc81bdf931a32bc8b90642d97d019c9507a46ef9592fbeb08e55b56889b932b",
-              "signature": "0x531052376fededfdf5d8bce0a43aee7abc440ff333c6e18fd80e69f54de3a90b126f01c95396622bc94418d6c711b59c80b452865de45c3d05b3f9af1615e3701c"
+              "observationHash": "0xda331aeb17cf649781bac10ddce6f0b6ea9c1fa4bd4a534c8f7c4fe5661d0c85",
+              "signature": "0x8d8ecf46e11fcada1757172acfb3ce5936fa3ee682d852fb078b92617743eff81e49dd8806082cdf723bb76c1f27fbb47455558a051453bdef893db58e1924611c"
             }
           ]
         },
         "auditRegistryPayload": {
           "auditRegistryAddress": "0x5B0547C68bc608E6A9b94C515B5B66215981856c",
           "functionSignature": "recordAudit(bytes32,address,uint256,uint256,uint8,bytes32)",
-          "recordAuditCalldata": "0x97cdb786a7226b6ec726cba689e606e106c848f1fc221189559e0b6b1f0ac1b8008488c1000000000000000000000000534c51921913a8717ca2db550b77ffabf168f71e0000000000000000000000000000000000000000000000000000000000aa36a70000000000000000000000000000000000000000000000000000000000b5d6f40000000000000000000000000000000000000000000000000000000000000000dff4b1d5cbc76707e336a997bd21205e6f56c8833255422dc99b6d94eca2b753",
-          "verifyAnchorCalldata": "0x681aa94aa7226b6ec726cba689e606e106c848f1fc221189559e0b6b1f0ac1b8008488c1000000000000000000000000534c51921913a8717ca2db550b77ffabf168f71edff4b1d5cbc76707e336a997bd21205e6f56c8833255422dc99b6d94eca2b753",
-          "reportHash": "0xdff4b1d5cbc76707e336a997bd21205e6f56c8833255422dc99b6d94eca2b753"
+          "recordAuditCalldata": "0x97cdb786a7226b6ec726cba689e606e106c848f1fc221189559e0b6b1f0ac1b8008488c1000000000000000000000000534c51921913a8717ca2db550b77ffabf168f71e0000000000000000000000000000000000000000000000000000000000aa36a70000000000000000000000000000000000000000000000000000000000b5d7430000000000000000000000000000000000000000000000000000000000000000ea0f160ae838c5660a3788468e1632e0a30ddb5593fb7eb571688b2704e507db",
+          "verifyAnchorCalldata": "0x681aa94aa7226b6ec726cba689e606e106c848f1fc221189559e0b6b1f0ac1b8008488c1000000000000000000000000534c51921913a8717ca2db550b77ffabf168f71eea0f160ae838c5660a3788468e1632e0a30ddb5593fb7eb571688b2704e507db",
+          "reportHash": "0xea0f160ae838c5660a3788468e1632e0a30ddb5593fb7eb571688b2704e507db"
         },
         "breachSimulations": [
           {
@@ -190,13 +190,13 @@
         ],
         "geminiTelemetry": {
           "step1": {
-            "model": "gemini-2.5-flash (API Key Not Configured)",
+            "model": "gemini-3.8-flash (API Key Not Configured)",
             "promptTokens": 0,
             "completionTokens": 0,
             "totalTokens": 0,
             "latencyMs": 0,
             "liveApiCalled": false,
-            "invokedAt": "2026-10-15T01:07:38.395Z",
+            "invokedAt": "2026-10-15T01:23:31.581Z",
             "task": "step_1_extract",
             "fallbackReason": "GEMINI_API_KEY is not set. Configure your key via [Gemini AI Key / Guardrail Status] in the top header to enable live Gemini inference.",
             "guardrail": {
@@ -207,7 +207,7 @@
               "statutesWhitelisted": true,
               "humanGateEnforced": true,
               "signoffStatus": "AI_DRAFT_VERIFIED",
-              "verifiedAt": "2026-10-15T01:07:38.395Z",
+              "verifiedAt": "2026-10-15T01:23:31.581Z",
               "guards": {
                 "guard1QuoteGrounding": {
                   "passed": true,
@@ -250,13 +250,13 @@
             }
           },
           "step3": {
-            "model": "gemini-2.5-flash (API Key Not Configured)",
+            "model": "gemini-3.8-flash (API Key Not Configured)",
             "promptTokens": 0,
             "completionTokens": 0,
             "totalTokens": 0,
             "latencyMs": 0,
             "liveApiCalled": false,
-            "invokedAt": "2026-10-15T01:07:39.795Z",
+            "invokedAt": "2026-10-15T01:23:33.381Z",
             "task": "step_2_cre_compare",
             "fallbackReason": "GEMINI_API_KEY is not set. Configure your key via [Gemini AI Key / Guardrail Status] in the top header to enable live Gemini inference.",
             "guardrail": {
@@ -267,7 +267,7 @@
               "statutesWhitelisted": true,
               "humanGateEnforced": true,
               "signoffStatus": "AI_DRAFT_VERIFIED",
-              "verifiedAt": "2026-10-15T01:07:39.795Z",
+              "verifiedAt": "2026-10-15T01:23:33.382Z",
               "guards": {
                 "guard1QuoteGrounding": {
                   "passed": true,
@@ -286,9 +286,9 @@
                     "500 bps",
                     "1830297600",
                     "0x534c51921913a8717Ca2db550b77fFabf168f71e",
-                    "Block #11917044"
+                    "Block #11917123"
                   ],
-                  "detail": "Locked 16 deterministic parameters & verdicts (100,000,000, 100 bps, 500 bps, 1830297600, 0x534c51921913a8717Ca2db550b77fFabf168f71e, Block #11917044) against LLM modification."
+                  "detail": "Locked 16 deterministic parameters & verdicts (100,000,000, 100 bps, 500 bps, 1830297600, 0x534c51921913a8717Ca2db550b77fFabf168f71e, Block #11917123) against LLM modification."
                 },
                 "guard3StatuteWhitelist": {
                   "passed": true,
@@ -312,8 +312,8 @@
             }
           }
         },
-        "totalDurationMs": 13953,
-        "executedAt": "2026-10-15T01:07:52.337Z",
+        "totalDurationMs": 6298,
+        "executedAt": "2026-10-15T01:23:37.867Z",
         "steps": [
           {
             "stepNumber": 1,
@@ -321,10 +321,10 @@
             "title": "[Step 1: Trigger & Off-chain Disclosure Fetch (Google Gemini AI)]",
             "capability": "chainlink.capabilities.http_client@1.0.0 + google_gemini_llm_extractor",
             "status": "SUCCESS",
-            "startedAt": "2026-10-15T01:07:38.387Z",
-            "completedAt": "2026-10-15T01:07:38.395Z",
-            "durationMs": 8,
-            "summary": "Fetched SHA-256 documentHash (0xa7226b6ec726...) & extracted 5 structured disclosure claims via DETERMINISTIC_RULE_PARSER (gemini-2.5-flash (API Key Not Configured), 0ms).",
+            "startedAt": "2026-10-15T01:23:31.572Z",
+            "completedAt": "2026-10-15T01:23:31.581Z",
+            "durationMs": 9,
+            "summary": "Fetched SHA-256 documentHash (0xa7226b6ec726...) & extracted 5 structured disclosure claims via DETERMINISTIC_RULE_PARSER (gemini-3.8-flash (API Key Not Configured), 0ms).",
             "inputPayload": {
               "triggerType": "cre.triggers.http_webhook@1.0.0",
               "auditCaseId": "audit-compliant-blic",
@@ -336,13 +336,13 @@
               "documentHash": "0xa7226b6ec726cba689e606e106c848f1fc221189559e0b6b1f0ac1b8008488c1",
               "extractionEngine": "DETERMINISTIC_RULE_PARSER",
               "geminiTelemetry": {
-                "model": "gemini-2.5-flash (API Key Not Configured)",
+                "model": "gemini-3.8-flash (API Key Not Configured)",
                 "promptTokens": 0,
                 "completionTokens": 0,
                 "totalTokens": 0,
                 "latencyMs": 0,
                 "liveApiCalled": false,
-                "invokedAt": "2026-10-15T01:07:38.395Z",
+                "invokedAt": "2026-10-15T01:23:31.581Z",
                 "task": "step_1_extract",
                 "fallbackReason": "GEMINI_API_KEY is not set. Configure your key via [Gemini AI Key / Guardrail Status] in the top header to enable live Gemini inference.",
                 "guardrail": {
@@ -353,7 +353,7 @@
                   "statutesWhitelisted": true,
                   "humanGateEnforced": true,
                   "signoffStatus": "AI_DRAFT_VERIFIED",
-                  "verifiedAt": "2026-10-15T01:07:38.395Z",
+                  "verifiedAt": "2026-10-15T01:23:31.581Z",
                   "guards": {
                     "guard1QuoteGrounding": {
                       "passed": true,
@@ -454,10 +454,10 @@
             "title": "[Step 2: On-chain EVM State Inspection & Breach Simulation]",
             "capability": "chainlink.capabilities.evm_read@1.0.0 + evm_sandbox_sim",
             "status": "SUCCESS",
-            "startedAt": "2026-10-15T01:07:38.395Z",
-            "completedAt": "2026-10-15T01:07:39.794Z",
-            "durationMs": 1399,
-            "summary": "Executed 22 ABI eth_call reads + EIP-1967 slot inspection + 4 counterfactual breach simulations (Defended=4, Breached=0) on BLIC (0x534c51921913a8717Ca2db550b77fFabf168f71e) at Block #11917044.",
+            "startedAt": "2026-10-15T01:23:31.581Z",
+            "completedAt": "2026-10-15T01:23:33.380Z",
+            "durationMs": 1799,
+            "summary": "Executed 22 ABI eth_call reads + EIP-1967 slot inspection + 4 counterfactual breach simulations (Defended=4, Breached=0) on BLIC (0x534c51921913a8717Ca2db550b77fFabf168f71e) at Block #11917123.",
             "inputPayload": {
               "chainId": 11155111,
               "chainName": "Ethereum Sepolia",
@@ -496,7 +496,7 @@
               ]
             },
             "outputPayload": {
-              "blockNumber": 11917044,
+              "blockNumber": 11917123,
               "name": "BLI Compliant Utility Token",
               "symbol": "BLIC",
               "totalSupplyFormatted": "100000000",
@@ -628,15 +628,15 @@
             "title": "[Step 3: DON Consensus & Gemini AI Discrepancy Evaluation]",
             "capability": "chainlink.capabilities.ocr3_consensus@1.0.0 + google_gemini_legal_reasoning",
             "status": "SUCCESS",
-            "startedAt": "2026-10-15T01:07:39.794Z",
-            "completedAt": "2026-10-15T01:07:39.799Z",
+            "startedAt": "2026-10-15T01:23:33.380Z",
+            "completedAt": "2026-10-15T01:23:33.385Z",
             "durationMs": 5,
-            "summary": "DON (4/4 nodes, OCR3-BFT) + Gemini AI (gemini-2.5-flash (API Key Not Configured), 0ms) reached consensus: MATCH (MATCH=5, MISMATCH=0, NEEDS_HUMAN_REVIEW=0) | reportHash=0xdff4b1d5cbc7...",
+            "summary": "DON (4/4 nodes, OCR3-BFT) + Gemini AI (gemini-3.8-flash (API Key Not Configured), 0ms) reached consensus: MATCH (MATCH=5, MISMATCH=0, NEEDS_HUMAN_REVIEW=0) | reportHash=0xea0f160ae838...",
             "inputPayload": {
               "donId": "don-bli-legaltech-cre-01",
               "protocol": "OCR3-BFT",
               "quorumRequired": 3,
-              "geminiModel": "gemini-2.5-flash (API Key Not Configured)",
+              "geminiModel": "gemini-3.8-flash (API Key Not Configured)",
               "evaluatedItemKeys": [
                 "maxSupplyAndMintability",
                 "transferFee",
@@ -653,13 +653,13 @@
                 "needsReviewCount": 0
               },
               "geminiReasoningTelemetry": {
-                "model": "gemini-2.5-flash (API Key Not Configured)",
+                "model": "gemini-3.8-flash (API Key Not Configured)",
                 "promptTokens": 0,
                 "completionTokens": 0,
                 "totalTokens": 0,
                 "latencyMs": 0,
                 "liveApiCalled": false,
-                "invokedAt": "2026-10-15T01:07:39.795Z",
+                "invokedAt": "2026-10-15T01:23:33.381Z",
                 "task": "step_2_cre_compare",
                 "fallbackReason": "GEMINI_API_KEY is not set. Configure your key via [Gemini AI Key / Guardrail Status] in the top header to enable live Gemini inference.",
                 "guardrail": {
@@ -670,7 +670,7 @@
                   "statutesWhitelisted": true,
                   "humanGateEnforced": true,
                   "signoffStatus": "AI_DRAFT_VERIFIED",
-                  "verifiedAt": "2026-10-15T01:07:39.795Z",
+                  "verifiedAt": "2026-10-15T01:23:33.382Z",
                   "guards": {
                     "guard1QuoteGrounding": {
                       "passed": true,
@@ -689,9 +689,9 @@
                         "500 bps",
                         "1830297600",
                         "0x534c51921913a8717Ca2db550b77fFabf168f71e",
-                        "Block #11917044"
+                        "Block #11917123"
                       ],
-                      "detail": "Locked 16 deterministic parameters & verdicts (100,000,000, 100 bps, 500 bps, 1830297600, 0x534c51921913a8717Ca2db550b77fFabf168f71e, Block #11917044) against LLM modification."
+                      "detail": "Locked 16 deterministic parameters & verdicts (100,000,000, 100 bps, 500 bps, 1830297600, 0x534c51921913a8717Ca2db550b77fFabf168f71e, Block #11917123) against LLM modification."
                     },
                     "guard3StatuteWhitelist": {
                       "passed": true,
@@ -714,8 +714,8 @@
                   }
                 }
               },
-              "consensusDigest": "0xe55e3d4752aade766de0a79ba703051b6a6624e4550e31ef6e97d8f659294d9f",
-              "reportHash": "0xdff4b1d5cbc76707e336a997bd21205e6f56c8833255422dc99b6d94eca2b753",
+              "consensusDigest": "0x9ab019baed9254c1261999e817f751369428e47167e9f613a14696b830afc49d",
+              "reportHash": "0xea0f160ae838c5660a3788468e1632e0a30ddb5593fb7eb571688b2704e507db",
               "itemVerdicts": [
                 {
                   "itemKey": "maxSupplyAndMintability",
@@ -758,29 +758,29 @@
                   "nodeId": "cre-node-01.chainlink.don",
                   "operator": "BLI RegTech Oracle Node #1",
                   "signerAddress": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-                  "observationHash": "0xdc6b6bd38be1a0ef18ed3043a8c27c576665541203ef792caf84ce2aa81fc9ff",
-                  "signature": "0x2db64c6ffce5c39b7b0a70f47f04e475a7cd19e22b4392db86983659a737ed5f345dabee1bdc5f93403d2367f4e94d7d5a3a533cc0e1e34e44de7f7129ef434e1b"
+                  "observationHash": "0x79095676b9ed5af4dd39f23155240c2737ebfee94d6b1c1d61a80c72b8ec9719",
+                  "signature": "0x4cc58eb1703621ecdc3f25f127a050714a3a69534bff85ee20700e7ccb30f605f8a465ae6f22ccdd5e40b62de600198aa2d9d3e8f1031d93c22354971c9139771b"
                 },
                 {
                   "nodeId": "cre-node-02.chainlink.don",
                   "operator": "BLI RegTech Oracle Node #2",
                   "signerAddress": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
-                  "observationHash": "0x38a4295a1b9cc94e1803845753df69b867b19b7a1d5592ecd243cf34caf771c7",
-                  "signature": "0x0e0268f3dd972e1aba3c0795724044d73a75de0e547e0d26a0bf3b512c87d1fb76f47bf5f534f5ab96f4e7d93d62fec4cec9a845a940f321dde0502e82dec6f91c"
+                  "observationHash": "0x29745a4aec7fc57ebe39b56eb31ec16b32452a28548bd00d8346c0caeedc37bc",
+                  "signature": "0x43fd5011a9306bc54e12903ee4aebed671172baccbe240f47a1e5b69a824e0637c098fcf9ab0ec5915536ea5ab098cf2e6aaed09cc9886886ebaad8c67c4e1e71c"
                 },
                 {
                   "nodeId": "cre-node-03.chainlink.don",
                   "operator": "BLI RegTech Oracle Node #3",
                   "signerAddress": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
-                  "observationHash": "0xaaf4801b1861012300ec68b03cdee645faa91a33ea01f69fe64e402a2ab52a38",
-                  "signature": "0xc810e664e69faabe86d32752d6ffc3aa5d66fdd312ea42f18600677655f795637a32d227a47e83beff7818ac50cbcf4351efe6200fdd09732d302a9478e20cc11b"
+                  "observationHash": "0xbf39af633fcb5f31269aee07e87df6e4fc1aba48a0ea54a01a58ab2aed59e2ce",
+                  "signature": "0xbd22353765744c898e1b08f1d57379b8a83aef172b154a8bcaf4f7616f39976ab55b62ed454d1397929caf380a58a5a6fab01b926be9f234a77f0dbeef842d211b"
                 },
                 {
                   "nodeId": "cre-node-04.chainlink.don",
                   "operator": "BLI RegTech Oracle Node #4",
                   "signerAddress": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-                  "observationHash": "0xebc81bdf931a32bc8b90642d97d019c9507a46ef9592fbeb08e55b56889b932b",
-                  "signature": "0x531052376fededfdf5d8bce0a43aee7abc440ff333c6e18fd80e69f54de3a90b126f01c95396622bc94418d6c711b59c80b452865de45c3d05b3f9af1615e3701c"
+                  "observationHash": "0xda331aeb17cf649781bac10ddce6f0b6ea9c1fa4bd4a534c8f7c4fe5661d0c85",
+                  "signature": "0x8d8ecf46e11fcada1757172acfb3ce5936fa3ee682d852fb078b92617743eff81e49dd8806082cdf723bb76c1f27fbb47455558a051453bdef893db58e1924611c"
                 }
               ]
             }
@@ -791,28 +791,28 @@
             "title": "[Step 4: On-chain AuditRegistry Write / Verification Readiness]",
             "capability": "chainlink.capabilities.evm_write@1.0.0",
             "status": "SUCCESS",
-            "startedAt": "2026-10-15T01:07:39.796Z",
-            "completedAt": "2026-10-15T01:07:52.337Z",
-            "durationMs": 12541,
-            "summary": "Anchored to AuditRegistry (0x5B0547C68bc608E6A9b94C515B5B66215981856c) in tx 0xa0e0d5c47785... & verified on-chain (verified=true).",
+            "startedAt": "2026-10-15T01:23:33.382Z",
+            "completedAt": "2026-10-15T01:23:37.867Z",
+            "durationMs": 4485,
+            "summary": "Anchored to AuditRegistry (0x5B0547C68bc608E6A9b94C515B5B66215981856c) in tx 0x7672393d9442... & verified on-chain (verified=true).",
             "inputPayload": {
               "auditRegistryAddress": "0x5B0547C68bc608E6A9b94C515B5B66215981856c",
               "documentHash": "0xa7226b6ec726cba689e606e106c848f1fc221189559e0b6b1f0ac1b8008488c1",
               "tokenAddress": "0x534c51921913a8717Ca2db550b77fFabf168f71e",
               "chainId": 11155111,
               "chainName": "Ethereum Sepolia",
-              "blockNumber": 11917044,
+              "blockNumber": 11917123,
               "mismatchCount": 0,
-              "reportHash": "0xdff4b1d5cbc76707e336a997bd21205e6f56c8833255422dc99b6d94eca2b753",
+              "reportHash": "0xea0f160ae838c5660a3788468e1632e0a30ddb5593fb7eb571688b2704e507db",
               "executeOnchainAnchor": true
             },
             "outputPayload": {
               "auditRegistryAddress": "0x5B0547C68bc608E6A9b94C515B5B66215981856c",
               "functionSignature": "recordAudit(bytes32,address,uint256,uint256,uint8,bytes32)",
-              "recordAuditCalldata": "0x97cdb786a7226b6ec726cba689e606e106c848f1fc221189559e0b6b1f0ac1b8008488c1000000000000000000000000534c51921913a8717ca2db550b77ffabf168f71e0000000000000000000000000000000000000000000000000000000000aa36a70000000000000000000000000000000000000000000000000000000000b5d6f40000000000000000000000000000000000000000000000000000000000000000dff4b1d5cbc76707e336a997bd21205e6f56c8833255422dc99b6d94eca2b753",
-              "verifyAnchorCalldata": "0x681aa94aa7226b6ec726cba689e606e106c848f1fc221189559e0b6b1f0ac1b8008488c1000000000000000000000000534c51921913a8717ca2db550b77ffabf168f71edff4b1d5cbc76707e336a997bd21205e6f56c8833255422dc99b6d94eca2b753",
+              "recordAuditCalldata": "0x97cdb786a7226b6ec726cba689e606e106c848f1fc221189559e0b6b1f0ac1b8008488c1000000000000000000000000534c51921913a8717ca2db550b77ffabf168f71e0000000000000000000000000000000000000000000000000000000000aa36a70000000000000000000000000000000000000000000000000000000000b5d7430000000000000000000000000000000000000000000000000000000000000000ea0f160ae838c5660a3788468e1632e0a30ddb5593fb7eb571688b2704e507db",
+              "verifyAnchorCalldata": "0x681aa94aa7226b6ec726cba689e606e106c848f1fc221189559e0b6b1f0ac1b8008488c1000000000000000000000000534c51921913a8717ca2db550b77ffabf168f71eea0f160ae838c5660a3788468e1632e0a30ddb5593fb7eb571688b2704e507db",
               "anchoredOnchain": true,
-              "anchorTxHash": "0xa0e0d5c477859b61f057039368fae80692bfaee2156f228ade5a34b4a64cde07",
+              "anchorTxHash": "0x7672393d9442ebb64420a106e8ab879eb823bb36e6b32e5da0f74f2bdcb9f0ce",
               "verifyAnchorPassed": true
             }
           }
@@ -825,19 +825,19 @@
       "tokenSymbol": "BLIX",
       "tokenAddress": "0xbbE3c849D90c63645F917Be84a5b454FE858186F",
       "documentHash": "0x3e37772e7fa79f3b2edf789ae477d60ff0935086f18fe3101f10c36048264d20",
-      "workflowRunId": "cre-blix-b11917045-349eeef0",
+      "workflowRunId": "cre-blix-b11917124-bb4f32f1",
       "overallStatus": "MISMATCH",
       "counts": {
         "matchCount": 0,
         "mismatchCount": 4,
         "needsReviewCount": 1
       },
-      "reportHash": "0xe569f340da6ef154976393250b4f355ac5537f0a0efba23a0ed9ecdee34da029",
-      "consensusDigest": "0x349eeef050f6a7be5830481be5dc58583156f9a96b63acbc1bdc81507aa24bcd",
-      "anchorTxHash": "0x4c1678c0e7029bfe98f0ff0888d65b3afb57c4ed53311a287f855bbbca9dbd5c",
+      "reportHash": "0xb6b5c68b6f89f31cc98ef6a422246599827bdb7c431a4f33003b06d4dfa999ef",
+      "consensusDigest": "0xbb4f32f1b96fe19564bbf19c6f7939eefc45b9df31996e6527adf4fedb43d044",
+      "anchorTxHash": "0xd6e2834870c0b8bfc48ceae3560978ae94f0f3970f0ffe5e792d9e02b19468e0",
       "verifyAnchorVerified": true,
       "trace": {
-        "workflowRunId": "cre-blix-b11917045-349eeef0",
+        "workflowRunId": "cre-blix-b11917124-bb4f32f1",
         "workflowName": "bli-disclosure-smart-contract-mismatch-auditor",
         "workflowVersion": "1.0.0",
         "manifestPath": "cre-workflow/workflow.yaml",
@@ -848,7 +848,7 @@
         "tokenAddress": "0xbbE3c849D90c63645F917Be84a5b454FE858186F",
         "chainId": 11155111,
         "chainName": "Ethereum Sepolia",
-        "snapshotBlockNumber": 11917045,
+        "snapshotBlockNumber": 11917124,
         "documentHash": "0x3e37772e7fa79f3b2edf789ae477d60ff0935086f18fe3101f10c36048264d20",
         "overallStatus": "MISMATCH",
         "counts": {
@@ -862,45 +862,45 @@
           "nodeCount": 4,
           "quorumRequired": 3,
           "quorumReached": 4,
-          "consensusDigest": "0x349eeef050f6a7be5830481be5dc58583156f9a96b63acbc1bdc81507aa24bcd",
-          "reportHash": "0xe569f340da6ef154976393250b4f355ac5537f0a0efba23a0ed9ecdee34da029",
+          "consensusDigest": "0xbb4f32f1b96fe19564bbf19c6f7939eefc45b9df31996e6527adf4fedb43d044",
+          "reportHash": "0xb6b5c68b6f89f31cc98ef6a422246599827bdb7c431a4f33003b06d4dfa999ef",
           "nodeSignatures": [
             {
               "nodeId": "cre-node-01.chainlink.don",
               "operator": "BLI RegTech Oracle Node #1",
               "signerAddress": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-              "observationHash": "0x21a08057b679af0c596aa2cae2851cb832e59a16576e505533b80edcba7850d5",
-              "signature": "0xf6fa0df9d9a1344d9e613025412219df602693d3c8ededaa88ba2bd7bfd4ef79d8d22f38932ee8038f57804376de6ca32b9c43d2fea3dbede652526b47449c7c1b"
+              "observationHash": "0xf6365e133613886d86aa41592a0c708487826fe6e606174efdf2b6df5c16ee33",
+              "signature": "0x22926b6b0b86a295653866a74b4de105f4c7b7b84f29a4b2cdbea5abba7bd75686923afcbdb3c8b0f1e1ff09b24325d6ebbffcdcd39b6979e791e94c16344f751b"
             },
             {
               "nodeId": "cre-node-02.chainlink.don",
               "operator": "BLI RegTech Oracle Node #2",
               "signerAddress": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
-              "observationHash": "0x52655bfb40d053db1666daab264d4618cf2c608d9859f1c77c97c59ea12a30d4",
-              "signature": "0x27d2e25f81309d1b93c4d30c1be5e46bcca314d77735ecff03624125e1952819a75d7d07f28f747e91287f4ebd642809de55564bd811d62d5b21b1e7aad928b01c"
+              "observationHash": "0xb4ab502a7d43b9d02f1c2c9563eb60699eb4c0d6808940d1a289e76e31091ce7",
+              "signature": "0x52512d5d769e80da3dc5758ce968ff0559b6edb6decd4b260166824fdc3a50143df950cebcb614956ecc4e2049d6178557cdb1e10b1f5e1b5efd07b76c5cd8b71c"
             },
             {
               "nodeId": "cre-node-03.chainlink.don",
               "operator": "BLI RegTech Oracle Node #3",
               "signerAddress": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
-              "observationHash": "0x8ef6cc08c1943d114f88611fd5b828c9dba0eaaadc5fd509d0f2bc721ca4d8ea",
-              "signature": "0x0d08b07c31d1d3d54a8eb165368df980491df169daa130ea74324813e82693770909c44eecf74a278de96e4ef7cbe173d27a8b6de8fda66feacea2e4e1e356391b"
+              "observationHash": "0xa412cb809d5fae26f0116c974079d20653dd07d8257da70c70879ed6a925f605",
+              "signature": "0xb1287b21993f85f8971165b5b39ef68872fd517e1efaa42520dac71e295c8dffaff0b384d78c87313347c21e7c46f2df5ac900b364748e67ac1eadf3b6e506801b"
             },
             {
               "nodeId": "cre-node-04.chainlink.don",
               "operator": "BLI RegTech Oracle Node #4",
               "signerAddress": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-              "observationHash": "0x04a8b24ec67bbd55c85b533f1f21fcba948385be7fe6e8e41785521fb91c4c14",
-              "signature": "0x24120a4429f0f16b29611f98f56ed6e65c3e2c4233f501b2cd513cbd361e2780cd548bf968e9c0bdfaa42882e2242d3bee3f70f42df9827b8575cd222b445f451c"
+              "observationHash": "0x95858bd601baff2e5707442dd9e07d9df56a70cb1ef9211a2bef1ad0216947a9",
+              "signature": "0xbee725b63dbfd0af9ef452058d89b4924c53680c14627f3ff20bbdfac7eb4ff681cb52c4332c5e590f6437f995b002f9d990bdac3b7dde7843b73b6917ea3d3f1c"
             }
           ]
         },
         "auditRegistryPayload": {
           "auditRegistryAddress": "0x5B0547C68bc608E6A9b94C515B5B66215981856c",
           "functionSignature": "recordAudit(bytes32,address,uint256,uint256,uint8,bytes32)",
-          "recordAuditCalldata": "0x97cdb7863e37772e7fa79f3b2edf789ae477d60ff0935086f18fe3101f10c36048264d20000000000000000000000000bbe3c849d90c63645f917be84a5b454fe858186f0000000000000000000000000000000000000000000000000000000000aa36a70000000000000000000000000000000000000000000000000000000000b5d6f50000000000000000000000000000000000000000000000000000000000000004e569f340da6ef154976393250b4f355ac5537f0a0efba23a0ed9ecdee34da029",
-          "verifyAnchorCalldata": "0x681aa94a3e37772e7fa79f3b2edf789ae477d60ff0935086f18fe3101f10c36048264d20000000000000000000000000bbe3c849d90c63645f917be84a5b454fe858186fe569f340da6ef154976393250b4f355ac5537f0a0efba23a0ed9ecdee34da029",
-          "reportHash": "0xe569f340da6ef154976393250b4f355ac5537f0a0efba23a0ed9ecdee34da029"
+          "recordAuditCalldata": "0x97cdb7863e37772e7fa79f3b2edf789ae477d60ff0935086f18fe3101f10c36048264d20000000000000000000000000bbe3c849d90c63645f917be84a5b454fe858186f0000000000000000000000000000000000000000000000000000000000aa36a70000000000000000000000000000000000000000000000000000000000b5d7440000000000000000000000000000000000000000000000000000000000000004b6b5c68b6f89f31cc98ef6a422246599827bdb7c431a4f33003b06d4dfa999ef",
+          "verifyAnchorCalldata": "0x681aa94a3e37772e7fa79f3b2edf789ae477d60ff0935086f18fe3101f10c36048264d20000000000000000000000000bbe3c849d90c63645f917be84a5b454fe858186fb6b5c68b6f89f31cc98ef6a422246599827bdb7c431a4f33003b06d4dfa999ef",
+          "reportHash": "0xb6b5c68b6f89f31cc98ef6a422246599827bdb7c431a4f33003b06d4dfa999ef"
         },
         "breachSimulations": [
           {
@@ -999,13 +999,13 @@
         ],
         "geminiTelemetry": {
           "step1": {
-            "model": "gemini-2.5-flash (API Key Not Configured)",
+            "model": "gemini-3.8-flash (API Key Not Configured)",
             "promptTokens": 0,
             "completionTokens": 0,
             "totalTokens": 0,
             "latencyMs": 0,
             "liveApiCalled": false,
-            "invokedAt": "2026-10-15T01:07:53.518Z",
+            "invokedAt": "2026-10-15T01:23:39.505Z",
             "task": "step_1_extract",
             "fallbackReason": "GEMINI_API_KEY is not set. Configure your key via [Gemini AI Key / Guardrail Status] in the top header to enable live Gemini inference.",
             "guardrail": {
@@ -1016,7 +1016,7 @@
               "statutesWhitelisted": true,
               "humanGateEnforced": true,
               "signoffStatus": "AI_DRAFT_VERIFIED",
-              "verifiedAt": "2026-10-15T01:07:53.518Z",
+              "verifiedAt": "2026-10-15T01:23:39.505Z",
               "guards": {
                 "guard1QuoteGrounding": {
                   "passed": true,
@@ -1059,13 +1059,13 @@
             }
           },
           "step3": {
-            "model": "gemini-2.5-flash (API Key Not Configured)",
+            "model": "gemini-3.8-flash (API Key Not Configured)",
             "promptTokens": 0,
             "completionTokens": 0,
             "totalTokens": 0,
             "latencyMs": 0,
             "liveApiCalled": false,
-            "invokedAt": "2026-10-15T01:07:54.755Z",
+            "invokedAt": "2026-10-15T01:23:41.454Z",
             "task": "step_2_cre_compare",
             "fallbackReason": "GEMINI_API_KEY is not set. Configure your key via [Gemini AI Key / Guardrail Status] in the top header to enable live Gemini inference.",
             "guardrail": {
@@ -1076,7 +1076,7 @@
               "statutesWhitelisted": true,
               "humanGateEnforced": true,
               "signoffStatus": "AI_DRAFT_VERIFIED",
-              "verifiedAt": "2026-10-15T01:07:54.755Z",
+              "verifiedAt": "2026-10-15T01:23:41.454Z",
               "guards": {
                 "guard1QuoteGrounding": {
                   "passed": true,
@@ -1095,9 +1095,9 @@
                     "500 bps",
                     "1830297600",
                     "0xbbE3c849D90c63645F917Be84a5b454FE858186F",
-                    "Block #11917045"
+                    "Block #11917124"
                   ],
-                  "detail": "Locked 16 deterministic parameters & verdicts (100,000,000, 100 bps, 500 bps, 1830297600, 0xbbE3c849D90c63645F917Be84a5b454FE858186F, Block #11917045) against LLM modification."
+                  "detail": "Locked 16 deterministic parameters & verdicts (100,000,000, 100 bps, 500 bps, 1830297600, 0xbbE3c849D90c63645F917Be84a5b454FE858186F, Block #11917124) against LLM modification."
                 },
                 "guard3StatuteWhitelist": {
                   "passed": true,
@@ -1121,8 +1121,8 @@
             }
           }
         },
-        "totalDurationMs": 9745,
-        "executedAt": "2026-10-15T01:08:03.256Z",
+        "totalDurationMs": 10581,
+        "executedAt": "2026-10-15T01:23:50.078Z",
         "steps": [
           {
             "stepNumber": 1,
@@ -1130,10 +1130,10 @@
             "title": "[Step 1: Trigger & Off-chain Disclosure Fetch (Google Gemini AI)]",
             "capability": "chainlink.capabilities.http_client@1.0.0 + google_gemini_llm_extractor",
             "status": "SUCCESS",
-            "startedAt": "2026-10-15T01:07:53.518Z",
-            "completedAt": "2026-10-15T01:07:53.522Z",
+            "startedAt": "2026-10-15T01:23:39.505Z",
+            "completedAt": "2026-10-15T01:23:39.509Z",
             "durationMs": 4,
-            "summary": "Fetched SHA-256 documentHash (0x3e37772e7fa7...) & extracted 5 structured disclosure claims via DETERMINISTIC_RULE_PARSER (gemini-2.5-flash (API Key Not Configured), 0ms).",
+            "summary": "Fetched SHA-256 documentHash (0x3e37772e7fa7...) & extracted 5 structured disclosure claims via DETERMINISTIC_RULE_PARSER (gemini-3.8-flash (API Key Not Configured), 0ms).",
             "inputPayload": {
               "triggerType": "cre.triggers.http_webhook@1.0.0",
               "auditCaseId": "audit-mismatched-blix",
@@ -1145,13 +1145,13 @@
               "documentHash": "0x3e37772e7fa79f3b2edf789ae477d60ff0935086f18fe3101f10c36048264d20",
               "extractionEngine": "DETERMINISTIC_RULE_PARSER",
               "geminiTelemetry": {
-                "model": "gemini-2.5-flash (API Key Not Configured)",
+                "model": "gemini-3.8-flash (API Key Not Configured)",
                 "promptTokens": 0,
                 "completionTokens": 0,
                 "totalTokens": 0,
                 "latencyMs": 0,
                 "liveApiCalled": false,
-                "invokedAt": "2026-10-15T01:07:53.518Z",
+                "invokedAt": "2026-10-15T01:23:39.505Z",
                 "task": "step_1_extract",
                 "fallbackReason": "GEMINI_API_KEY is not set. Configure your key via [Gemini AI Key / Guardrail Status] in the top header to enable live Gemini inference.",
                 "guardrail": {
@@ -1162,7 +1162,7 @@
                   "statutesWhitelisted": true,
                   "humanGateEnforced": true,
                   "signoffStatus": "AI_DRAFT_VERIFIED",
-                  "verifiedAt": "2026-10-15T01:07:53.518Z",
+                  "verifiedAt": "2026-10-15T01:23:39.505Z",
                   "guards": {
                     "guard1QuoteGrounding": {
                       "passed": true,
@@ -1263,10 +1263,10 @@
             "title": "[Step 2: On-chain EVM State Inspection & Breach Simulation]",
             "capability": "chainlink.capabilities.evm_read@1.0.0 + evm_sandbox_sim",
             "status": "SUCCESS",
-            "startedAt": "2026-10-15T01:07:53.519Z",
-            "completedAt": "2026-10-15T01:07:54.755Z",
-            "durationMs": 1236,
-            "summary": "Executed 22 ABI eth_call reads + EIP-1967 slot inspection + 4 counterfactual breach simulations (Defended=0, Breached=4) on BLIX (0xbbE3c849D90c63645F917Be84a5b454FE858186F) at Block #11917045.",
+            "startedAt": "2026-10-15T01:23:39.505Z",
+            "completedAt": "2026-10-15T01:23:41.454Z",
+            "durationMs": 1949,
+            "summary": "Executed 22 ABI eth_call reads + EIP-1967 slot inspection + 4 counterfactual breach simulations (Defended=0, Breached=4) on BLIX (0xbbE3c849D90c63645F917Be84a5b454FE858186F) at Block #11917124.",
             "inputPayload": {
               "chainId": 11155111,
               "chainName": "Ethereum Sepolia",
@@ -1305,7 +1305,7 @@
               ]
             },
             "outputPayload": {
-              "blockNumber": 11917045,
+              "blockNumber": 11917124,
               "name": "BLI Alpha Protocol Token",
               "symbol": "BLIX",
               "totalSupplyFormatted": "100000000",
@@ -1437,15 +1437,15 @@
             "title": "[Step 3: DON Consensus & Gemini AI Discrepancy Evaluation]",
             "capability": "chainlink.capabilities.ocr3_consensus@1.0.0 + google_gemini_legal_reasoning",
             "status": "SUCCESS",
-            "startedAt": "2026-10-15T01:07:54.755Z",
-            "completedAt": "2026-10-15T01:07:54.760Z",
+            "startedAt": "2026-10-15T01:23:41.454Z",
+            "completedAt": "2026-10-15T01:23:41.459Z",
             "durationMs": 5,
-            "summary": "DON (4/4 nodes, OCR3-BFT) + Gemini AI (gemini-2.5-flash (API Key Not Configured), 0ms) reached consensus: MISMATCH (MATCH=0, MISMATCH=4, NEEDS_HUMAN_REVIEW=1) | reportHash=0xe569f340da6e...",
+            "summary": "DON (4/4 nodes, OCR3-BFT) + Gemini AI (gemini-3.8-flash (API Key Not Configured), 0ms) reached consensus: MISMATCH (MATCH=0, MISMATCH=4, NEEDS_HUMAN_REVIEW=1) | reportHash=0xb6b5c68b6f89...",
             "inputPayload": {
               "donId": "don-bli-legaltech-cre-01",
               "protocol": "OCR3-BFT",
               "quorumRequired": 3,
-              "geminiModel": "gemini-2.5-flash (API Key Not Configured)",
+              "geminiModel": "gemini-3.8-flash (API Key Not Configured)",
               "evaluatedItemKeys": [
                 "maxSupplyAndMintability",
                 "transferFee",
@@ -1462,13 +1462,13 @@
                 "needsReviewCount": 1
               },
               "geminiReasoningTelemetry": {
-                "model": "gemini-2.5-flash (API Key Not Configured)",
+                "model": "gemini-3.8-flash (API Key Not Configured)",
                 "promptTokens": 0,
                 "completionTokens": 0,
                 "totalTokens": 0,
                 "latencyMs": 0,
                 "liveApiCalled": false,
-                "invokedAt": "2026-10-15T01:07:54.755Z",
+                "invokedAt": "2026-10-15T01:23:41.454Z",
                 "task": "step_2_cre_compare",
                 "fallbackReason": "GEMINI_API_KEY is not set. Configure your key via [Gemini AI Key / Guardrail Status] in the top header to enable live Gemini inference.",
                 "guardrail": {
@@ -1479,7 +1479,7 @@
                   "statutesWhitelisted": true,
                   "humanGateEnforced": true,
                   "signoffStatus": "AI_DRAFT_VERIFIED",
-                  "verifiedAt": "2026-10-15T01:07:54.755Z",
+                  "verifiedAt": "2026-10-15T01:23:41.454Z",
                   "guards": {
                     "guard1QuoteGrounding": {
                       "passed": true,
@@ -1498,9 +1498,9 @@
                         "500 bps",
                         "1830297600",
                         "0xbbE3c849D90c63645F917Be84a5b454FE858186F",
-                        "Block #11917045"
+                        "Block #11917124"
                       ],
-                      "detail": "Locked 16 deterministic parameters & verdicts (100,000,000, 100 bps, 500 bps, 1830297600, 0xbbE3c849D90c63645F917Be84a5b454FE858186F, Block #11917045) against LLM modification."
+                      "detail": "Locked 16 deterministic parameters & verdicts (100,000,000, 100 bps, 500 bps, 1830297600, 0xbbE3c849D90c63645F917Be84a5b454FE858186F, Block #11917124) against LLM modification."
                     },
                     "guard3StatuteWhitelist": {
                       "passed": true,
@@ -1523,8 +1523,8 @@
                   }
                 }
               },
-              "consensusDigest": "0x349eeef050f6a7be5830481be5dc58583156f9a96b63acbc1bdc81507aa24bcd",
-              "reportHash": "0xe569f340da6ef154976393250b4f355ac5537f0a0efba23a0ed9ecdee34da029",
+              "consensusDigest": "0xbb4f32f1b96fe19564bbf19c6f7939eefc45b9df31996e6527adf4fedb43d044",
+              "reportHash": "0xb6b5c68b6f89f31cc98ef6a422246599827bdb7c431a4f33003b06d4dfa999ef",
               "itemVerdicts": [
                 {
                   "itemKey": "maxSupplyAndMintability",
@@ -1567,29 +1567,29 @@
                   "nodeId": "cre-node-01.chainlink.don",
                   "operator": "BLI RegTech Oracle Node #1",
                   "signerAddress": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-                  "observationHash": "0x21a08057b679af0c596aa2cae2851cb832e59a16576e505533b80edcba7850d5",
-                  "signature": "0xf6fa0df9d9a1344d9e613025412219df602693d3c8ededaa88ba2bd7bfd4ef79d8d22f38932ee8038f57804376de6ca32b9c43d2fea3dbede652526b47449c7c1b"
+                  "observationHash": "0xf6365e133613886d86aa41592a0c708487826fe6e606174efdf2b6df5c16ee33",
+                  "signature": "0x22926b6b0b86a295653866a74b4de105f4c7b7b84f29a4b2cdbea5abba7bd75686923afcbdb3c8b0f1e1ff09b24325d6ebbffcdcd39b6979e791e94c16344f751b"
                 },
                 {
                   "nodeId": "cre-node-02.chainlink.don",
                   "operator": "BLI RegTech Oracle Node #2",
                   "signerAddress": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
-                  "observationHash": "0x52655bfb40d053db1666daab264d4618cf2c608d9859f1c77c97c59ea12a30d4",
-                  "signature": "0x27d2e25f81309d1b93c4d30c1be5e46bcca314d77735ecff03624125e1952819a75d7d07f28f747e91287f4ebd642809de55564bd811d62d5b21b1e7aad928b01c"
+                  "observationHash": "0xb4ab502a7d43b9d02f1c2c9563eb60699eb4c0d6808940d1a289e76e31091ce7",
+                  "signature": "0x52512d5d769e80da3dc5758ce968ff0559b6edb6decd4b260166824fdc3a50143df950cebcb614956ecc4e2049d6178557cdb1e10b1f5e1b5efd07b76c5cd8b71c"
                 },
                 {
                   "nodeId": "cre-node-03.chainlink.don",
                   "operator": "BLI RegTech Oracle Node #3",
                   "signerAddress": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
-                  "observationHash": "0x8ef6cc08c1943d114f88611fd5b828c9dba0eaaadc5fd509d0f2bc721ca4d8ea",
-                  "signature": "0x0d08b07c31d1d3d54a8eb165368df980491df169daa130ea74324813e82693770909c44eecf74a278de96e4ef7cbe173d27a8b6de8fda66feacea2e4e1e356391b"
+                  "observationHash": "0xa412cb809d5fae26f0116c974079d20653dd07d8257da70c70879ed6a925f605",
+                  "signature": "0xb1287b21993f85f8971165b5b39ef68872fd517e1efaa42520dac71e295c8dffaff0b384d78c87313347c21e7c46f2df5ac900b364748e67ac1eadf3b6e506801b"
                 },
                 {
                   "nodeId": "cre-node-04.chainlink.don",
                   "operator": "BLI RegTech Oracle Node #4",
                   "signerAddress": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-                  "observationHash": "0x04a8b24ec67bbd55c85b533f1f21fcba948385be7fe6e8e41785521fb91c4c14",
-                  "signature": "0x24120a4429f0f16b29611f98f56ed6e65c3e2c4233f501b2cd513cbd361e2780cd548bf968e9c0bdfaa42882e2242d3bee3f70f42df9827b8575cd222b445f451c"
+                  "observationHash": "0x95858bd601baff2e5707442dd9e07d9df56a70cb1ef9211a2bef1ad0216947a9",
+                  "signature": "0xbee725b63dbfd0af9ef452058d89b4924c53680c14627f3ff20bbdfac7eb4ff681cb52c4332c5e590f6437f995b002f9d990bdac3b7dde7843b73b6917ea3d3f1c"
                 }
               ]
             }
@@ -1600,28 +1600,28 @@
             "title": "[Step 4: On-chain AuditRegistry Write / Verification Readiness]",
             "capability": "chainlink.capabilities.evm_write@1.0.0",
             "status": "SUCCESS",
-            "startedAt": "2026-10-15T01:07:54.756Z",
-            "completedAt": "2026-10-15T01:08:03.256Z",
-            "durationMs": 8500,
-            "summary": "Anchored to AuditRegistry (0x5B0547C68bc608E6A9b94C515B5B66215981856c) in tx 0x4c1678c0e702... & verified on-chain (verified=true).",
+            "startedAt": "2026-10-15T01:23:41.455Z",
+            "completedAt": "2026-10-15T01:23:50.078Z",
+            "durationMs": 8623,
+            "summary": "Anchored to AuditRegistry (0x5B0547C68bc608E6A9b94C515B5B66215981856c) in tx 0xd6e2834870c0... & verified on-chain (verified=true).",
             "inputPayload": {
               "auditRegistryAddress": "0x5B0547C68bc608E6A9b94C515B5B66215981856c",
               "documentHash": "0x3e37772e7fa79f3b2edf789ae477d60ff0935086f18fe3101f10c36048264d20",
               "tokenAddress": "0xbbE3c849D90c63645F917Be84a5b454FE858186F",
               "chainId": 11155111,
               "chainName": "Ethereum Sepolia",
-              "blockNumber": 11917045,
+              "blockNumber": 11917124,
               "mismatchCount": 4,
-              "reportHash": "0xe569f340da6ef154976393250b4f355ac5537f0a0efba23a0ed9ecdee34da029",
+              "reportHash": "0xb6b5c68b6f89f31cc98ef6a422246599827bdb7c431a4f33003b06d4dfa999ef",
               "executeOnchainAnchor": true
             },
             "outputPayload": {
               "auditRegistryAddress": "0x5B0547C68bc608E6A9b94C515B5B66215981856c",
               "functionSignature": "recordAudit(bytes32,address,uint256,uint256,uint8,bytes32)",
-              "recordAuditCalldata": "0x97cdb7863e37772e7fa79f3b2edf789ae477d60ff0935086f18fe3101f10c36048264d20000000000000000000000000bbe3c849d90c63645f917be84a5b454fe858186f0000000000000000000000000000000000000000000000000000000000aa36a70000000000000000000000000000000000000000000000000000000000b5d6f50000000000000000000000000000000000000000000000000000000000000004e569f340da6ef154976393250b4f355ac5537f0a0efba23a0ed9ecdee34da029",
-              "verifyAnchorCalldata": "0x681aa94a3e37772e7fa79f3b2edf789ae477d60ff0935086f18fe3101f10c36048264d20000000000000000000000000bbe3c849d90c63645f917be84a5b454fe858186fe569f340da6ef154976393250b4f355ac5537f0a0efba23a0ed9ecdee34da029",
+              "recordAuditCalldata": "0x97cdb7863e37772e7fa79f3b2edf789ae477d60ff0935086f18fe3101f10c36048264d20000000000000000000000000bbe3c849d90c63645f917be84a5b454fe858186f0000000000000000000000000000000000000000000000000000000000aa36a70000000000000000000000000000000000000000000000000000000000b5d7440000000000000000000000000000000000000000000000000000000000000004b6b5c68b6f89f31cc98ef6a422246599827bdb7c431a4f33003b06d4dfa999ef",
+              "verifyAnchorCalldata": "0x681aa94a3e37772e7fa79f3b2edf789ae477d60ff0935086f18fe3101f10c36048264d20000000000000000000000000bbe3c849d90c63645f917be84a5b454fe858186fb6b5c68b6f89f31cc98ef6a422246599827bdb7c431a4f33003b06d4dfa999ef",
               "anchoredOnchain": true,
-              "anchorTxHash": "0x4c1678c0e7029bfe98f0ff0888d65b3afb57c4ed53311a287f855bbbca9dbd5c",
+              "anchorTxHash": "0xd6e2834870c0b8bfc48ceae3560978ae94f0f3970f0ffe5e792d9e02b19468e0",
               "verifyAnchorPassed": true
             }
           }

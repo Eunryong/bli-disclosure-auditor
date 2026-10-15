@@ -157,10 +157,10 @@ export function ReviewWorkspace({
       setFeedback(
         t(
           `Gemini AI Legal Opinion, 5 Clause Reviewer Notes & Formal Cure Notice synthesized and verified via 4-Layer Hallucination Guardrail (${
-            meta?.model || "gemini-2.5-flash"
+            meta?.model || "gemini-3.8-flash"
           } // ${meta?.latencyMs ?? 0}ms // ${meta?.totalTokens ?? 0} tokens).`,
           `Gemini AI 종합 법무 의견, 5개 조항 검토 메모 및 시정요구서가 4중 할루시네이션 가드레일 검증을 거쳐 생성·저장되었습니다 (${
-            meta?.model || "gemini-2.5-flash"
+            meta?.model || "gemini-3.8-flash"
           } // ${meta?.latencyMs ?? 0}ms // ${meta?.totalTokens ?? 0} tokens).`
         )
       );

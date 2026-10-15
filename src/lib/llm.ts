@@ -17,8 +17,8 @@ import {
 } from "@/lib/hallucination-guard";
 
 const ENV_FILE_PATH = path.join(process.cwd(), ".env");
-export const DEFAULT_GEMINI_MODEL = "gemini-2.5-flash";
-export const FALLBACK_GEMINI_MODEL = "gemini-2.0-flash";
+export const DEFAULT_GEMINI_MODEL = "gemini-3.8-flash";
+export const FALLBACK_GEMINI_MODEL = "gemini-2.5-flash";
 
 export interface GeminiRuntimeConfig {
   apiKey: string;
@@ -183,7 +183,7 @@ function extractJsonFromText<T = Record<string, any>>(text: string): T | null {
 /**
  * Calls the Google Gemini REST API (`v1beta/models/${model}:generateContent`)
  * with deterministic `temperature: 0` and JSON Schema structured output (`responseMimeType: "application/json"`).
- * Automatically falls back from `gemini-2.5-flash` to `gemini-2.0-flash` if the primary model is unavailable.
+ * Automatically falls back from `gemini-3.8-flash` to `gemini-2.5-flash` / `gemini-2.0-flash` if the primary model is unavailable.
  */
 export async function callGeminiLlm<T = Record<string, any>>(
   params: CallGeminiLlmParams
@@ -222,6 +222,7 @@ export async function callGeminiLlm<T = Record<string, any>>(
       requestedModel,
       DEFAULT_GEMINI_MODEL,
       FALLBACK_GEMINI_MODEL,
+      "gemini-2.0-flash",
       "gemini-1.5-flash",
     ])
   );

@@ -70,7 +70,7 @@ export function serializeAuditCase(record: any): AuditCaseDTO {
   }
 
   const defaultGuardrail = createDefaultGuardrailReport();
-  const defaultModel = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+  const defaultModel = process.env.GEMINI_MODEL || "gemini-3.8-flash";
   const ensureTelemetry = (meta?: GeminiCallMetadata): GeminiCallMetadata => ({
     model: meta?.model || defaultModel,
     latencyMs: meta?.latencyMs ?? 12,
